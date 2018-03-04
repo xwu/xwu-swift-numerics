@@ -1,7 +1,8 @@
 ---
 ---
 
-@import "https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i";
+@import "https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i,700,700i";
+@import "https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700";
 
 body {
 	background: #fff;
@@ -19,11 +20,15 @@ header {
 	padding: 0;
 }
 
+header a {
+	color: inherit;
+	text-decoration: inherit;
+}
+
 #wrapper {
 }
 
 nav {
-	position: fixed;
 }
 
 article, footer {
@@ -45,7 +50,7 @@ footer {
 a {
 	color: #798890;
 	transition: color 200ms ease;
-	text-decoration: none;
+	text-decoration: underline;
 }
 
 a:hover {
@@ -62,10 +67,61 @@ h1 {
 
 h2 {
 	font: 600 20px/24px "Source Sans Pro", sans-serif;
-	margin: 12px 0;
+	margin: 36px 0 12px;
 	padding: 0;
+}
+
+h1 + h2 {
+	margin-top: 12px;
+}
+
+h3 {
+	font: 700 18px/24px "Source Sans Pro", sans-serif;
+	margin: 12px 0;
+	padding: 0;	
 }
 
 p {
 	margin: 12px 0;
+}
+
+ol, ul {
+	margin: 0;
+	padding: 0;
+}
+
+ol {
+	list-style: decimal;
+}
+
+ul {
+	list-style: disc;
+}
+
+li {
+	margin: 12px 0;
+}
+
+blockquote {
+	color: #666;
+	padding-left: 18px;
+	border-left: 6px solid #ccc;
+	margin: 12px 0;
+}
+
+code, kbd, pre, samp {
+	font-family: "Source Code Pro", monospace;
+}
+
+code.highlighter-rouge {
+	background: rgba(187, 187, 187, 0.1);
+	padding: 0.05em 0.25em;
+	border-radius: 0.25em;
+}
+
+div.highlighter-rouge pre.highlight {
+	background: rgba(187, 187, 187, 0.1);
+	padding: 12px;
+	border-radius: 0.25em;
+	margin: 0 -12px;
 }
