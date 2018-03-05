@@ -380,7 +380,7 @@ value (by analogy with `Int.min`). However, `FLT_MIN` is not even negative. Nor
 is it the least representable _positive_ value if the platform supports
 subnormal values: in C, that value is known as `FLT_TRUE_MIN`.
 
-Note that `.pi` is rounded toward zero for reasons discussed below.
+Note that `.pi` is rounded toward zero for reasons discussed later.
 Consequently, `Float(M_PI) != .pi`.
 
 The use of "epsilon" was avoided because that term has varying definitions among

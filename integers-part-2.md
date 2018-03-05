@@ -63,21 +63,24 @@ A runtime error also occurs in case of overflow in methods such as:
 `dividingFullWidth(_:)`  
 `quotientAndRemainder(dividingBy:)`
 
-In Swift, `abs(_:)` returns a value of the __same type__ as the argument.
-(Specifically, the function returns the absolute value of the argument.) For a
-signed (and fixed-width) integer type `T`, therefore, a runtime error occurs
-when evaluating `abs(T.min)` because the result cannot be represented in `T`.
-
-By contrast, evaluating `T.min.magnitude` does not cause a runtime error;
-however, the value is not of type `T` but rather of the __associated type__
-`T.Magnitude`. 
-
 > At the time of writing, `dividingFullWidth(_:)` [does not behave as
 > documented][ref 6-3] in case of overflow.
 
 [ref 6-1]: https://huonw.github.io/blog/2016/04/myths-and-legends-about-integer-overflow-in-rust/
 [ref 6-2]: https://github.com/apple/swift/blob/master/docs/OptimizationTips.rst#enabling-optimizations
 [ref 6-3]: https://github.com/apple/swift/blob/642cbbad7cefd08efa9242fd2d75cee356285727/stdlib/public/core/Integers.swift.gyb#L3514
+
+### Absolute value and magnitude
+
+In Swift, `abs(_:)` returns a value of the __same type__ as the argument.
+(Specifically, the function returns the absolute value of the argument.) For a
+signed (and fixed-width) integer type `T`, therefore, a runtime error occurs
+when evaluating `abs(T.min)` because the result cannot be represented in `T`.
+
+By contrast, evaluating `T.min.magnitude` does not cause a runtime error.
+However, the value is not always of type `T` but rather of the __associated
+type__ `T.Magnitude`. For a signed type, `T.Magnitude` is the unsigned type of
+the same bit width; for an unsigned type, `T.Magnitude == T`.
 
 ### Overflow operators
 
@@ -140,7 +143,7 @@ In Swift,
 returns `(x, true)`, as the remainder is mathematically undefined. Otherwise,
 the method returns `(0, true)` if the operation overflows (i.e., when dividing
 by `-1`). Mathematically, of course, the remainder of division by −1 is always
-0. At the time of writing, a division-by-zero error occurs if the RHS is
+zero. At the time of writing, a division-by-zero error occurs if the RHS is
 expressed as a literal `0`.
 
 > Internally, there are no LLVM primitives for checking overflow after division,
@@ -184,6 +187,11 @@ product that overflows standard multiplication.
 double-width value expressed as a tuple of high and low parts) is divided by the
 receiver. As mentioned above, a runtime error may occur if the quotient is not
 representable within the bounds of the type.
+
+> Notice that this method is named "dividing" instead of "divided by." Here, the
+> _argument_ is the _dividend_ (i.e., numerator). Although unique among Swift
+> arithmetic operations, this arrangement is necessary because the dividend is
+> a tuple; tuple types cannot be extended in Swift.
 
 At the time of writing, the implemented behavior of `dividingFullWidth(_:)` in
 case of overflow does not match the documented behavior.

@@ -3,11 +3,6 @@ Concrete binary floating-point types, part 2
 
 ## Floating-point precision
 
-> __Floating point is the worst approximation to the real numbers except for
-> all the others.__
->
-> [— Stephen Canon, Nov. 1, 2017][ref 12-1]
-
 Swift's floating-point types are intended to model the real numbers, but (as
 with all such models) it is inexact; in fact, almost all real numbers cannot be
 represented exactly in binary floating-point format.
@@ -18,7 +13,7 @@ represented exactly in binary floating-point format.
 > with binary floating-point values:
 >
 > * Many modest decimal fractions, such as 0.1, cannot be represented exactly.
-> * Not all integral values less than `greatestFiniteMagnitude` can be
+> * Many integral values less than `greatestFiniteMagnitude` cannot be
 >   represented exactly.
 > * Basic arithmetic operations are often inexact; for example, `a + b - b == a`
 >   does not always evaluate to `true`.
@@ -67,7 +62,6 @@ Third-party libraries can provide a [fixed-width rational type][ref 12-5], and
 existing libraries with C interfaces can be wrapped to provide an
 arbitrary-precision rational type (or one can be implemented natively in Swift).
 
-[ref 12-1]: https://forums.swift.org/t/rationalizing-floatingpoint-conformance-to-equatable/6861/82
 [ref 12-2]: https://forums.swift.org/t/provide-native-decimal-data-type/4003/4
 [ref 12-3]: http://speleotrove.com/decimal/decnumber.html
 [ref 12-4]: http://www.netlib.org/misc/intel/
@@ -107,11 +101,11 @@ obtained by repeated addition.
 In Swift 4.0, the sequence `stride(from: -0.2, through: 1.0, by: 0.2)` does not
 include the value `1.0`.
 
-Despite avoiding _accumulated_ rounding error from repeated addition, the
+Despite avoiding accumulated rounding error from repeated addition, the
 expression `-0.2 + 6.0 * 0.2` evaluates to `1.0000000000000002` due to
 intermediate rounding error.
 
-The IEEE 754 operation fusedMultiplyAdd allows the same operation to be
+The IEEE 754 operation __fusedMultiplyAdd__ allows the same computation to be
 performed in one step with a single rounding, improving the accuracy of the
 result. This operation is available in Swift as the instance method
 `addingProduct(_:_:)`. For example:
@@ -150,6 +144,14 @@ is negative, and therefore taking the square root gives NaN.
 [ref 12-6]: https://github.com/apple/swift/pull/13007
 [ref 12-7]: https://people.eecs.berkeley.edu/~wkahan/ieee754status/ieee754.ps
 
+### Unit in the last place
+
+_Incomplete_
+
+### Rounding direction
+
+_Incomplete_
+
 ### Approximating π
 
 In Swift, each floating-point type has a static property `pi` that provides the
@@ -159,17 +161,33 @@ The purpose of rounding toward zero is to avoid angles computed in radians
 from being rounded to a different quadrant. As a consequence,
 `Float.pi < Float(Double.pi)` evaluates to `true`.
 
-### Unit in the last place
+### Subnormal values on 32-bit ARM
 
-_Incomplete_
+> _Background:_
+>
+> In the gap between zero and 2<sup><em>emin</em></sup>, where _emin_ is the
+> minimum supported exponent of a binary floating-point type, a set of linearly
+> spaced [__subnormal__ (or denormal) values][ref 12-8] can be represented with
+> some differences in their binary representation as compared to that of
+> __normal__ finite values.
+>
+> On 32-bit ARMv7, the vector floating-point (VFP) co-processor supports a
+> __flush-to-zero (FZ) mode__ for floating-point operations that is not
+> compliant with IEEE 754. When the FZ bit is set, operations that would
+> otherwise return a subnormal value instead return zero. Meanwhile, the NEON
+> SIMD co-processor on ARMv7 always uses flush-to-zero mode regardless of the FZ
+> bit.
 
-### Subnormal values on arm32
+For iOS platforms, it is possible in C to clear the ARMv7 FZ bit using inline
+assembler; however, doing so has a negative effect on performance. As Swift does
+not support inline assembler, it is not possible to disable flush-to-zero mode
+from Swift.
 
-_Incomplete_
+On 32-bit ARM, Swift floating-point types skip subnormal values. For example,
+`(0 as Double).nextUp` evaluates to the least normal magnitude and
+`(0 as Double).ulp` evaluates to zero.
 
-### Rounding direction
-
-_Incomplete_
+[ref 12-8]: https://en.wikipedia.org/wiki/Denormal_number
 
 ---
 
@@ -179,4 +197,4 @@ Previous:
 Next:  
 Concrete binary floating-point types, part 3
 
-_Draft: 27 February–4 March 2018_
+_Draft: 27 February–6 March 2018_

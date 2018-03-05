@@ -82,13 +82,45 @@ represented.
 Negative values can be represented by prepending the hyphen-minus character
 (`-`). This is considered to be part of the integer literal. In other words, the
 expression `-42` is lexed as a single value, not as a call to the prefix
-operator `-` with `42` as its operand. However, the Swift standard library
-defines the prefix operator `+` for symmetry but does __not__ consider a
-prepended `+` to be part of an integer literal. Therefore, `+42` __is__ lexed as
-a call to the prefix `+` operator with `42` as its operand.
+operator `-` with `42` as its operand.
 
 > Should a distinction become necessary, the expression `-(42)` is lexed as a
-> call to the prefix `-` operator.
+> call to the prefix operator `-`. The distinction can be observed when negating
+> a literal `0` while working with floating-point types that support distinct
+> representations for `+0.0` and `-0.0`:
+>
+> ```swift
+> let x: Double = -0
+> x.sign // .plus
+> 
+> let y: Double = -(0)
+> y.sign // .minus
+> ```
+>
+> In the top example, a built-in 2048-bit integer is initialized to the value
+> `-0`, but integer types do not support signed zero and the sign is ignored.
+> Then, based on the type annotation, the integer value is converted to a
+> positive floating-point value.
+>
+> In the bottom example, a built-in 2048-bit integer is initialized to the value
+> `0`. Based on the type annotation, the value is converted to a positive
+> floating-point value, then the floating-point prefix operator `-` is called to
+> change the sign.
+
+Note that the Swift standard library defines the prefix operator `+` for
+symmetry but does __not__ consider a prepended `+` to be part of an integer
+literal. Therefore, `+42` __is__ lexed as a call to the prefix operator `+` with
+`42` as its operand.
+
+In spite of these considerations, the member expression dot operator (`.`) binds
+more tightly than both the prefix operator `-` and the prepended literal `-`.
+For example:
+
+```swift
+-(42.trailingZeroBitCount) // -1
+(-42).trailingZeroBitCount //  1
+-42.trailingZeroBitCount   // -1
+```
 
 [ref 2-1]: https://blogs.msdn.microsoft.com/oldnewthing/20140116-00/?p=2063
 
@@ -215,4 +247,4 @@ If `source < 0` and `U` is an __unsigned__ type, the binary representation of
 Next:  
 [Concrete integer types, part 2](integers-part-2.md)
 
-_27 February–4 March 2018_
+_27 February–5 March 2018_
