@@ -146,6 +146,7 @@ of type `Double`. In fact, `(a * a).addingProduct(-a, a)` actually computes the
 amount by which `a * a` is inexact. Since `a * a` is rounded down, that amount
 is negative, and therefore taking the square root gives NaN.
 
+[ref 11-9]: https://github.com/apple/swift-evolution/blob/master/proposals/0067-floating-point-protocols.md
 [ref 12-6]: https://github.com/apple/swift/pull/13007
 [ref 12-7]: https://people.eecs.berkeley.edu/~wkahan/ieee754status/ieee754.ps
 
