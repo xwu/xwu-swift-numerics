@@ -132,34 +132,34 @@ names, and their C standard library overlay names is presented below.
 			<th scope="rowgroup" colspan="3">Homogeneous general computational operations</th>
 		</tr>
 		<tr>
-			<td>roundToIntegralTiesToEven(<em>x</em>)</td>
-			<td><code>x.rounded(.toNearestOrEven)</code></td>
+			<td>roundToIntegral&#8203;TiesToEven(<em>x</em>)</td>
+			<td><code>x.rounded(&#8203;.toNearestOrEven)</code></td>
 			<td></td>
 		</tr>
 		<tr>
-			<td>roundToIntegralTiesToAway(<em>x</em>)</td>
+			<td>roundToIntegral&#8203;TiesToAway(<em>x</em>)</td>
 			<td><code>x.rounded()</code><br>
 				&nbsp;&nbsp;<em>or</em><br>
-				<code>x.rounded(.toNearestOrAwayFromZero)</code></td>
+				<code>x.rounded(&#8203;.toNearestOrAwayFromZero)</code></td>
 			<td><code>round(x)</code></td>
 		</tr>
 		<tr>
-			<td>roundToIntegralTowardZero(<em>x</em>)</td>
-			<td><code>x.rounded(.towardZero)</code></td>
+			<td>roundToIntegral&#8203;TowardZero(<em>x</em>)</td>
+			<td><code>x.rounded(&#8203;.towardZero)</code></td>
 			<td><code>trunc(x)</code></td>
 		</tr>
 		<tr>
-			<td>roundToIntegralTowardPositive(<em>x</em>)</td>
+			<td>roundToIntegral&#8203;TowardPositive(<em>x</em>)</td>
 			<td><code>x.rounded(.up)</code></td>
 			<td><code>ceil(x)</code></td>
 		</tr>
 		<tr>
-			<td>roundToIntegralTowardNegative(<em>x</em>)</td>
+			<td>roundToIntegral&#8203;TowardNegative(<em>x</em>)</td>
 			<td><code>x.rounded(.down)</code></td>
 			<td><code>floor(x)</code></td>
 		</tr>
 		<tr>
-			<td>roundToIntegralExact(<em>x</em>)</td>
+			<td>roundToIntegral&#8203;Exact(<em>x</em>)</td>
 			<td></td>
 			<td></td>
 		</tr>
@@ -175,12 +175,12 @@ names, and their C standard library overlay names is presented below.
 		</tr>
 		<tr>
 			<td>remainder(<em>x</em>, <em>y</em>)</td>
-			<td><code>x.remainder(dividingBy: y)</code></td>
+			<td><code>x.remainder(&#8203;dividingBy: y)</code></td>
 			<td><code>remainder(x, y)</code></td>
 		</tr>
 		<!-- tr>
 			<td></td>
-			<td><code>x.truncatingRemainder(dividingBy: y)</code></td>
+			<td><code>x.truncatingRemainder(&#8203;dividingBy: y)</code></td>
 			<td><code>fmod(x, y)</code></td>
 		</tr -->
 		<tr>
@@ -195,12 +195,12 @@ names, and their C standard library overlay names is presented below.
 		</tr>
 		<tr>
 			<td>minNumMag(<em>x</em>, <em>y</em>)</td>
-			<td><code>T.minimumMagnitude(x, y)</code></td>
+			<td><code>T.minimumMagnitude(&#8203;x, y)</code></td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>maxNumMag(<em>x</em>, <em>y</em>)</td>
-			<td><code>T.maximumMagnitude(x, y)</code></td>
+			<td><code>T.maximumMagnitude(&#8203;x, y)</code></td>
 			<td></td>
 		</tr>
 	</tbody>
@@ -342,7 +342,7 @@ names, and their C standard library overlay names is presented below.
 		</tr>
 		<tr>
 			<td>totalOrder(<em>x</em>, <em>y</em>)</td>
-			<td><code>x.isTotallyOrdered(belowOrEqualTo: y)</code></td>
+			<td><code>x.isTotallyOrdered(&#8203;belowOrEqualTo: y)</code></td>
 			<td></td>
 		</tr>
 		<tr>
