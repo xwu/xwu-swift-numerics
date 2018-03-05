@@ -171,4 +171,12 @@ _Incomplete_
 
 _Incomplete_
 
+---
+
+Previous:  
+[Concrete binary floating-point types, part 1](fp-part-1.md)
+
+Next:  
+Concrete binary floating-point types, part 3
+
 _Draft: 27 February–4 March 2018_

@@ -210,4 +210,9 @@ If `source < 0` and `U` is an __unsigned__ type, the binary representation of
 `source` is padded with leading one bits and the result is equivalent to
 `0 &- U(truncatingIfNeeded: -source)`.
 
+---
+
+Next:  
+[Concrete integer types, part 2](integers-part-2.md)
+
 _27 February–4 March 2018_

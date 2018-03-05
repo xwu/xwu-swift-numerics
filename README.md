@@ -14,4 +14,14 @@ the use of numbers in programming is assumed.
 * __[Concrete binary floating-point types, part 1](fp-part-1.md)__  
   Introduction (IEEE 754, C mathematical functions, finite constants)
 
+* __[Concrete binary floating-point types, part 2](fp-part-2.md)__  
+  Floating-point precision
+
+* __Concrete binary floating-point types, part 3__  
+  Float literals, conversions between floating-point types, other conversions
+
+* __Concrete binary floating-point types, part 4__  
+  Signed zero, infinity, and NaN; floating-point remainder; significand
+  representation
+
 _27 February–4 March 2018_

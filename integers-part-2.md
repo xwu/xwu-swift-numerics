@@ -305,4 +305,12 @@ therefore incurs no additional performance cost.
 > * Introduce `endian` and `pointerBitWidth` platform conditions
 -->
 
+---
+
+Previous:  
+[Concrete integer types, part 1](integers-part-1.md)
+
+Next:  
+[Concrete binary floating-point types, part 1](fp-part-1.md)
+
 _27 February–4 March 2018_

@@ -10,7 +10,7 @@ body {
 	font: 16px/24px "Source Sans Pro", sans-serif;
 	text-align: left;
 	margin: 24px;
-/* 	-webkit-text-size-adjust: none; */
+/*	-webkit-text-size-adjust: none; */
 }
 
 header {
@@ -33,17 +33,18 @@ nav {
 
 article, footer {
 	width: 600px;
- 	max-width: 100%;
-	padding: 0;
+	max-width: 100%;
 }
 
 article {
-	margin: 23px auto;
+	padding: 24px 0; 
 	border-top: 1px solid rgba(55, 78, 90, 0.5);
 	border-bottom: 1px solid rgba(55, 78, 90, 0.5);
+	margin: 23px auto;
 }
 
 footer {
+	padding: 0;
 	margin: 24px auto;
 }
 
@@ -74,7 +75,7 @@ h2 {
 h3 {
 	font: 700 18px/24px "Source Sans Pro", sans-serif;
 	margin: 36px 0 12px;
-	padding: 0;	
+	padding: 0; 
 }
 
 h1 + h2, h2 + h3 {
@@ -148,4 +149,12 @@ div.highlighter-rouge pre.highlight {
 	padding: 12px;
 	border-radius: 0.25em;
 	margin: 0 -12px;
+}
+
+hr {
+	height: 4px;
+	background: #eee;
+	padding: 0;
+	border: 0;
+	margin: 22px 0;
 }

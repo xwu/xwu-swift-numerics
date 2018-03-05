@@ -1,5 +1,5 @@
-Concrete binary floating-point types
-====================================
+Concrete binary floating-point types, part 1
+============================================
 
 ## Introduction
 
@@ -386,5 +386,13 @@ a tolerance for floating-point comparisons, which is generally inadvisable.
 
 [ref 11-8]: https://github.com/apple/swift-corelibs-foundation/pull/631
 [ref 11-9]: https://github.com/apple/swift-evolution/blob/master/proposals/0067-floating-point-protocols.md
+
+---
+
+Previous:  
+[Concrete integer types, part 2](integers-part-2.md)
+
+Next:  
+[Concrete binary floating-point types, part 2](fp-part-2.md)
 
 _27 February–3 March 2018_
