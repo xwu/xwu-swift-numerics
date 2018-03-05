@@ -60,12 +60,12 @@ real numbers are as follows:
 > [— Stephen Canon, Sep. 12, 2016][ref 12-2]
 
 The Swift standard library provides binary floating-point types. Foundation
-offers a decimal floating-point type discussed below, and alternative
+offers a decimal floating-point type discussed later; alternative
 implementations that adhere to IEEE 754, such as those from [IBM][ref 12-3] (ICU
-License) or [Intel][ref 12-4] (BSD License) can be wrapped in Swift. Third-party
-libraries can provide a [fixed-width rational type][ref 12-5], and existing
-libraries with C interfaces can be wrapped to provide an arbitrary-precision
-rational type (or one can be implemented natively in Swift).
+License) or [Intel][ref 12-4] (BSD License), can be wrapped in Swift.
+Third-party libraries can provide a [fixed-width rational type][ref 12-5], and
+existing libraries with C interfaces can be wrapped to provide an
+arbitrary-precision rational type (or one can be implemented natively in Swift).
 
 [ref 12-1]: https://forums.swift.org/t/rationalizing-floatingpoint-conformance-to-equatable/6861/82
 [ref 12-2]: https://forums.swift.org/t/provide-native-decimal-data-type/4003/4

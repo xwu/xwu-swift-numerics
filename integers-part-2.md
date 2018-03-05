@@ -112,7 +112,7 @@ __Five methods reporting overflow__ are provided, largely analogous to Rust's
 `subtractingReportingOverflow(_:)`  
 `multipliedReportingOverflow(by:)`  
 `dividedReportingOverflow(by:)`  
-`remainderReportingOverflow(dividingBy:)`
+<code class="manual-escape">remainderReportingOverflow(&#8203;dividingBy:)</code>
 
 In general, these operations return a tuple of a numeric value and a Boolean
 value. The numeric value is either the entire result if no overflow occurred
@@ -135,19 +135,21 @@ x.dividedReportingOverflow(by: 0)
 // error: division by zero
 ```
 
-In Swift, `x.remainderReportingOverflow(dividingBy: 0)` returns `(x, true)`, as
-the remainder is mathematically undefined. Otherwise, the method returns
-`(0, true)` if the operation overflows (i.e., when dividing by `-1`).
-Mathematically, of course, the remainder of division by −1 is always 0. At the
-time of writing, a division-by-zero error occurs if the RHS is expressed as a
-literal `0`.
+In Swift,
+<code class="manual-escape">x.remainderReportingOverflow(&#8203;dividingBy: 0)</code>
+returns `(x, true)`, as the remainder is mathematically undefined. Otherwise,
+the method returns `(0, true)` if the operation overflows (i.e., when dividing
+by `-1`). Mathematically, of course, the remainder of division by −1 is always
+0. At the time of writing, a division-by-zero error occurs if the RHS is
+expressed as a literal `0`.
 
 > Internally, there are no LLVM primitives for checking overflow after division,
 > so checking is [implemented in native Swift][ref 6-6].
 >
-> Prior to Swift 4.2, `remainderReportingOverflow(dividingBy:)` did not return
-> the correct remainder when dividing by `-1`. The behavior was [fixed in early
-> 2018][ref 6-7].
+> Prior to Swift 4.2,
+> <code class="manual-escape">remainderReportingOverflow(&#8203;dividingBy:)</code>
+> did not return the correct remainder when dividing by `-1`. The behavior was
+> [fixed in early 2018][ref 6-7].
 
 [ref 6-6]: https://github.com/apple/swift/blob/642cbbad7cefd08efa9242fd2d75cee356285727/stdlib/public/core/Integers.swift.gyb#L3132
 [ref 6-7]: https://github.com/apple/swift/pull/14219

@@ -113,6 +113,7 @@ functions using their C names.
 A comparison of IEEE 754 required operations, their Swift standard library
 names, and their C standard library overlay names is presented below.
 
+<div class="table-wrapper">
 <table>
 	<thead>
 		<tr>
@@ -352,6 +353,7 @@ names, and their C standard library overlay names is presented below.
 		</tr>
 	</tbody>
 </table>
+</div>
 
 <a name="fn-11-1">[*]</a>: <code>T(sign: x.sign, exponent: x.exponent + n, significand: x.significand)</code>
 
@@ -360,6 +362,8 @@ names, and their C standard library overlay names is presented below.
 Similarly, some finite constants defined in the C standard library have
 equivalent static properties in the Swift standard library with clarified names.
 
+<div class="table-wrapper" markdown="1">
+
 | Swift                     | C (`float`)    | C (`double`)   |
 |---------------------------|----------------|----------------|
 | `greatestFiniteMagnitude` | `FLT_MAX`      | `DBL_MAX`      |
@@ -367,6 +371,8 @@ equivalent static properties in the Swift standard library with clarified names.
 | `leastNonzeroMagnitude`   | `FLT_TRUE_MIN` | `DBL_TRUE_MIN` |
 | `pi`                      |                | `M_PI`         |
 | `ulpOfOne`                | `FLT_EPSILON`  | `DBL_EPSILON`  |
+
+</div>
 
 The use of "max" and "min" can be misleading. Even [within the Swift project
 itself][ref 11-8], users have mistaken `FLT_MIN` for the minimum representable
