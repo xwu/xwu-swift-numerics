@@ -24,4 +24,10 @@ the use of numbers in programming is assumed.
   Signed zero, infinity, and NaN; floating-point remainder; significand
   representation
 
+* __Foundation.Decimal and Foundation.NSNumber__  
+  [Topics in flux]
+
+* __Numeric protocols and generic algorithms__  
+  [Topics in flux]
+
 _27 February–4 March 2018_
