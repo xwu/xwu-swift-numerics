@@ -71,14 +71,14 @@ h2 {
 	padding: 0;
 }
 
-h1 + h2 {
-	margin-top: 12px;
-}
-
 h3 {
 	font: 700 18px/24px "Source Sans Pro", sans-serif;
-	margin: 12px 0;
+	margin: 36px 0 12px;
 	padding: 0;	
+}
+
+h1 + h2, h2 + h3 {
+	margin-top: 12px;
 }
 
 p {
@@ -113,7 +113,7 @@ code, kbd, pre, samp {
 	font-family: "Source Code Pro", monospace;
 }
 
-code.highlighter-rouge {
+code.highlighter-rouge, code.manual-escape {
 	background: rgba(187, 187, 187, 0.1);
 	padding: 0.05em 0.25em;
 	border-radius: 0.25em;
