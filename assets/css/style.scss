@@ -109,6 +109,10 @@ blockquote {
 	margin: 12px 0;
 }
 
+blockquote ol, blockquote ul {
+	padding-left: 24px;
+}
+
 table {
 	width: 100%;
 	border-collapse: collapse;

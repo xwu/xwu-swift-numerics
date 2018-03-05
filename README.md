@@ -11,4 +11,7 @@ the use of numbers in programming is assumed.
 * __[Concrete integer types, part 2](integers-part-2.md)__  
   Operator precedence, overflow behavior, integer remainder, bitwise operations
 
+* __[Concrete binary floating-point types, part 1](fp-part-1.md)__  
+  Introduction (IEEE 754, C mathematical functions, finite constants)
+
 _27 February–4 March 2018_
