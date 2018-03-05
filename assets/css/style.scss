@@ -109,6 +109,26 @@ blockquote {
 	margin: 12px 0;
 }
 
+table {
+	width: 100%;
+	border-collapse: collapse;
+	border-spacing: 0;
+	margin: 12px 0;
+}
+
+tbody > tr:nth-child(odd) {
+	background: #fafafa;
+}
+
+th, td {
+	padding: 6px 12px;
+	border: 1px solid #ccc;
+}
+
+th {
+	font-weight: 700;
+}
+
 code, kbd, pre, samp {
 	font-family: "Source Code Pro", monospace;
 }
