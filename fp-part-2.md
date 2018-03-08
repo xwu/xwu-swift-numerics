@@ -108,7 +108,9 @@ intermediate rounding error.
 The IEEE 754 operation __fusedMultiplyAdd__ allows the same computation to be
 performed in one step with a single rounding, improving the accuracy of the
 result. This operation is available in Swift as the instance method
-`addingProduct(_:_:)`. For example:
+`addingProduct(_:_:)`.
+
+For example:
 
 ```swift
 -0.2 + 6.0 * 0.2               // 1.0000000000000002
@@ -127,17 +129,17 @@ use the fused multiply-add operation, the sequence
 __A brief caveat about fused multiply-add operations:__ Although eliminating
 intermediate rounding can improve the accuracy of results, it is not always the
 case that an algorithm will benefit from its use. [William Kahan points
-out][ref 12-7] that, for a sufficiently large value `a`, we observe:
+out][ref 12-7] that, for a sufficiently large value `x`, we can observe:
 
 ```swift
-let a = 9007199254740991.0
-(a * a - a * a).squareRoot()              // 0, as expected
-(a * a).addingProduct(-a, a).squareRoot() // nan
+let x = 9007199254740991.0
+(x * x - x * x).squareRoot()              // 0, as expected
+(x * x).addingProduct(-x, x).squareRoot() // nan
 ```
 
-This result is observed because `a * a` cannot be represented exactly as a value
-of type `Double`. In fact, `(a * a).addingProduct(-a, a)` actually computes the
-amount by which `a * a` is inexact. Since `a * a` is rounded down, that amount
+This result is observed because `x * x` cannot be represented exactly as a value
+of type `Double`. In fact, `(x * x).addingProduct(-x, x)` actually computes the
+amount by which `x * x` is inexact. Since `x * x` is rounded down, that amount
 is negative, and therefore taking the square root gives NaN.
 
 [ref 11-9]: https://github.com/apple/swift-evolution/blob/master/proposals/0067-floating-point-protocols.md
@@ -146,11 +148,29 @@ is negative, and therefore taking the square root gives NaN.
 
 ### Unit in the last place
 
-_Incomplete_
+> _Background:_
+>
+> The floating-point representation of a real number takes the form
+> _s_&nbsp;×&nbsp;_b_<sup>_e_</sup>, where _s_ is a significand scaled to the
+> _e_<sup>th</sup> power of the fixed base _b_. The __ulp__, or unit in the last
+> place, of a finite floating-point value is the value of 1 in the least
+> significant place of the significand.
 
-### Rounding direction
+In general, the property `ulp` is equivalent to the distance between a finite
+floating-point value and the nearest representable value greater in magnitude.
+However, `greatestFiniteMagnitude.ulp` is a finite value even though the nearest
+representable value greater in magnitude is `infinity`.
 
-_Incomplete_
+In Swift, the `ulp` of a non-finite value (whether infinite or NaN) is NaN. In
+Java, by contrast, `Math.ulp(Double.POSITIVE_INFINITY)` evaluates to positive
+infinity, and the same result is obtained when using negative infinity as the
+argument.
+
+As mentioned previously, the Swift equivalent to the C constants known as
+`FLT_EPSILON` and `DBL_EPSILON` is a static property named `ulpOfOne`. That
+name was chosen in order to prevent confusion surrounding the definition and
+proper usage of the property. As the name suggests, `T.ulpOfOne` is equivalent
+to `(1 as T).ulp` for any floating-point type `T`.
 
 ### Approximating π
 
@@ -160,6 +180,11 @@ value for π at its best possible precision, accurately __rounded toward zero__.
 The purpose of rounding toward zero is to avoid angles computed in radians
 from being rounded to a different quadrant. As a consequence,
 `Float.pi < Float(Double.pi)` evaluates to `true`.
+
+> It so happens that rounding π to the nearest representable value of type
+> `Double` is equivalent to rounding π toward zero. However, rounding π to the
+> nearest representable value of type `Float` is __not__ equivalent to rounding
+> π toward zero.
 
 ### Subnormal values on 32-bit ARM
 
@@ -173,12 +198,12 @@ from being rounded to a different quadrant. As a consequence,
 >
 > On 32-bit ARMv7, the vector floating-point (VFP) co-processor supports a
 > __flush-to-zero (FZ) mode__ for floating-point operations that is not
-> compliant with IEEE 754. When the FZ bit is set, operations that would
-> otherwise return a subnormal value instead return zero. Meanwhile, the NEON
-> SIMD co-processor on ARMv7 always uses flush-to-zero mode regardless of the FZ
-> bit.
+> compliant with IEEE 754. When the FZ bit is set, which is the default,
+> operations that would otherwise return a subnormal value instead return zero.
+> Meanwhile, the NEON SIMD co-processor on ARMv7 always uses flush-to-zero mode
+> regardless of the FZ bit.
 
-For iOS platforms, it is possible in C to clear the ARMv7 FZ bit using inline
+For iOS platforms, it is possible to clear the ARMv7 FZ bit in C using inline
 assembler; however, doing so has a negative effect on performance. As Swift does
 not support inline assembler, it is not possible to disable flush-to-zero mode
 from Swift.
@@ -197,4 +222,4 @@ Previous:
 Next:  
 Concrete binary floating-point types, part 3
 
-_Draft: 27 February–6 March 2018_
+_27 February–8 March 2018_
