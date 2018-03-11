@@ -205,6 +205,8 @@ _Incomplete_
 In Swift, as in other languages, two similar remainder operations exist for
 floating-point types:
 
+<div class="table-wrapper" markdown="1">
+
 |          | Nearest-to-zero remainder  | Truncating remainder |
 |----------|----------------------------|----------------------|
 | Swift    | <code class="manual-escape">x.remainder(&#8203;dividingBy: y)</code> | <code class="manual-escape">x.truncatingRemainder(&#8203;dividingBy: y)</code> |
@@ -212,6 +214,8 @@ floating-point types:
 | C#       | `Math.IEEERemainder(x, y)` | `x % y`              |
 | Java     | `Math.IEEEremainder(x, y)` | `x % y`              |
 | Kotlin   | `x.IEEErem(y)`             | `x % y`              |
+
+</div>
 
 The __nearest-to-zero remainder__ of _x_ dividing by _y_ is the exact result _r_
 such that _x_ = _y_&nbsp;×&nbsp;_q_&nbsp;+&nbsp;_r_, where _q_ is the nearest
@@ -249,6 +253,6 @@ Previous:
 [Concrete binary floating-point types, part 3](floating-point-part-3.md)
 
 Next:  
-Foundation.Decimal and Foundation.NSNumber
+Numeric types in Foundation
 
 _Draft: 9–10 March 2018_
