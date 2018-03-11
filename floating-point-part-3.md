@@ -170,16 +170,19 @@ because, again, it has no type.
 
 Under the hood, however, an integer literal is first used to create an internal
 2048-bit value (of type `_MaxBuiltinIntegerType`) that is then converted to the
-intended type. This is entirely sufficient for ordinary use (except that signed
-zero cannot be supported) because integer values with more than 600 decimal
-digits can be represented in 2048 bits.
+intended type. Likewise, a float literal is first used to create an internal
+value of type `_MaxBuiltinFloatType` that is then converted to the intended
+type.
+
+This design is more or less sufficient for integer literals (except that signed
+zero cannot be supported) because integers with more than 600 decimal digits can
+be represented in 2048 bits.
 
 As of the time of writing, __float literals may be incorrectly rounded__ because
-the maximum supported floating-point type (aliased as `_MaxBuiltinFloatType`) is
-`Float80` if supported and `Double` otherwise. Consequently, float literals
-that cannot be represented exactly as a value of type `_MaxBuiltinFloatType` are
-subject to __double-rounding error__ just as though the value were created using
-a converting initializer.
+`_MaxBuiltinFloatType` is a type alias for `Float80` if supported and `Double`
+otherwise. Consequently, float literals that cannot be represented exactly as a
+value of type `_MaxBuiltinFloatType` are subject to __double-rounding error__
+just as though the value were created using a converting initializer.
 
 Hexadecimal float literals of no more than the maximum supported precision can
 be used to avoid this double-rounding error for binary floating-point types.
@@ -187,10 +190,10 @@ be used to avoid this double-rounding error for binary floating-point types.
 > Double rounding of float literals is tracked by Swift bug [SR-7124:
 > Double rounding in floating-point literal conversion][ref 13-1].
 
-Since every float literal is first used to create a __binary__ floating-point
-value, a decimal floating-point type that conforms to the protocol
-`ExpressibleByFloatLiteral` cannot distinguish between two values that have the
-same representation after rounding to fit `_MaxBuiltinFloatType`:
+Since `_MaxBuiltinFloatType` is a __binary__ floating-point type, a decimal
+floating-point type that conforms to the protocol `ExpressibleByFloatLiteral`
+cannot distinguish between two values that have the same binary floating-point
+representation rounded to fit `_MaxBuiltinFloatType`:
 
 ```swift
 import Foundation
