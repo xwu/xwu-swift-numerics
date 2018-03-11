@@ -17,7 +17,7 @@ the use of numbers in programming is assumed.
 * __[Concrete binary floating-point types, part 2](floating-point-part-2.md)__  
   Floating-point precision
 
-* __Concrete binary floating-point types, part 3__  
+* __[Concrete binary floating-point types, part 3](floating-point-part-3.md)__  
   Float literals, conversions between floating-point types, other conversions
 
 * __[Concrete binary floating-point types, part 4](floating-point-part-4.md)__  

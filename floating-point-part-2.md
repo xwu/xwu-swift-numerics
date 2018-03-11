@@ -220,6 +220,6 @@ Previous:
 [Concrete binary floating-point types, part 1](floating-point-part-1.md)
 
 Next:  
-Concrete binary floating-point types, part 3
+[Concrete binary floating-point types, part 3](floating-point-part-3.md)
 
 _27 February–8 March 2018_

@@ -246,7 +246,7 @@ _Incomplete_
 ---
 
 Previous:  
-Concrete binary floating-point types, part 3
+[Concrete binary floating-point types, part 3](floating-point-part-3.md)
 
 Next:  
 Foundation.Decimal and Foundation.NSNumber
