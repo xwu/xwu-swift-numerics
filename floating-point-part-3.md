@@ -59,7 +59,7 @@ let y = 5.
 Unfamiliar to some users, hexadecimal float literals (also specified in C99 and
 and C++17) are supported in Swift. They can be useful when you want to represent
 the intended binary floating-point value exactly and a decimal literal is
-impractical for the purpose.
+impractical or impossible for the purpose.
 
 Hexadecimal float literals use the base prefix `0x`. Then, the whole part (in
 base 16) can optionally be followed by a fractional part (also in base 16)
