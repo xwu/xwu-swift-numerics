@@ -30,4 +30,4 @@ the use of numbers in programming is assumed.
 * __Numeric protocols and generic algorithms__  
   [Topics in flux]
 
-_27 February–4 March 2018_
+_27 February–10 March 2018_

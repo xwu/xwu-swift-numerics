@@ -245,6 +245,17 @@ The result of a bit shift is always of the same type as the left-hand side
 (LHS). In Swift 4+, the type of the right-hand side (RHS) does not need to match
 that of the LHS.
 
+In C, Java, and Rust, bit shifting operators are left-associative just like
+multiplication or addition operators. In Swift, bit shifting operators are
+__non-associative__. This means that parentheses are always required when an
+operand is both preceded and followed by bit shifting operators:
+
+```swift
+let x = 1 << 2 << 3
+// error: adjacent operators are in non-associative precedence group
+// 'BitwiseShiftPrecedence'
+```
+
 ### Smart shifts
 
 As in Java, Go, and other languages, `>>` is a right [__arithmetic
@@ -323,4 +334,4 @@ Previous:
 Next:  
 [Concrete binary floating-point types, part 1](fp-part-1.md)
 
-_27 February–4 March 2018_
+_27 February–10 March 2018_
