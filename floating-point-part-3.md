@@ -226,4 +226,4 @@ Previous:
 Next:  
 [Concrete binary floating-point types, part 4](floating-point-part-4.md)
 
-_Draft: 27 February–10 March 2018_
+_Draft: 27 February–11 March 2018_

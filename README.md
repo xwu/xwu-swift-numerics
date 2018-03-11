@@ -18,16 +18,16 @@ the use of numbers in programming is assumed.
   Floating-point precision
 
 * __[Concrete binary floating-point types, part 3](floating-point-part-3.md)__  
-  Float literals, conversions between floating-point types, other conversions
+  Float literals, conversions between floating-point types, other initializers
 
 * __[Concrete binary floating-point types, part 4](floating-point-part-4.md)__  
   Signed zero, infinity, and NaN; floating-point remainder; significand
   representation
 
-* __Foundation.Decimal and Foundation.NSNumber__  
-  [Topics in flux]
+* __Numeric types in Foundation__  
+  Decimal, NSNumber
 
-* __Numeric protocols and generic algorithms__  
-  [Topics in flux]
+* __Numeric protocols__  
+  Introduction, design rationale, generic algorithms, conformance
 
-_27 February–10 March 2018_
+_27 February–11 March 2018_
