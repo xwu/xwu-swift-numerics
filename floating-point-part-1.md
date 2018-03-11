@@ -399,6 +399,6 @@ Previous:
 [Concrete integer types, part 2](integers-part-2.md)
 
 Next:  
-[Concrete binary floating-point types, part 2](fp-part-2.md)
+[Concrete binary floating-point types, part 2](floating-point-part-2.md)
 
 _27 February–3 March 2018_
