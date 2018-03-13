@@ -217,7 +217,7 @@ On 32-bit ARM, Swift floating-point types skip subnormal values. For example,
 ---
 
 Previous:  
-[Concrete binary floating-point types, part 1](floating-point-part-1.md)
+[Concrete binary floating-point types, part 1](floating-point-part-1-rev-1.md)
 
 Next:  
 [Concrete binary floating-point types, part 3](floating-point-part-3.md)

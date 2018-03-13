@@ -332,6 +332,6 @@ Previous:
 [Concrete integer types, part 1](integers-part-1.md)
 
 Next:  
-[Concrete binary floating-point types, part 1](floating-point-part-1.md)
+[Concrete binary floating-point types, part 1](floating-point-part-1-rev-1.md)
 
 _27 February–10 March 2018_
