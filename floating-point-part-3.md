@@ -208,13 +208,99 @@ Decimal(string: "0.10000000000000001")!.description
 
 ## Conversions between floating-point types
 
-_Incomplete_
+Two different initializers are provided for conversions between standard library
+binary floating-point types. A value of `source` of type `T` can be converted to
+a value of type `U` as follows:
+
+1. __`U(source)`__  
+   Converts the given value to a representable value of type `U`. The result of
+   an __inexact__ conversion is rounded to the nearest representable value
+   (since the floating-point environment cannot be modified in Swift).
+   The result of an __overflowing__ conversion is infinite. The result of an
+   __underflowing__ conversion is zero. __NaN__ is converted to some encoding of
+   NaN that varies based on the underlying architecture, although any signaling
+   NaN is always converted to a quiet NaN.
+
+1. __`U(exactly: source)`__  
+   _Failable initializer._ Converts the given value if the result can be
+   represented "exactly" as a value of type `U`; any result that is not `nil`
+   can be converted back to a value of type `T` that compares equal to `source`.
+   The result of an __inexact__ conversion is `nil`. The result of an
+   __overflowing__ conversion is `nil`. The result of an __underflowing__
+   conversion is `nil`. Since NaN never compares equal to NaN, the
+   result of converting __NaN__ (however encoded) is `nil`.
 
 ## Other initializers
 
-* Copying signs or bit patterns
-* Sign, exponent, and significand
-* Converting from a string
+<!-- ### Converting from an integer -->
+
+### Creating from a string
+
+Standard library binary floating-point types provide an unlabeled failable
+initializer that creates a binary floating-point value based on a given string:
+
+```swift
+let pi = Double("3.14159265358979323846")!
+// 3.1415926535897931
+```
+
+In brief, any spelling that would be valid as an integer or float literal and
+any value obtainable from the `description` or `debugDescription` property of a
+binary floating-point value are considered to be valid for conversion:
+
+* The string can represent a value in base 10 or base 16 (hexadecimal).
+* "Infinity" or "inf" (regardless of case) represents infinity.
+* "NaN" (regardless of case) represents NaN, "sNaN" (regardless of case)
+  represents signaling NaN, and either may be followed by a decimal or
+  hexadecimal number surrounded by parentheses that represents the NaN payload.
+
+Some rules are more relaxed for string conversion than for numeric literals:
+
+* __Unlike in float literals__, a digit is not required to precede the separator
+  dot in a string that is valid for conversion.
+* __Unlike in float literals__, a digit is not required to follow the separator
+  dot in a string that is valid for conversion.
+* __Unlike in float literals__, a binary exponent is not required to end a
+  hexadecimal value in a string that is valid for conversion.
+* __Unlike in integer literals__, "-0" represents negative zero in a string that
+  is valid for conversion.
+
+```swift
+let x = Double(".5")!
+// 0.5
+let y = Double("5.")!
+// 5
+let z = Double("0x1.p2")!
+// 4
+let a = Double("0x.1p2")!
+// 0.25
+let b = Double("0x1.")!
+// 1
+let c = Double("-0")!
+// -0
+```
+
+Any invalid characters, even additional whitespace, cause the entire string to
+be invalid for conversion.
+
+The result of an __inexact__ conversion is rounded to the nearest representable
+value. However, any value that would result in a range error in C upon invoking
+`strtof` (or `strtod` or `strtold`) causes `Float.init?(_: String)` (or
+`Double.init?(_: String)` or `Float80.init?(_: String)`, respectively) to return
+`nil`. That is, the result of an __overflowing__ conversion is `nil`, and the
+result of an __underflowing__ conversion is `nil`. The result of converting
+__NaN__ is encoded with the payload (truncated if needed) if such a payload is
+specified.
+
+### Creating from a sign, exponent, and significand
+
+_Incomplete_
+
+### Creating from a bit pattern
+
+_Incomplete_
+
+### Copying sign
 
 _Incomplete_
 
@@ -226,4 +312,4 @@ Previous:
 Next:  
 [Concrete binary floating-point types, part 4](floating-point-part-4.md)
 
-_Draft: 27 February–11 March 2018_
+_Draft: 27 February–14 March 2018_
