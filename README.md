@@ -30,4 +30,4 @@ the use of numbers in programming is assumed.
 * __Numeric protocols__  
   Introduction, design rationale, generic algorithms, conformance
 
-_27 February–11 March 2018_
+_27 February–8 June 2018_

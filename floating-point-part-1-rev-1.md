@@ -383,7 +383,8 @@ Consequently, `Float(M_PI) != .pi`.
 
 The use of "epsilon" was avoided because that term has varying definitions among
 other programming languages and suggests that it might be appropriate for use as
-a tolerance for floating-point comparisons, which is generally inadvisable.
+a measure of tolerance for floating-point comparisons, which is generally
+inadvisable.
 
 > For more information on the rationale for names chosen in Swift, see the Swift
 > Evolution proposal [SE-0067: Enhanced floating-point protocols][ref 11-9].
@@ -399,4 +400,5 @@ Previous:
 Next:  
 [Concrete binary floating-point types, part 2](floating-point-part-2.md)
 
-_27 February–3 March 2018_
+_27 February–3 March 2018_  
+_Updated 8 June 2018_

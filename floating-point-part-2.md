@@ -18,7 +18,7 @@ represented exactly in binary floating-point format.
 > * Basic arithmetic operations are often inexact; for example, `a + b - b == a`
 >   does not always evaluate to `true`.
 
-Although out the scope of this article, some alternative choices for modeling
+Although out of the scope of this article, some alternative choices for modeling
 real numbers are as follows:
 
 > __Binary floating point__  
@@ -129,7 +129,8 @@ use the fused multiply-add operation, the sequence
 __A brief caveat about fused multiply-add operations:__ Although eliminating
 intermediate rounding can improve the accuracy of results, it is not always the
 case that an algorithm will benefit from its use. [William Kahan points
-out][ref 12-7] that, for a sufficiently large value `x`, we can observe:
+out][ref 12-7] that, for a sufficiently large value `x`, we can observe a
+surprising result:
 
 ```swift
 let x = 9007199254740991.0
@@ -137,10 +138,10 @@ let x = 9007199254740991.0
 (x * x).addingProduct(-x, x).squareRoot() // nan
 ```
 
-This result is observed because `x * x` cannot be represented exactly as a value
-of type `Double`. In fact, `(x * x).addingProduct(-x, x)` actually computes the
-amount by which `x * x` is inexact. Since `x * x` is rounded down, that amount
-is negative, and therefore taking the square root gives NaN.
+The second result is not zero because `x * x` cannot be represented exactly as a
+value of type `Double`. In fact, `(x * x).addingProduct(-x, x)` actually
+computes the amount by which `x * x` is inexact. Since `x * x` is rounded down,
+the amount of inexactness is negative and its square root is not a number.
 
 [ref 11-9]: https://github.com/apple/swift-evolution/blob/master/proposals/0067-floating-point-protocols.md
 [ref 12-6]: https://github.com/apple/swift/pull/13007
@@ -192,13 +193,13 @@ from being rounded to a different quadrant. As a consequence,
 >
 > In the gap between zero and 2<sup><em>emin</em></sup>, where _emin_ is the
 > minimum supported exponent of a binary floating-point type, a set of linearly
-> spaced [__subnormal__ (or denormal) values][ref 12-8] can be represented with
+> spaced [__subnormal__ (or denormal) values][ref 12-8] can be represented, with
 > some differences in their binary representation as compared to that of
 > __normal__ finite values.
 >
 > On 32-bit ARMv7, the vector floating-point (VFP) co-processor supports a
 > __flush-to-zero (FZ) mode__ for floating-point operations that is not
-> compliant with IEEE 754. When the FZ bit is set, which is the default,
+> compliant with IEEE 754. When the FZ bit is set, which it is by default,
 > operations that would otherwise return a subnormal value instead return zero.
 > Meanwhile, the NEON SIMD co-processor on ARMv7 always uses flush-to-zero mode
 > regardless of the FZ bit.
@@ -214,6 +215,55 @@ On 32-bit ARM, Swift floating-point types skip subnormal values. For example,
 
 [ref 12-8]: https://en.wikipedia.org/wiki/Denormal_number
 
+### String representation
+
+Until Swift 4.2, floating-point values were converted to strings using an
+algorithm implemented in C++ that was based on the C11 function
+[`vsnprintf`][ref 12-9].
+
+A finite value's `description` and `debugDescription` could be different from
+each other because the precision of `description`
+([`std::numeric_limits<T>::digits10`][ref 12-10])
+was less than that of `debugDescription`
+([`std::numeric_limits<T>::max_digits10`][ref 12-11]).
+
+The previous algorithm did not guarantee __round-trip accuracy__ for
+`description`, which is to say that `Double(x.description) == x` was not true
+for all values of `x`. In addition, the algorithm would routinely include
+extraneous digits in `debugDescription`:
+
+```swift
+// Swift 4.1
+debugPrint(1.1) // 1.1000000000000001
+```
+
+In the past decade, authors have described new algorithms that produce optimal
+string representations of floating-point values with good performance. In 2015,
+[Rust switched its implementation][ref 12-12] to a combination of the Grisu3 and
+Dragon4 algorithms.
+
+Beginning in Swift 4.2, floating-point values are converted to strings using [a
+variation of the Grisu2 algorithm][ref 12-13] that incorporates changes outlined
+in the [paper describing the Errol3 algorithm][ref 12-14]. Swift's new
+algorithm, which is implemented in C, shows better performance in benchmarks
+than either Errol4 (the successor to Errol3) or Grisu3 with fallback to Dragon4.
+For values other than NaN ("not a number"), `description` and `debugDescription`
+now give the same result:
+
+```swift
+// Swift 4.2
+debugPrint(1.1) // 1.1
+```
+
+Descriptions of NaN are discussed later.
+
+[ref 12-9]: https://en.cppreference.com/w/c/io/vsnprintf
+[ref 12-10]: https://en.cppreference.com/w/cpp/types/numeric_limits/digits10
+[ref 12-11]: https://en.cppreference.com/w/cpp/types/numeric_limits/max_digits10
+[ref 12-12]: https://github.com/rust-lang/rust/pull/24612
+[ref 12-13]: https://github.com/apple/swift/pull/15474
+[ref 12-14]: https://cseweb.ucsd.edu/~lerner/papers/fp-printing-popl16.pdf
+
 ---
 
 Previous:  
@@ -222,4 +272,5 @@ Previous:
 Next:  
 [Concrete binary floating-point types, part 3](floating-point-part-3.md)
 
-_27 February–8 March 2018_
+_27 February–8 March 2018_  
+_Updated 8 June 2018_

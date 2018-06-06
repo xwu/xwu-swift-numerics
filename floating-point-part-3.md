@@ -17,11 +17,11 @@ values. Two issues are particularly salient for our purposes here:
    desired value.
 
 1. Recall that using a converting initializer with an integer literal argument,
-   such as `Double(42)`, is not recommended because it first coerces the literal
-   value to type `IntegerLiteralType` and then converts that value to type
-   `Double`. This is to be contrasted with using a __type coercion__ operator,
-   such as `42 as Double`, where the literal value is directly coerced to type
-   `Double`.
+   such as `Double(42)`, is not recommended (until implementation of
+   [SE-0213][ref 3-2]) because it first coerces the literal value to type
+   `IntegerLiteralType` and then converts that value to type `Double`. This is
+   to be contrasted with using a __type coercion__ operator, such as
+   `42 as Double`, where the literal value is directly coerced to type `Double`.
 
 ## Float literals
 
@@ -125,6 +125,10 @@ In the absence of other available information, the inferred type of a float
 literal expression defaults to `FloatLiteralType`, which is a type alias for
 `Double` unless it is shadowed by the user.
 
+> The following caveat applies to current versions of Swift. It will cease to be
+> applicable after implementation of [SE-0213: Integer initialization via
+> coercion][ref 3-2].
+
 __A frequent misunderstanding found even in the Swift project itself__ concerns
 the use of a __type conversion__ initializer to indicate the desired type of a
 literal expression. For example:
@@ -162,6 +166,7 @@ let imprecise = Float80(3.14159265358979323846)
 ```
 
 [ref 3-1]: https://github.com/apple/swift-evolution/blob/master/proposals/0083-remove-bridging-from-dynamic-casts.md
+[ref 3-2]: https://github.com/apple/swift-evolution/blob/master/proposals/0213-literal-init-via-coercion.md
 
 ### Float literal precision
 
@@ -244,26 +249,42 @@ let pi = Double("3.14159265358979323846")!
 // 3.1415926535897931
 ```
 
-In brief, any spelling that would be valid as an integer or float literal and
-any value obtainable from the `description` or `debugDescription` property of a
-binary floating-point value are considered to be valid for conversion:
+In brief, any spelling that is valid as an integer or float literal is valid as
+a string for conversion to a binary floating-point type. Likewise, any value
+obtained from the `description` or `debugDescription` property of a binary
+floating-point value is valid for conversion. Specifically:
 
 * The string can represent a value in base 10 or base 16 (hexadecimal).
 * "Infinity" or "inf" (regardless of case) represents infinity.
 * "NaN" (regardless of case) represents NaN, "sNaN" (regardless of case)
-  represents signaling NaN, and either may be followed by a decimal or
-  hexadecimal number surrounded by parentheses that represents the NaN payload.
+  represents signaling NaN, and either may be followed by a parenthesized
+  decimal or hexadecimal number that represents the NaN payload.
+
+> Although Swift itself does not consider a leading zero to be a prefix
+> indicating that an integer value is written in base 8 (octal), a parenthesized
+> number that represents the NaN payload which begins with a leading zero _is_
+> interpreted in base 8.
+>
+> ```swift 
+> let x = Double("nan(123)")!
+> let y = Double("nan(0123)")!
+>
+> String(x.bitPattern, radix: 16) // "7ff800000000007b"
+> String(y.bitPattern, radix: 16) // "7ff8000000000053"
+>
+> String(123, radix: 16)          // "7b"
+> String(0o123, radix: 16)        // "53"
+> ```
 
 Some rules are more relaxed for string conversion than for numeric literals:
 
 * __Unlike in float literals__, a digit is not required to precede the separator
-  dot in a string that is valid for conversion.
+  dot.
 * __Unlike in float literals__, a digit is not required to follow the separator
-  dot in a string that is valid for conversion.
+  dot.
 * __Unlike in float literals__, a binary exponent is not required to end a
-  hexadecimal value in a string that is valid for conversion.
-* __Unlike in integer literals__, "-0" represents negative zero in a string that
-  is valid for conversion.
+  hexadecimal value.
+* __Unlike in integer literals__, "-0" represents negative zero.
 
 ```swift
 let x = Double(".5")!
@@ -312,4 +333,5 @@ Previous:
 Next:  
 [Concrete binary floating-point types, part 4](floating-point-part-4.md)
 
-_Draft: 27 February–14 March 2018_
+_Draft: 27 February–14 March 2018_  
+_Updated 8 June 2018_

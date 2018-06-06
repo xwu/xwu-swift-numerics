@@ -73,7 +73,7 @@ A runtime error also occurs in case of overflow in methods such as:
 ### Absolute value and magnitude
 
 In Swift, `abs(_:)` returns a value of the __same type__ as the argument.
-(Specifically, the function returns the absolute value of the argument.) For a
+Specifically, the function returns the absolute value of the argument. For a
 signed (and fixed-width) integer type `T`, therefore, a runtime error occurs
 when evaluating `abs(T.min)` because the result cannot be represented in `T`.
 
@@ -141,10 +141,10 @@ x.dividedReportingOverflow(by: 0)
 In Swift,
 <code class="manual-escape">x.remainderReportingOverflow(&#8203;dividingBy: 0)</code>
 returns `(x, true)`, as the remainder is mathematically undefined. Otherwise,
-the method returns `(0, true)` if the operation overflows (i.e., when dividing
-by `-1`). Mathematically, of course, the remainder of division by −1 is always
-zero. At the time of writing, a division-by-zero error occurs if the RHS is
-expressed as a literal `0`.
+if the operation overflows (which only occurs when dividing by `-1`), the method
+returns `(0, true)`. Mathematically, of course, the remainder of division by −1
+is always zero. At the time of writing, a division-by-zero error occurs if the
+RHS is expressed as a literal `0`.
 
 > Internally, there are no LLVM primitives for checking overflow after division,
 > so checking is [implemented in native Swift][ref 6-6].
@@ -288,9 +288,9 @@ by shifting the LHS as an abstract binary integer operation (with padding as
 necessary), then [masking the result to the number of bits in LHS][ref 9-3].
 
 To obtain the result, the RHS is preprocessed to ensure that it is in the range
-`0..<lhs.bitWidth`. For a LHS of arbitrary bit width, preprocessing would
-require computing the [modulus after floored division][ref 9-4]. In other words,
-the amount by which to shift the LHS can be obtained as follows:
+`0..<lhs.bitWidth`. For a LHS of arbitrary bit width, preprocessing the RHS
+requires computing the [modulus after floored division][ref 9-4]. In other
+words, the amount by which to shift the LHS can be obtained as follows:
 
 ```swift
 var shift = rhs % lhs.bitWidth
@@ -334,4 +334,5 @@ Previous:
 Next:  
 [Concrete binary floating-point types, part 1](floating-point-part-1-rev-1.md)
 
-_27 February–10 March 2018_
+_27 February–10 March 2018_  
+_Updated 8 June 2018_

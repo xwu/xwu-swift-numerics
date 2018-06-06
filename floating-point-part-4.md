@@ -193,7 +193,58 @@ String(Double("nan(0x1)")!.bitPattern, radix: 16)
 
 ### Minimum, maximum, and total order
 
-_Incomplete_
+The global functions `Swift.min(_:_:)` and `Swift.max(_:_:)` are available for
+comparing two values of any `Comparable` type. Because these functions rely on
+semantic guarantees violated by NaN, their behavior is unusual when one of the
+arguments is NaN:
+
+```swift
+Swift.min(Double.nan, 0) // NaN
+Swift.min(0, Double.nan) // 0
+```
+
+The operations __minNum__ and __maxNum__ are defined in the IEEE 754-2008
+standard and __favor numbers over quiet NaN__. (If any argument is a
+__signaling__ NaN, however, the result is NaN.) They are available in Swift as
+the static methods `T.minimum(_:_:)` and `T.maximum(_:_:)`, where `T` is a
+floating-point type:
+
+```swift
+Double.minimum(.nan, 0) // 0
+Double.minimum(0, .nan) // 0
+```
+
+Note that `-0.0` and `0.0` are considered substitutable for the purposes of
+these operations:
+
+```swift
+Double.minimum(-0.0, 0.0) // -0.0
+Double.minimum(0.0, -0.0) // 0.0
+```
+
+(Analogous operations to compare the magnitudes of two floating-point values are
+known as __minNumMag__ and __maxNumMag__ in the IEEE 754-2008 standard and are
+available in Swift as `T.minimumMagnitude(_:_:)` and `T.maximumMagnitude(_:_:)`,
+respectively.)
+
+A __total ordering__ for all possible representations in a floating-point type
+is defined in IEEE 754-2008. Recall that, using standard operators, NaN compares
+not equal to, not less than, and not greater than any value, and `-0.0` and
+`0.0` compare equal to each other. The total ordering defined in IEEE 754-2008,
+however, places `-0.0` below `0.0`, positive NaN above positive infinity, and
+negative NaN below negative infinity. It further distinguishes encodings of NaN
+by their signaling bit and payload. Specifically:
+
+- A quiet NaN is ordered above a signaling NaN if both are positive, and vice
+  versa if both are negative.
+- An encoding of NaN with larger payload (when interpreted as an integer) is
+  ordered above an encoding of NaN with smaller payload if both are positive,
+  and vice versa if both are negative.
+
+This total ordering is available in Swift as the method
+`isTotallyOrdered(belowOrEqualTo:)`. As clarified in the name,
+`x.isTotallyOrdered(belowOrEqualTo: y)` returns `true` if `x` orders below
+or equal to `y` in the total ordering prescribed in the IEEE 754-2008 standard.
 
 ## Floating-point remainder
 
@@ -217,29 +268,37 @@ floating-point types:
 
 </div>
 
+> In early versions of Swift, the truncating remainder operation was spelled
+> `%`. However, it was thought that users often used the operator incorrectly,
+> so it was removed from floating-point types in the Swift Evolution proposal
+> [SE-0067: Enhanced floating-point protocols][ref XX-2].
+
 The __nearest-to-zero remainder__ of _x_ dividing by _y_ is the exact result _r_
 such that _x_ = _y_&nbsp;×&nbsp;_q_&nbsp;+&nbsp;_r_, where _q_ is the nearest
 integer value to _x_&nbsp;÷&nbsp;_y_. (The actual computation is performed
 without intermediate rounding and _q_ does not need to be representable as a
-value of any type.) Notice that _r_ could be positive or negative, regardless of
-the sign of the operands; the magnitude of _r_ is no more than half of the
-magnitude of the divisor _y_.
+value of any type.) Notice that __the result could be positive or negative__,
+regardless of the sign of the operands; the magnitude of the result is __no more
+than half__ of the magnitude of the divisor (_y_).
 
 The __truncating remainder__ of _x_ dividing by _y_ is the exact result _s_ such
 that _x_ = _y_&nbsp;×&nbsp;_p_&nbsp;+&nbsp;_s_, where _p_ is the result of
 _x_&nbsp;÷&nbsp;_y_ rounded toward zero to an integer value. (The actual
 computation is performed without intermediate rounding and _p_ does not need to
-be representable as value of any type.) Notice that the sign of _s_ is the same
-as the sign of the dividend _x_; the magnitude of _s_ is always less than the
-magnitude of the divisor _y_.
+be representable as value of any type.) Notice that __the sign of the result is
+the same as that of the dividend (_x_)__; the magnitude of the result is always
+__less than__ the magnitude of the divisor (_y_).
+
+A simple example is sufficient to illustrate the difference between the two
+operations:
+
+```swift
+(-8).remainder(dividingBy: 5)           // 2
+(-8).truncatingRemainder(dividingBy: 5) // -3
+```
 
 For both operations, the remainder of dividing an infinite value by any value,
 or of dividing any value by zero, is NaN.
-
-> In early versions of Swift, the truncating remainder operation was spelled
-> `%`. However, it was thought that users often used the operator incorrectly,
-> so it was removed from floating-point types in the Swift Evolution proposal
-> [SE-0067: Enhanced floating-point protocols][ref XX-2].
 
 [ref XX-2]: https://github.com/apple/swift-evolution/blob/master/proposals/0067-floating-point-protocols.md
 
@@ -255,4 +314,4 @@ Previous:
 Next:  
 Numeric types in Foundation
 
-_Draft: 9–10 March 2018_
+_Draft: 9 March–8 June 2018_

@@ -152,6 +152,10 @@ let x = 42
 type(of: x) // Int32
 ```
 
+> The following caveat applies to current versions of Swift. It will cease to be
+> applicable after implementation of [SE-0213: Integer initialization via
+> coercion][ref 3-2].
+
 __A frequent misunderstanding found even in the Swift project itself__ concerns
 the use of a __type conversion__ initializer to indicate the desired type of a
 literal expression. For example:
@@ -196,6 +200,7 @@ let b = Float80(3.14159265358979323846)
 ```
 
 [ref 3-1]: https://github.com/apple/swift-evolution/blob/master/proposals/0083-remove-bridging-from-dynamic-casts.md
+[ref 3-2]: https://github.com/apple/swift-evolution/blob/master/proposals/0213-literal-init-via-coercion.md
 
 ## Conversions between integer types
 
@@ -236,7 +241,7 @@ In previous versions of Swift, the same initializer was named
 lossy semantics of truncation over the lossless semantics of sign-extension.
 
 Indeed, if `T.bitWidth < U.bitWidth`, then
-`U(truncatingIfNeeded: source) == source` __except in one scenario__.
+`U(truncatingIfNeeded: source) == source` __except in one scenario__:
 
 If `source < 0` and `U` is an __unsigned__ type, the binary representation of
 `source` is padded with leading one bits and the result is equivalent to
@@ -247,4 +252,5 @@ If `source < 0` and `U` is an __unsigned__ type, the binary representation of
 Next:  
 [Concrete integer types, part 2](integers-part-2.md)
 
-_27 February–5 March 2018_
+_27 February–5 March 2018_  
+_Updated 8 June 2018_
