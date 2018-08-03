@@ -22,17 +22,21 @@ aliases][ref 11-2] are provided so that users can instead refer to these types
 as `Float32` and `Float64`.
 
 For the `i386` and `x86_64` architectures, the extended-precision floating-point
-type `Float80` is also supported, except on Windows. (In C/C++ programming with
-the Win32 API, the `long double` data type [maps to `double`][ref 11-3].)
+type `Float80` is also supported, except on Windows. On supported platforms, C's
+`long double` data type is [mapped][ref 11-3] to `Float80` in Swift 4.2+, which
+makes it possible to use the full set of math functions for `Float80` that are
+available on the platform. (In C/C++ programming with the Win32 API, the
+`long double` data type [maps to `double`][ref 11-4].)
 
 [ref 11-1]: https://swift.org/compiler-stdlib/#standard-library-design
 [ref 11-2]: https://github.com/apple/swift/blob/bfddc4a763d1ae2f53a8c3281d2d6f08cd1211a0/stdlib/public/core/Policy.swift#L56
-[ref 11-3]: https://msdn.microsoft.com/en-us/library/9cx8xs15.aspx
+[ref 11-3]: https://github.com/apple/swift/pull/14971/
+[ref 11-4]: https://msdn.microsoft.com/en-us/library/9cx8xs15.aspx
 
 ### IEEE 754
 
 Swift, like many other languages, attempts to provide a floating-point
-implementation faithful to the [IEEE 754][ref 11-4] technical standard.
+implementation faithful to the [IEEE 754][ref 11-5] technical standard.
 
 > _Background:_
 >
@@ -44,7 +48,7 @@ implementation faithful to the [IEEE 754][ref 11-4] technical standard.
 > aspects of the standard are as follows:
 >
 > * Data types are able to represent NaN ("not a number"), positive and negative
->   infinity, and [subnormal numbers][ref 11-5] that are very close to zero. 
+>   infinity, and [subnormal numbers][ref 11-6] that are very close to zero. 
 >
 > * Addition, subtraction, multiplication, division, and square root are
 >   required operations that must be _correctly rounded_; that is, the result
@@ -58,14 +62,14 @@ implementation faithful to the [IEEE 754][ref 11-4] technical standard.
 > * A large set of functions (such as sine and cosine) are recommended but not
 >   required.
 
-Until recently, LLVM lacked [constrained floating-point intrinsics][ref 11-6] to
+Until recently, LLVM lacked [constrained floating-point intrinsics][ref 11-7] to
 support the use of dynamic rounding modes or floating-point exception behavior.
 By default, the rounding mode is assumed to be round-to-nearest and
 floating-point exceptions are ignored.
 
 Swift does not expose any APIs to change the rounding mode or floating-point
 exception behavior, nor is it possible to interrogate floating-point status
-flags. (Such limitations are [also found in Rust][ref 11-7].)
+flags. (Such limitations are [also found in Rust][ref 11-8].)
 
 > Note that the __rounding mode__, or the rounding rule used to fit a result to
 > the precision of a given floating-point format (IEEE 754-2008 §4.3), is
@@ -76,10 +80,10 @@ flags. (Such limitations are [also found in Rust][ref 11-7].)
 > Note that __floating-point exceptions__ are to be distinguished from Swift
 > errors and from runtime traps.
 
-[ref 11-4]: http://eng.umb.edu/~cuckov/classes/engin341/Reference/IEEE754.pdf
-[ref 11-5]: https://en.wikipedia.org/wiki/Denormal_number
-[ref 11-6]: http://llvm.org/docs/LangRef.html#constrained-floating-point-intrinsics
-[ref 11-7]: https://github.com/rust-lang/rust/issues/10186
+[ref 11-5]: http://eng.umb.edu/~cuckov/classes/engin341/Reference/IEEE754.pdf
+[ref 11-6]: https://en.wikipedia.org/wiki/Denormal_number
+[ref 11-7]: http://llvm.org/docs/LangRef.html#constrained-floating-point-intrinsics
+[ref 11-8]: https://github.com/rust-lang/rust/issues/10186
 
 ### C mathematical functions
 
@@ -374,7 +378,7 @@ equivalent static properties in the Swift standard library with clarified names.
 </div>
 
 The use of "max" and "min" can be misleading. Even [within the Swift project
-itself][ref 11-8], users have mistaken `FLT_MIN` for the minimum representable
+itself][ref 11-9], users have mistaken `FLT_MIN` for the minimum representable
 value (by analogy with `Int.min`). However, `FLT_MIN` is not even negative. Nor
 is it the least representable _positive_ value if the platform supports
 subnormal values: in C, that value is known as `FLT_TRUE_MIN`.
@@ -388,10 +392,10 @@ a measure of tolerance for floating-point comparisons, which is generally
 inadvisable.
 
 > For more information on the rationale for names chosen in Swift, see the Swift
-> Evolution proposal [SE-0067: Enhanced floating-point protocols][ref 11-9].
+> Evolution proposal [SE-0067: Enhanced floating-point protocols][ref 11-10].
 
-[ref 11-8]: https://github.com/apple/swift-corelibs-foundation/pull/631
-[ref 11-9]: https://github.com/apple/swift-evolution/blob/master/proposals/0067-floating-point-protocols.md
+[ref 11-9]: https://github.com/apple/swift-corelibs-foundation/pull/631
+[ref 11-10]: https://github.com/apple/swift-evolution/blob/master/proposals/0067-floating-point-protocols.md
 
 ---
 

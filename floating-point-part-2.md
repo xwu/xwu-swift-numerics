@@ -122,7 +122,7 @@ use the fused multiply-add operation, the sequence
 `stride(from: -0.2, through: 1.0, by: 0.2)` now includes the value `1.0`.
 
 > The fusedMultiplyAdd operation was added to Swift as part of the Swift
-> Evolution proposal [SE-0067: Enhanced floating-point protocols][ref 11-9].
+> Evolution proposal [SE-0067: Enhanced floating-point protocols][ref 11-10].
 > Intermediate rounding error in floating-point strides was eliminated in the
 > Swift standard library in [late 2017][ref 12-6].
 
@@ -143,7 +143,7 @@ value of type `Double`. In fact, `(x * x).addingProduct(-x, x)` actually
 computes the amount by which `x * x` is inexact. Since `x * x` is rounded down,
 the amount of inexactness is negative and its square root is not a number.
 
-[ref 11-9]: https://github.com/apple/swift-evolution/blob/master/proposals/0067-floating-point-protocols.md
+[ref 11-10]: https://github.com/apple/swift-evolution/blob/master/proposals/0067-floating-point-protocols.md
 [ref 12-6]: https://github.com/apple/swift/pull/13007
 [ref 12-7]: https://people.eecs.berkeley.edu/~wkahan/ieee754status/ieee754.ps
 

@@ -85,9 +85,9 @@ Decimal(string: "0.10000000000000001")!.description
 ```
 
 > Note that addition and subtraction of `Decimal` values produced erroneous
-> results on Linux prior to [Swift 4.1.3][ref XXX-1].
+> results on Linux prior to [Swift 4.1.3][ref 19-1].
 
-[ref XXX-1]: https://bugs.swift.org/browse/SR-7650
+[ref 19-1]: https://bugs.swift.org/browse/SR-7650
 
 
 ## NSNumber

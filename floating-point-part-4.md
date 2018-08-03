@@ -20,7 +20,7 @@ Concrete binary floating-point types, part 4
 >
 > When all the bits used to encode the exponent are non-zero, the encoded value
 > is not finite. Instead, that value is positive infinity, negative infinity, or
-> [NaN ("not a number")][ref XX-1]. The rationale for supporting these values is
+> [NaN ("not a number")][ref 16-1]. The rationale for supporting these values is
 > beyond the scope of this article. Briefly, however:
 >
 > The result of an operation that is too large in magnitude to be represented as
@@ -152,7 +152,7 @@ int main(int argc, const char * argv[]) {
 // Prints "true"
 ```
 
-[ref XX-1]: https://en.wikipedia.org/wiki/NaN
+[ref 16-1]: https://en.wikipedia.org/wiki/NaN
 
 ### Describing NaN
 
@@ -271,7 +271,7 @@ floating-point types:
 > In early versions of Swift, the truncating remainder operation was spelled
 > `%`. However, it was thought that users often used the operator incorrectly,
 > so it was removed from floating-point types in the Swift Evolution proposal
-> [SE-0067: Enhanced floating-point protocols][ref XX-2].
+> [SE-0067: Enhanced floating-point protocols][ref 17-1].
 
 A simple example is sufficient to illustrate the difference between the two
 operations:
@@ -300,7 +300,7 @@ __less than__ the magnitude of the divisor (_y_).
 For both operations, the remainder of dividing an infinite value by any value,
 or of dividing any value by zero, is NaN.
 
-[ref XX-2]: https://github.com/apple/swift-evolution/blob/master/proposals/0067-floating-point-protocols.md
+[ref 17-1]: https://github.com/apple/swift-evolution/blob/master/proposals/0067-floating-point-protocols.md
 
 ## Significand representation
 
