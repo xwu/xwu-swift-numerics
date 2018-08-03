@@ -25,7 +25,7 @@ the use of numbers in programming is assumed.
   representation
 
 * __[Numeric types in Foundation](numeric-types-in-foundation.md)__  
-  Decimal, NSNumber
+  Foundation.Decimal, Foundation.NSNumber
 
 * __Numeric protocols__  
   Introduction, design rationale, generic algorithms, conformance
