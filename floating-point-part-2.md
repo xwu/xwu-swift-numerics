@@ -18,7 +18,7 @@ represented exactly in binary floating-point format.
 > * Basic arithmetic operations are often inexact; for example, `a + b - b == a`
 >   does not always evaluate to `true`.
 
-Although out of the scope of this article, some alternative choices for modeling
+Though out of the scope of this article, some alternative choices for modeling
 real numbers are as follows:
 
 > __Binary floating point__  
@@ -126,7 +126,7 @@ use the fused multiply-add operation, the sequence
 > Intermediate rounding error in floating-point strides was eliminated in the
 > Swift standard library in [late 2017][ref 12-6].
 
-__A brief caveat about fused multiply-add operations:__ Although eliminating
+__A caveat about fused multiply-add operations:__ Although eliminating
 intermediate rounding can improve the accuracy of results, it is not always the
 case that an algorithm will benefit from its use. [William Kahan points
 out][ref 12-7] that, for a sufficiently large value `x`, we can observe a
@@ -151,27 +151,27 @@ the amount of inexactness is negative and its square root is not a number.
 
 > _Background:_
 >
-> The floating-point representation of a real number takes the form
-> _s_&nbsp;×&nbsp;_b_<sup>_e_</sup>, where _s_ is a significand scaled to the
-> _e_<sup>th</sup> power of the fixed base _b_. The __ulp__, or unit in the last
-> place, of a finite floating-point value is the value of 1 in the least
-> significant place of the significand.
+> The binary floating-point representation of a real number takes the form
+> _significand_&nbsp;×&nbsp;2<sup>_exponent_</sup>. The __ulp__, or unit in the
+> last place, of a finite floating-point value is the value of 1 in the least
+> significant (i.e., last) place of the significand.
 
 In general, the property `ulp` is equivalent to the distance between a finite
 floating-point value and the nearest representable value greater in magnitude.
-However, `greatestFiniteMagnitude.ulp` is a finite value even though the nearest
-representable value greater in magnitude is `infinity`.
+However, `greatestFiniteMagnitude.ulp` is finite even though the nearest
+representable value greater in magnitude than `greatestFiniteMagnitude` is
+`infinity`.
+
+As previously mentioned, the Swift equivalent to the C constants known as
+`FLT_EPSILON` and `DBL_EPSILON` is a static property named `ulpOfOne`. That
+name was chosen in order to prevent confusion surrounding the definition and
+proper usage of the property. As the name suggests, `T.ulpOfOne` is equivalent
+to `(1 as T).ulp` for any floating-point type `T`.
 
 In Swift, the `ulp` of a non-finite value (whether infinite or NaN) is NaN. In
 Java, by contrast, `Math.ulp(Double.POSITIVE_INFINITY)` evaluates to positive
 infinity, and the same result is obtained when using negative infinity as the
 argument.
-
-As mentioned previously, the Swift equivalent to the C constants known as
-`FLT_EPSILON` and `DBL_EPSILON` is a static property named `ulpOfOne`. That
-name was chosen in order to prevent confusion surrounding the definition and
-proper usage of the property. As the name suggests, `T.ulpOfOne` is equivalent
-to `(1 as T).ulp` for any floating-point type `T`.
 
 ### Approximating π
 
@@ -193,9 +193,8 @@ from being rounded to a different quadrant. As a consequence,
 >
 > In the gap between zero and 2<sup><em>emin</em></sup>, where _emin_ is the
 > minimum supported exponent of a binary floating-point type, a set of linearly
-> spaced [__subnormal__ (or denormal) values][ref 12-8] can be represented, with
-> some differences in their binary representation as compared to that of
-> __normal__ finite values.
+> spaced [__subnormal__ (or denormal) values][ref 12-8] can be represented,
+> using a different binary representation than that of __normal__ finite values.
 >
 > On 32-bit ARMv7, the vector floating-point (VFP) co-processor supports a
 > __flush-to-zero (FZ) mode__ for floating-point operations that is not
@@ -273,4 +272,4 @@ Next:
 [Concrete binary floating-point types, part 3](floating-point-part-3.md)
 
 _27 February–8 March 2018_  
-_Updated 8 June 2018_
+_Updated 3 August 2018_

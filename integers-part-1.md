@@ -4,7 +4,7 @@ Concrete integer types, part 1
 ## Introduction
 
 The Swift standard library provides ten concrete integer types, all defined as
-value types that wrap [LLVM primitive types from the `Builtin` module][ref 1-1]:
+value types wrapping [LLVM primitive types from the `Builtin` module][ref 1-1]:
 
 ```swift
 @_fixed_layout
@@ -152,11 +152,12 @@ let x = 42
 type(of: x) // Int32
 ```
 
-> The following caveat applies to current versions of Swift. It will cease to be
-> applicable after implementation of [SE-0213: Integer initialization via
-> coercion][ref 3-2].
+> The following caveat applies to current versions of Swift. It __will not__
+> be applicable after changes described in [SE-0213: Integer initialization via
+> coercion][ref 3-2], which was [implemented in July 2018][ref 3-3], are
+> included in a future Swift release.
 
-__A frequent misunderstanding found even in the Swift project itself__ concerns
+__A frequent misunderstanding__ found even in the Swift project itself concerns
 the use of a __type conversion__ initializer to indicate the desired type of a
 literal expression. For example:
 
@@ -165,10 +166,10 @@ literal expression. For example:
 let x = Int8(42)
 ```
 
-This frequently gives the intended result, but the function call is __not__
-providing information for type inference. Instead, this statement creates an
-instance of type `IntegerLiteralType` (which again, by default, is a type alias
-for `Int`) with the value `42`, then __converts__ this value to `Int8`.
+This usage frequently gives the intended result, but the function call does
+__not__ provide information for type inference. Instead, this statement creates
+an instance of type `IntegerLiteralType` (which again, by default, is a type
+alias for `Int`) with the value `42`, then __converts__ this value to `Int8`.
 
 The distinction can be demonstrated as follows:
 
@@ -187,9 +188,9 @@ let z = Int16(32768)
 // Not enough bits to represent a signed value
 ```
 
-While differences in diagnostics may not be of major interest, the same
-misunderstanding with floating-point types can produce different results due to
-unintended rounding error:
+Differences in diagnostics are unlikely to be of interest to most users.
+However, the same misunderstanding with floating-point types can produce
+different results due to unintended rounding error:
 
 ```swift
 let a = 3.14159265358979323846 as Float80
@@ -201,49 +202,54 @@ let b = Float80(3.14159265358979323846)
 
 [ref 3-1]: https://github.com/apple/swift-evolution/blob/master/proposals/0083-remove-bridging-from-dynamic-casts.md
 [ref 3-2]: https://github.com/apple/swift-evolution/blob/master/proposals/0213-literal-init-via-coercion.md
+[ref 3-3]:
+https://github.com/apple/swift/pull/17860
 
 ## Conversions between integer types
 
-Five different initializers are provided for conversions between standard
-library integer types. A value `source` of type `T` can be converted to a value
-of type `U` as follows:
+Five different initializers are available to convert between standard library
+integer types. A value `source` of type `T` can be converted to a value of type
+`U` as follows:
 
 1. __`U(source)`__  
    Converts the given value if the result can be represented exactly as a value
-   of type `U`. Otherwise, a runtime error occurs.
-
-1. __`U(clamping: source)`__  
-   Converts the given value to the closest representable value of type `U`. If
-   `source > U.max`, then the result is `U.max`. If `source < U.min`, then the
-   result is `U.min`.
+   of type `U`.  
+   Otherwise, a runtime error occurs.
 
 1. __`U(exactly: source)`__  
-   _Failable initializer._ Converts the given value if the result can be
-   represented exactly as a value of type `U`. Otherwise, returns `nil`.
+   _Failable initializer._  
+   Converts the given value if the result can be represented exactly as a value
+   of type `U`.  
+   Otherwise, returns `nil`.
 
-1. __`U(bitPattern: source)`__  
-   Creates a new value of type `U` with the same binary representation in memory
-   as that of `source`. Available only for conversion between signed and
-   unsigned types of the same explicit bit width.
+1. __`U(clamping: source)`__  
+   Converts the given value to the closest representable value of type `U`.  
+   If `source > U.max`, then the result is `U.max`.  
+   If `source < U.min`, then the result is `U.min`.
 
 1. __`U(truncatingIfNeeded: source)`__  
    Creates a new value of type `U` from the binary representation in memory of
-   `source`. When `T` and `U` are not of the same bit width, the binary
-   representation of `source` is [truncated or sign-extended][ref 4-1] as
-   necessary.
+   `source`.  
+   When `T` and `U` are not of the same bit width, the binary representation of
+   `source` is [truncated or sign-extended][ref 4-1] as necessary.
+
+1. __`U(bitPattern: source)`__  
+   _Available only for conversion between signed and unsigned types of
+   explicitly the same bit width._  
+   Creates a new value of type `U` with the same binary representation in memory
+   as that of `source`.
 
 [ref 4-1]: https://developer.apple.com/documentation/swift/int/2926530-init
 
-### A brief note about init(truncatingIfNeeded:)
+### A note about init(truncatingIfNeeded:)
 
 In previous versions of Swift, the same initializer was named
 `init(extendingOrTruncating:)`. It was renamed to emphasize the potentially
 lossy semantics of truncation over the lossless semantics of sign-extension.
 
 Indeed, if `T.bitWidth < U.bitWidth`, then
-`U(truncatingIfNeeded: source) == source` __except in one scenario__:
-
-If `source < 0` and `U` is an __unsigned__ type, the binary representation of
+`U(truncatingIfNeeded: source) == source` __except in one scenario__: If
+`source < 0` and `U` is an __unsigned__ type, the binary representation of
 `source` is padded with leading one bits and the result is equivalent to
 `0 &- U(truncatingIfNeeded: -source)`.
 
@@ -253,4 +259,4 @@ Next:
 [Concrete integer types, part 2](integers-part-2.md)
 
 _27 February–5 March 2018_  
-_Updated 8 June 2018_
+_Updated 3 August 2018_

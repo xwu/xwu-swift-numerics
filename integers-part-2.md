@@ -48,11 +48,11 @@ compared as follows:
 
 ## Overflow behavior
 
-> Rust now takes a similar approach for handling integer overflow; therefore,
+> Rust now takes a similar approach to handling integer overflow; therefore,
 > Swift users may find [a write-up about Rust's design evolution][ref 6-1] to be
 > useful.
 
-As mentioned previously, Swift's standard arithmetic operators trap on integer
+As previously mentioned, Swift's standard arithmetic operators trap on integer
 overflow. Integer overflow checking is [disabled][ref 6-2] in `-Ounchecked`
 mode, which is not recommended for general use.
 
@@ -73,9 +73,10 @@ A runtime error also occurs in case of overflow in methods such as:
 ### Absolute value and magnitude
 
 In Swift, `abs(_:)` returns a value of the __same type__ as the argument.
-Specifically, the function returns the absolute value of the argument. For a
-signed (and fixed-width) integer type `T`, therefore, a runtime error occurs
-when evaluating `abs(T.min)` because the result cannot be represented in `T`.
+Specifically, the function returns the absolute value of the argument.
+Therefore, for a signed (and fixed-width) integer type `T`, a runtime error
+occurs when evaluating `abs(T.min)` because the result cannot be represented in
+`T`.
 
 By contrast, evaluating `T.min.magnitude` does not cause a runtime error.
 However, the value is not always of type `T` but rather of the __associated
@@ -90,21 +91,25 @@ significant bits of the result), while __signed__ integer overflow is
 [__undefined behavior__][ref 6-4].
 
 Sometimes, "wrapping" behavior can be desired in Swift (for example, when
-performing bitwise manipulations). The Swift standard library offers
-alternatives to some standard arithmetic operators that can be used in these
-scenarios.
+performing bitwise manipulations). The Swift standard library offers alternative
+facilities that can be used in these circumstances.
 
 __Three overflow operators__ allow the user to choose C-like "wrapping"
-behavior: `&+` (overflow addition), `&-` (overflow subtraction), and `&*`
-(overflow multiplication). The behavior of these operations is fully defined for
-unsigned and signed integer types.
+behavior instead of trapping on overflow: `&+` (overflow addition), `&-`
+(overflow subtraction), and `&*` (overflow multiplication). The behavior of
+these operations is fully defined for both unsigned and signed integer types.
 
-> The overflow operators `&/` and `&%` were [removed in Swift 1.2][ref 6-5]
+> In March 2018, the three corresponding overflow assignment operators (`&+=`,
+> `&-=`, and `&*=`) were [added to Swift][ref 6-5]. They are, of course,
+> "wrapping" counterparts to assignment operators spelled without a leading `&`.
+
+> The overflow operators `&/` and `&%` were [removed in Swift 1.2][ref 6-6]
 > because they did not provide two's-complement behavior like other overflow
 > operators.
 
 [ref 6-4]: https://en.wikipedia.org/wiki/Undefined_behavior
-[ref 6-5]: https://github.com/apple/swift/blob/master/CHANGELOG.md#swift-12
+[ref 6-5]: https://github.com/apple/swift/pull/15144
+[ref 6-6]: https://github.com/apple/swift/blob/master/CHANGELOG.md#swift-12
 
 ### Methods reporting overflow
 
@@ -122,7 +127,7 @@ value. The numeric value is either the entire result if no overflow occurred
 during the operation or the "wrapped" partial result if overflow occurred; the
 Boolean value indicates whether or not overflow occurred.
 
-Some caveats are important to point out:
+Some caveats:
 
 In Swift, `x.dividedReportingOverflow(by: 0)` is documented to return
 `(x, true)`. Nonetheless, at time of writing, a division-by-zero error occurs if
@@ -147,15 +152,15 @@ is always zero. At the time of writing, a division-by-zero error occurs if the
 RHS is expressed as a literal `0`.
 
 > Internally, there are no LLVM primitives for checking overflow after division,
-> so checking is [implemented in native Swift][ref 6-6].
+> so checking is [implemented in native Swift][ref 6-7].
 >
 > Prior to Swift 4.2,
 > <code class="manual-escape">remainderReportingOverflow(&#8203;dividingBy:)</code>
 > did not return the correct remainder when dividing by `-1`. The behavior was
-> [fixed in early 2018][ref 6-7].
+> [fixed in early 2018][ref 6-8].
 
-[ref 6-6]: https://github.com/apple/swift/blob/642cbbad7cefd08efa9242fd2d75cee356285727/stdlib/public/core/Integers.swift.gyb#L3132
-[ref 6-7]: https://github.com/apple/swift/pull/14219
+[ref 6-7]: https://github.com/apple/swift/blob/642cbbad7cefd08efa9242fd2d75cee356285727/stdlib/public/core/Integers.swift.gyb#L3132
+[ref 6-8]: https://github.com/apple/swift/pull/14219
 
 ### Unsafe methods
 
@@ -191,7 +196,7 @@ representable within the bounds of the type.
 > Notice that this method is named "dividing" instead of "divided by." Here, the
 > _argument_ is the _dividend_ (i.e., numerator). Although unique among Swift
 > arithmetic operations, this arrangement is necessary because the dividend is
-> a tuple; tuple types cannot be extended in Swift.
+> a tuple; tuple types can't themselves be extended in Swift.
 
 At the time of writing, the implemented behavior of `dividingFullWidth(_:)` in
 case of overflow does not match the documented behavior.
@@ -201,7 +206,7 @@ case of overflow does not match the documented behavior.
 The remainder operator `%` (known as the modulo operator in other languages)
 adopts [the same truncated division convention observed in many "C family"
 languages][ref 7-1], including C99, C++11, C#, D, Java, JavaScript, and Rust.
-The result has the same sign as the dividend.
+__The result has the same sign as the dividend.__
 
 Evaluating `x % 0` results in a division-by-zero error.
 
@@ -259,8 +264,8 @@ let x = 1 << 2 << 3
 ### Smart shifts
 
 As in Java, Go, and other languages, `>>` is a right [__arithmetic
-shift__][ref 9-1] for signed integers. In other words, the result has the same
-sign bit as the LHS.
+shift__][ref 9-1] for signed integers. In other words, __the result has the same
+sign bit as the LHS__.
 
 __Undershift__ occurs when the RHS is negative. A _right_ smart shift by a
 negative RHS value `x` is equivalent to a _left_ smart shift by `x.magnitude`,
@@ -283,13 +288,9 @@ the compiler and are of concern to performance.
 
 > In Rust, the same operations are known as [__wrapping shifts__][ref 9-2].
 
-These operations are called "masking" because the result is notionally obtained
-by shifting the LHS as an abstract binary integer operation (with padding as
-necessary), then [masking the result to the number of bits in LHS][ref 9-3].
-
 To obtain the result, the RHS is preprocessed to ensure that it is in the range
 `0..<lhs.bitWidth`. For a LHS of arbitrary bit width, preprocessing the RHS
-requires computing the [modulus after floored division][ref 9-4]. In other
+requires computing the [modulus after floored division][ref 9-3]. In other
 words, the amount by which to shift the LHS can be obtained as follows:
 
 ```swift
@@ -308,12 +309,11 @@ On most architectures, masking is performed by the CPU's shift instructions and
 therefore incurs no additional performance cost.
 
 > Masking shifts and smart shift semantics were introduced as part of the Swift
-> Evolution proposal [SE-0104: Protocol-oriented integers][ref 9-5].
+> Evolution proposal [SE-0104: Protocol-oriented integers][ref 9-4].
 
 [ref 9-2]: https://doc.rust-lang.org/std/primitive.isize.html#method.wrapping_shl
-[ref 9-3]: https://forums.swift.org/t/i-think-masking-shift-is-an-incorrect-name/10490/3
-[ref 9-4]: https://en.wikipedia.org/wiki/Modulo_operation
-[ref 9-5]: https://github.com/apple/swift-evolution/blob/master/proposals/0104-improved-integers.md
+[ref 9-3]: https://en.wikipedia.org/wiki/Modulo_operation
+[ref 9-4]: https://github.com/apple/swift-evolution/blob/master/proposals/0104-improved-integers.md
 
 <!--
 ## Words
@@ -335,4 +335,4 @@ Next:
 [Concrete binary floating-point types, part 1](floating-point-part-1-rev-1.md)
 
 _27 February–10 March 2018_  
-_Updated 8 June 2018_
+_Updated 3 August 2018_

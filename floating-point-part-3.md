@@ -109,7 +109,7 @@ let y = 0x.1p2
 
 ### Type inference
 
-As discussed previously, literals have no type of their own in Swift. Instead,
+As previously discussed, literals have no type of their own in Swift. Instead,
 the type checker attempts to infer the type of a literal expression based on
 other available information such as explicit type annotations.
 
@@ -125,11 +125,12 @@ In the absence of other available information, the inferred type of a float
 literal expression defaults to `FloatLiteralType`, which is a type alias for
 `Double` unless it is shadowed by the user.
 
-> The following caveat applies to current versions of Swift. It will cease to be
-> applicable after implementation of [SE-0213: Integer initialization via
-> coercion][ref 3-2].
+> The following caveat applies to current versions of Swift. It __will not__
+> be applicable after changes described in [SE-0213: Integer initialization via
+> coercion][ref 3-2], which was [implemented in July 2018][ref 3-3], are
+> included in a future Swift release.
 
-__A frequent misunderstanding found even in the Swift project itself__ concerns
+__A frequent misunderstanding__ found even in the Swift project itself concerns
 the use of a __type conversion__ initializer to indicate the desired type of a
 literal expression. For example:
 
@@ -138,9 +139,9 @@ literal expression. For example:
 let x = Float(42.0)
 ```
 
-This frequently gives the intended result, but the function call is __not__
-providing information for type inference. Instead, this statement creates an
-instance of type `FloatLiteralType` (which again, by default, is a type alias
+This usage frequently gives the intended result, but the function call does
+__not__ provide information for type inference. Instead, this statement creates
+an instance of type `FloatLiteralType` (which again, by default, is a type alias
 for `Double`) with the value `42.0`, then __converts__ that value to `Float`.
 
 Since `Float` has less precision than `Double`, a literal value is rounded twice
@@ -167,11 +168,12 @@ let imprecise = Float80(3.14159265358979323846)
 
 [ref 3-1]: https://github.com/apple/swift-evolution/blob/master/proposals/0083-remove-bridging-from-dynamic-casts.md
 [ref 3-2]: https://github.com/apple/swift-evolution/blob/master/proposals/0213-literal-init-via-coercion.md
+[ref 3-3]: https://github.com/apple/swift/pull/17860
 
 ### Float literal precision
 
 Notionally, a numeric literal is not limited by the precision of any type
-because, again, it has no type.
+because it has no type.
 
 Under the hood, however, an integer literal is first used to create an internal
 2048-bit value (of type `_MaxBuiltinIntegerType`) that is then converted to the
@@ -218,22 +220,25 @@ binary floating-point types. A value of `source` of type `T` can be converted to
 a value of type `U` as follows:
 
 1. __`U(source)`__  
-   Converts the given value to a representable value of type `U`. The result of
-   an __inexact__ conversion is rounded to the nearest representable value
-   (since the floating-point environment cannot be modified in Swift).
-   The result of an __overflowing__ conversion is infinite. The result of an
-   __underflowing__ conversion is zero. __NaN__ is converted to some encoding of
-   NaN that varies based on the underlying architecture, although any signaling
-   NaN is always converted to a quiet NaN.
+   Converts the given value to a representable value of type `U`.  
+   The result of an __inexact__ conversion is rounded to the nearest
+   representable value.  
+   The result of an __overflowing__ conversion is infinite.  
+   The result of an __underflowing__ conversion is zero.  
+   The result of converting __NaN__ is some encoding of NaN that varies based on
+   the underlying architecture; any __signaling NaN__ is always converted to a
+   quiet NaN.
 
 1. __`U(exactly: source)`__  
-   _Failable initializer._ Converts the given value if the result can be
-   represented "exactly" as a value of type `U`; any result that is not `nil`
-   can be converted back to a value of type `T` that compares equal to `source`.
-   The result of an __inexact__ conversion is `nil`. The result of an
-   __overflowing__ conversion is `nil`. The result of an __underflowing__
-   conversion is `nil`. Since NaN never compares equal to NaN, the
-   result of converting __NaN__ (however encoded) is `nil`.
+   _Failable initializer._   
+   Converts the given value if the result can be represented "exactly" as a
+   value of type `U`; any result that is not `nil` can be converted back to a
+   value of type `T` that compares equal to `source`.  
+   The result of an __inexact__ conversion is `nil`.  
+   The result of an __overflowing__ conversion is `nil`.  
+   The result of an __underflowing__ conversion is `nil`.  
+   The result of converting __NaN__ (however encoded) is `nil`, since NaN never
+   compares equal to NaN.
 
 ## Other initializers
 
@@ -249,16 +254,29 @@ let pi = Double("3.14159265358979323846")!
 // 3.1415926535897931
 ```
 
-In brief, any spelling that is valid as an integer or float literal is valid as
-a string for conversion to a binary floating-point type. Likewise, any value
-obtained from the `description` or `debugDescription` property of a binary
-floating-point value is valid for conversion. Specifically:
+Any spelling that is valid as an integer or float literal is valid as a string
+for conversion to a binary floating-point type. Likewise, any value obtained
+from the `description` or `debugDescription` property of a binary floating-point
+value is valid for conversion. Specifically:
 
 * The string can represent a value in base 10 or base 16 (hexadecimal).
 * "Infinity" or "inf" (regardless of case) represents infinity.
 * "NaN" (regardless of case) represents NaN, "sNaN" (regardless of case)
   represents signaling NaN, and either may be followed by a parenthesized
   decimal or hexadecimal number that represents the NaN payload.
+
+Any string that would cause a range error when it is used as the argument of the
+C function `strtof` or `strtod` causes `Float.init?(_: String)` or
+`Double.init?(_: String)` (respectively) to return `nil`. So:
+
+__Any invalid character, even if whitespace, causes the entire string to be
+invalid for conversion.__  
+The result of an __inexact__ conversion is rounded to the nearest representable
+value.  
+The result of an __overflowing__ conversion is `nil`.  
+The result of an __underflowing__ conversion is `nil`.  
+The result of converting __NaN__ is encoded with the NaN payload (truncated if
+needed) if such a payload is specified.
 
 > Although Swift itself does not consider a leading zero to be a prefix
 > indicating that an integer value is written in base 8 (octal), a parenthesized
@@ -276,15 +294,9 @@ floating-point value is valid for conversion. Specifically:
 > String(0o123, radix: 16)        // "53"
 > ```
 
-Some rules are more relaxed for string conversion than for numeric literals:
-
-* __Unlike in float literals__, a digit is not required to precede the separator
-  dot.
-* __Unlike in float literals__, a digit is not required to follow the separator
-  dot.
-* __Unlike in float literals__, a binary exponent is not required to end a
-  hexadecimal value.
-* __Unlike in integer literals__, "-0" represents negative zero.
+Some rules are more relaxed for string conversion than for float literals: a
+digit is not required to precede or follow the separator dot, and a binary
+exponent is not required to end a hexadecimal value.
 
 ```swift
 let x = Double(".5")!
@@ -297,33 +309,15 @@ let a = Double("0x.1p2")!
 // 0.25
 let b = Double("0x1.")!
 // 1
-let c = Double("-0")!
-// -0
 ```
-
-Any invalid characters, even additional whitespace, cause the entire string to
-be invalid for conversion.
-
-The result of an __inexact__ conversion is rounded to the nearest representable
-value. However, any value that would result in a range error in C upon invoking
-`strtof` (or `strtod` or `strtold`) causes `Float.init?(_: String)` (or
-`Double.init?(_: String)` or `Float80.init?(_: String)`, respectively) to return
-`nil`. That is, the result of an __overflowing__ conversion is `nil`, and the
-result of an __underflowing__ conversion is `nil`. The result of converting
-__NaN__ is encoded with the payload (truncated if needed) if such a payload is
-specified.
 
 ### Creating from a sign, exponent, and significand
 
 _Incomplete_
 
-### Creating from a bit pattern
+<!-- ### Creating from a bit pattern -->
 
-_Incomplete_
-
-### Copying sign
-
-_Incomplete_
+<!-- ### Copying sign -->
 
 ---
 
@@ -334,4 +328,4 @@ Next:
 [Concrete binary floating-point types, part 4](floating-point-part-4.md)
 
 _Draft: 27 February–14 March 2018_  
-_Updated 8 June 2018_
+_Updated 3 August 2018_

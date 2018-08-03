@@ -6,8 +6,8 @@ Concrete binary floating-point types, part 4
 > _Background:_
 >
 > IEEE 32-bit and 64-bit binary floating-point types have no more than one
-> representation of each non-zero finite number, and each representation has
-> only one encoding. (For historical reasons, the extended-precision 80-bit
+> __representation__ of each non-zero finite number, and each representation has
+> only one __encoding__. (For historical reasons, the extended-precision 80-bit
 > binary floating-point type does support a second, non-canonical encoding of
 > some representations.)
 >
@@ -39,7 +39,7 @@ Concrete binary floating-point types, part 4
 > check whether each intermediate result is NaN during a complicated calculation
 > (if the ultimate result is of a floating-point type that can represent NaN).
 > The behavior of NaN operands can be different if using an alternative
-> floating-point exception behavior; as mentioned previously, it is not possible
+> floating-point exception behavior; as previously mentioned, it is not possible
 > to change the floating-point exception behavior in Swift.
 >
 > NaN values can be counterintuitive for users unfamiliar with floating-point
@@ -67,7 +67,7 @@ as they do in other languages. The sign of zero or infinity can be changed using
 the prefix operator `-`.
 
 > Recall that __integer__ literals do not support signed zero (in other words,
-> `-0 as Float` evaluates to positive zero). Use either parentheses, as in
+> `-0 as Float` evaluates to positive zero). Either use parentheses, as in
 > `-(0 as Float)`, or use a __float__ literal, as in `-0.0 as Float`, to obtain
 > the desired value.
 
@@ -222,10 +222,10 @@ Double.minimum(-0.0, 0.0) // -0.0
 Double.minimum(0.0, -0.0) // 0.0
 ```
 
-(Analogous operations to compare the magnitudes of two floating-point values are
+Analogous operations to compare the magnitudes of two floating-point values are
 known as __minNumMag__ and __maxNumMag__ in the IEEE 754-2008 standard and are
 available in Swift as `T.minimumMagnitude(_:_:)` and `T.maximumMagnitude(_:_:)`,
-respectively.)
+respectively.
 
 A __total ordering__ for all possible representations in a floating-point type
 is defined in IEEE 754-2008. Recall that, using standard operators, NaN compares
@@ -273,13 +273,21 @@ floating-point types:
 > so it was removed from floating-point types in the Swift Evolution proposal
 > [SE-0067: Enhanced floating-point protocols][ref XX-2].
 
+A simple example is sufficient to illustrate the difference between the two
+operations:
+
+```swift
+(-8).remainder(dividingBy: 5)           // 2
+(-8).truncatingRemainder(dividingBy: 5) // -3
+```
+
 The __nearest-to-zero remainder__ of _x_ dividing by _y_ is the exact result _r_
 such that _x_ = _y_&nbsp;×&nbsp;_q_&nbsp;+&nbsp;_r_, where _q_ is the nearest
 integer value to _x_&nbsp;÷&nbsp;_y_. (The actual computation is performed
 without intermediate rounding and _q_ does not need to be representable as a
-value of any type.) Notice that __the result could be positive or negative__,
-regardless of the sign of the operands; the magnitude of the result is __no more
-than half__ of the magnitude of the divisor (_y_).
+value of any type.) Notice that __the result could be positive or negative,
+regardless of the sign of the operands__; the magnitude of the result is __no
+more than half__ of the magnitude of the divisor (_y_).
 
 The __truncating remainder__ of _x_ dividing by _y_ is the exact result _s_ such
 that _x_ = _y_&nbsp;×&nbsp;_p_&nbsp;+&nbsp;_s_, where _p_ is the result of
@@ -288,14 +296,6 @@ computation is performed without intermediate rounding and _p_ does not need to
 be representable as value of any type.) Notice that __the sign of the result is
 the same as that of the dividend (_x_)__; the magnitude of the result is always
 __less than__ the magnitude of the divisor (_y_).
-
-A simple example is sufficient to illustrate the difference between the two
-operations:
-
-```swift
-(-8).remainder(dividingBy: 5)           // 2
-(-8).truncatingRemainder(dividingBy: 5) // -3
-```
 
 For both operations, the remainder of dividing an infinite value by any value,
 or of dividing any value by zero, is NaN.
@@ -314,4 +314,4 @@ Previous:
 Next:  
 Numeric types in Foundation
 
-_Draft: 9 March–8 June 2018_
+_Draft: 9 March–3 August 2018_

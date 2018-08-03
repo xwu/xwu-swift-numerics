@@ -32,13 +32,13 @@ the Win32 API, the `long double` data type [maps to `double`][ref 11-3].)
 ### IEEE 754
 
 Swift, like many other languages, attempts to provide a floating-point
-implementation faithful to IEEE 754.
+implementation faithful to the [IEEE 754][ref 11-4] technical standard.
 
 > _Background:_
 >
-> For floating-point types, the [IEEE 754][ref 11-4] technical standard defines
-> basic and interchange formats, rounding rules, required operations, and
-> exception handling that are meant to enable reliability and portability.
+> For floating-point types, IEEE 754 defines basic and interchange formats,
+> rounding rules, required operations, and exception handling that are meant to
+> enable reliability and portability.
 >
 > A full overview of IEEE 754 is well beyond the scope of this article; some key
 > aspects of the standard are as follows:
@@ -61,16 +61,17 @@ implementation faithful to IEEE 754.
 Until recently, LLVM lacked [constrained floating-point intrinsics][ref 11-6] to
 support the use of dynamic rounding modes or floating-point exception behavior.
 By default, the rounding mode is assumed to be round-to-nearest and
-floating-point exceptions are ignored. Swift does not expose any APIs to change
-the rounding mode or floating-point exception behavior, nor is it possible to
-interrogate floating-point status flags. (Such limitations are also found in
-[Rust][ref 11-7].)
+floating-point exceptions are ignored.
+
+Swift does not expose any APIs to change the rounding mode or floating-point
+exception behavior, nor is it possible to interrogate floating-point status
+flags. (Such limitations are [also found in Rust][ref 11-7].)
 
 > Note that the __rounding mode__, or the rounding rule used to fit a result to
-> the precision of a given floating-point format (IEEE 754-2008 §4.3), is to be
-> distinguished from the rounding rule used to round a value to the nearest
-> integer (IEEE 754-2008 §5.9). In Swift, it is not possible to change the
-> former, but it is possible to choose any rule for the latter.
+> the precision of a given floating-point format (IEEE 754-2008 §4.3), is
+> __not__ necessarily the same as the rounding rule used to round a value to the
+> nearest integer (IEEE 754-2008 §5.9). In Swift, it is not possible to change
+> the former, but it is possible to choose any rule for the latter.
 >
 > Note that __floating-point exceptions__ are to be distinguished from Swift
 > errors and from runtime traps.
@@ -274,7 +275,7 @@ names, and their C standard library overlay names is presented below.
 			<td><code>abs(x)</code><br>
 				&nbsp;&nbsp;<em>or</em><br>
 				<code>x.magnitude</code></td>
-			<td><code>fabs(x)</code></td>
+			<td><em>Unavailable (Swift&nbsp;4.2):</em> <code>fabs(x)</code></td>
 		</tr>
 		<tr>
 			<td>copySign(<em>x</em>, <em>y</em>)</td>
@@ -401,4 +402,4 @@ Next:
 [Concrete binary floating-point types, part 2](floating-point-part-2.md)
 
 _27 February–3 March 2018_  
-_Updated 8 June 2018_
+_Updated 3 August 2018_
