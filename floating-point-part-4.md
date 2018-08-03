@@ -312,6 +312,6 @@ Previous:
 [Concrete binary floating-point types, part 3](floating-point-part-3.md)
 
 Next:  
-Numeric types in Foundation
+[Numeric types in Foundation](numeric-types-in-foundation.md)
 
 _Draft: 9 March–3 August 2018_

@@ -275,7 +275,7 @@ names, and their C standard library overlay names is presented below.
 			<td><code>abs(x)</code><br>
 				&nbsp;&nbsp;<em>or</em><br>
 				<code>x.magnitude</code></td>
-			<td><em>Unavailable (Swift&nbsp;4.2):</em> <code>fabs(x)</code></td>
+			<td><em>Unavailable (Swift 4.2):</em><br><code>fabs(x)</code></td>
 		</tr>
 		<tr>
 			<td>copySign(<em>x</em>, <em>y</em>)</td>
@@ -290,22 +290,22 @@ names, and their C standard library overlay names is presented below.
 		<tr>
 			<td>class(<em>x</em>)</td>
 			<td><code>x.floatingPointClass</code></td>
-			<td><em>Unavailable:</em> <code>fpclassify(x)</code></td>
+			<td><em>Unavailable:</em><br><code>fpclassify(x)</code></td>
 		</tr>
 		<tr>
 			<td>isSignMinus(<em>x</em>)</td>
 			<td><code>x.sign == .minus</code></td>
-			<td><em>Unavailable:</em> <code>signbit(x)</code></td>
+			<td><em>Unavailable:</em><br><code>signbit(x)</code></td>
 		</tr>
 		<tr>
 			<td>isNormal(<em>x</em>)</td>
 			<td><code>x.isNormal</code></td>
-			<td><em>Unavailable:</em> <code>isnormal(x)</code></td>
+			<td><em>Unavailable:</em><br><code>isnormal(x)</code></td>
 		</tr>
 		<tr>
 			<td>isFinite(<em>x</em>)</td>
 			<td><code>x.isFinite</code></td>
-			<td><em>Unavailable:</em> <code>isfinite(x)</code></td>
+			<td><em>Unavailable:</em><br><code>isfinite(x)</code></td>
 		</tr>
 		<tr>
 			<td>isZero(<em>x</em>)</td>
@@ -320,12 +320,12 @@ names, and their C standard library overlay names is presented below.
 		<tr>
 			<td>isInfinite(<em>x</em>)</td>
 			<td><code>x.isInfinite</code></td>
-			<td><em>Unavailable:</em> <code>isinf(x)</code></td>
+			<td><em>Unavailable:</em><br><code>isinf(x)</code></td>
 		</tr>
 		<tr>
 			<td>isNaN(<em>x</em>)</td>
 			<td><code>x.isNaN</code></td>
-			<td><em>Unavailable:</em> <code>isnan(x)</code></td>
+			<td><em>Unavailable:</em><br><code>isnan(x)</code></td>
 		</tr>
 		<tr>
 			<td>isSignaling(<em>x</em>)</td>

@@ -24,7 +24,7 @@ the use of numbers in programming is assumed.
   Signed zero, infinity, and NaN; floating-point remainder; significand
   representation
 
-* __Numeric types in Foundation__  
+* __[Numeric types in Foundation](numeric-types-in-foundation.md)__  
   Decimal, NSNumber
 
 * __Numeric protocols__  

@@ -200,15 +200,20 @@ be used to avoid this double-rounding error for binary floating-point types.
 Since `_MaxBuiltinFloatType` is a __binary__ floating-point type, a decimal
 floating-point type that conforms to the protocol `ExpressibleByFloatLiteral`
 cannot distinguish between two values that have the same binary floating-point
-representation rounded to fit `_MaxBuiltinFloatType`:
+representation when rounded to fit `_MaxBuiltinFloatType`:
 
 ```swift
 import Foundation
 
-Decimal(string: "0.10000000000000001")!.description
-// "0.10000000000000001"
+(0.1 as Decimal).description
+// "0.1"
 (0.10000000000000001 as Decimal).description
 // "0.1"
+
+Decimal(string: "0.1")!.description
+// "0.1"
+Decimal(string: "0.10000000000000001")!.description
+// "0.10000000000000001"
 ```
 
 [ref 13-1]: https://bugs.swift.org/browse/SR-7124
