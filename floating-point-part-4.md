@@ -314,4 +314,5 @@ Previous:
 Next:  
 [Numeric types in Foundation](numeric-types-in-foundation.md)
 
-_Draft: 9 March–3 August 2018_
+_Draft: 9 March–8 June 2018_  
+_Updated 3 August 2018_

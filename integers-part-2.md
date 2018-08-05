@@ -321,7 +321,6 @@ therefore incurs no additional performance cost.
 
 <!--
 > Recommendations:
-> * Complete the set of operators with overflow assignment operators (`&+=`)
 > * Fix overflow-related bugs
 > * Introduce `endian` and `pointerBitWidth` platform conditions
 -->

@@ -59,6 +59,8 @@ import Foundation
 (10 as Decimal).nextUp.description // "20"
 ```
 
+### Float literals (redux)
+
 As previously discussed, initalization of any type conforming to
 `ExpressibleByFloatLiteral` from a float literal involves first initializing a
 value of type `_MaxBuiltinFloatType`, which is a type alias for `Float80` if
@@ -113,7 +115,8 @@ Objective-C:
 `NSNumber` provides, in addition to boxing functionality for Boolean and numeric
 types, functionality to convert among these types. Since not all values are
 representable in all types, conversion is sometimes lossy, resulting in loss of
-precision or entirely erroneous results:
+precision or what Apple documentation calls "erroneous" results (which will be
+explained below):
 
 ```swift
 import Foundation
@@ -156,23 +159,24 @@ When a value `source` of integer type `T` is boxed into an `NSNumber` instance
 `boxed`, the following conversions are possible to an integer type `U`:
 
 1. __`boxed as? U`__  
-   _Failable, equivalent to `U(exactly: boxed)` and `U(exactly: source)`._  
+   _Failable._ Equivalent to `U(exactly: boxed)` and `U(exactly: source)`.  
    Converts the given value if the result can be represented exactly as a value
    of type `U`.  
    Otherwise, returns `nil`.
 
 1. __`U(exactly: boxed)`__  
-   _Failable initializer, equivalent to `boxed as? U` and `U(exactly: source)`._
+   _Failable initializer._ Equivalent to `boxed as? U` and `U(exactly: source)`.
 
 1. __`U(truncating: boxed)`__  
-   _Equivalent to `boxed.{u}int{#}Value` and `U(truncatingIfNeeded: source)`._  
+   Equivalent to `boxed.{int|uint|int8...}Value` and
+   `U(truncatingIfNeeded: source)`.  
    Creates a new value of type `U` from the binary representation in memory of
    `source` (notionally).  
    When `T` and `U` are not of the same bit width, the binary representation of
    `source` is [truncated or sign-extended][ref 4-1] as necessary.  
 
-1. __`boxed.{u}int{#}Value`__ (e.g., `boxed.int64Value`, `boxed.uint64Value`)  
-   _Equivalent to `U(truncating: boxed)` and `U(truncatingIfNeeded: source)`._
+1. __`boxed.{int|uint|int8...}Value`__  
+   Equivalent to `U(truncating: boxed)` and `U(truncatingIfNeeded: source)`.
 
 [ref 4-1]: https://developer.apple.com/documentation/swift/int/2926530-init
 
@@ -183,8 +187,8 @@ instance `boxed`, the following conversions are possible to a floating-point
 type `U`:
 
 1. __`boxed as? U`__  
-   _Failable, __not equivalent__ to `U(exactly: boxed)` and
-   `U(exactly: source)`._  
+   _Failable._ __Not equivalent to `U(exactly: boxed)` and
+   `U(exactly: source)`.__  
    The result of an __inexact__ conversion is either `nil` (if
    [strict][ref 20-5]) or rounded to the nearest representable value (if
    [lenient][ref 20-6]).  
@@ -194,7 +198,7 @@ type `U`:
    The result of converting __NaN__ is `U.nan`.
 
 1. __`U(exactly: boxed)`__  
-   _Failable initializer, equivalent to `U(exactly: source)`._  
+   _Failable initializer._ Equivalent to `U(exactly: source)`.  
    Converts the given value if the result can be represented "exactly" as a
    value of type `U`; any result that is not `nil` can be converted back to a
    value of type `T` that compares equal to `source`.  
@@ -205,7 +209,7 @@ type `U`:
    compares equal to NaN.
 
 1. __`U(truncating: boxed)`__  
-   _Equivalent to `boxed.{float|double}Value` and `U(source)`._  
+   Equivalent to `boxed.{float|double}Value` and `U(source)`.  
    The result of an __inexact__ conversion is rounded to the nearest
    representable value.  
    The result of an __overflowing__ conversion is infinite.  
@@ -215,29 +219,64 @@ type `U`:
    quiet NaN.
 
 1. __`boxed.{float|double}Value`__    
-   _Equivalent to `U(truncating: boxed)` and `U(source)`._
+   Equivalent to `U(truncating: boxed)` and `U(source)`.
 
 [ref 20-5]: https://github.com/apple/swift/commit/956e793ef0814c939ef150536e5d207914eefc91#diff-390bd9aed62915ecd0c43c8d6ecf0e08
 [ref 20-6]: https://github.com/apple/swift/commit/c358afe6555e5e32633e879f96a3664dc7a5f3dc#diff-390bd9aed62915ecd0c43c8d6ecf0e08
 
 ### Conversions between numeric types and Bool
 
-_Incomplete_
+When a value of numeric type is boxed into an `NSNumber` instance `boxed`, the
+following conversions are possible to `Bool`:
 
-### Conversions from integer types to binary floating-point types
+1. __`boxed as? Bool`__  
+   _Failable._ Equivalent to `Bool(exactly: boxed)`.  
+   Converts zero to `false`, one to `true`, and any other value to `nil`.
 
-_Incomplete_
+1. __`Bool(exactly: boxed)`__  
+   _Failable initializer._ Equivalent to `boxed as? Bool`.
 
-### Conversions from binary floating-point types to integer types
+1. __`Bool(truncating: boxed)`__  
+   Equivalent to `boxed.boolValue`.  
+   Converts zero to `false` and almost any other value to `true`; the [__one
+   exception__][ref 20-7] is that `Int64.min` and any value `source` for which
+   `(source as! NSNumber).int64Value == Int64.min` is converted to `false`.
+
+1. __`boxed.boolValue`__  
+   Equivalent to `Bool(truncating: boxed)`.
+
+When a value of type `Bool` is boxed into an `NSNumber` instance `boxed`, the
+following conversions are possible to a numeric type `U`:
+
+1. __`boxed as? U`__  
+   _Spelled as though failable but always succeeds._ Equivalent to
+   `U(exactly: boxed)`.  
+   Converts `false` to zero and `true` to one.
+
+1. __`U(exactly: boxed)`__  
+   _Spelled as failable initializer but always succeeds._ Equivalent to
+   `boxed as? U`.
+
+1. __`U(truncating: boxed)`__  
+   Equivalent to `boxed.{int...float|double}Value`.  
+   Converts `false` to zero and `true` to one.
+
+1. __`boxed.{int...float|double}Value`__  
+   Equivalent to `U(truncating: boxed)`.
+
+[ref 20-7]: https://github.com/apple/swift-corelibs-foundation/blob/8848f6e9ca00fdebd951e5547043d128184570a4/Foundation/NSNumber.swift#L895
+
+### Conversions between integer types and binary floating-point types
 
 _Incomplete_
 
 <!--
-
-  https://github.com/apple/swift-corelibs-foundation/blob/8848f6e9ca00fdebd951e5547043d128184570a4/Foundation/NSNumber.swift#L895
-
-  https://github.com/apple/swift/pull/16022/files
-
+> Recommendations:
+> * Rename `init(truncating:)` to `init(truncatingIfNeeded:)` for integer types
+>   and to `init(_:)` for floating-point types and for `Bool` [reconsider if it
+>   still makes sense after reviewing semantics of integer-to-floating-point and
+>   floating-point-to-integer conversions]
+> * Remove `init(exactly:)` for `Bool`
 -->
 
 ---
@@ -248,4 +287,4 @@ Previous:
 Next:  
 Numeric protocols
 
-_Draft: 3 August 2018_
+_Draft: 3–5 August 2018_

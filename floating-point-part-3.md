@@ -218,7 +218,7 @@ Decimal(string: "0.10000000000000001")!.description
 
 [ref 13-1]: https://bugs.swift.org/browse/SR-7124
 
-## Conversions between floating-point types
+## Conversions among floating-point types
 
 Two different initializers are provided for conversions between standard library
 binary floating-point types. A value of `source` of type `T` can be converted to
@@ -247,7 +247,9 @@ a value of type `U` as follows:
 
 ## Other initializers
 
-<!-- ### Converting from an integer -->
+### Conversions between integer types and floating-point types
+
+_Incomplete_
 
 ### Creating from a string
 
@@ -333,4 +335,4 @@ Next:
 [Concrete binary floating-point types, part 4](floating-point-part-4.md)
 
 _Draft: 27 February–14 March 2018_  
-_Updated 3 August 2018_
+_Updated 5 August 2018_

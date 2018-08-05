@@ -205,7 +205,7 @@ let b = Float80(3.14159265358979323846)
 [ref 3-3]:
 https://github.com/apple/swift/pull/17860
 
-## Conversions between integer types
+## Conversions among integer types
 
 Five different initializers are available to convert between standard library
 integer types. A value `source` of type `T` can be converted to a value of type
@@ -259,4 +259,4 @@ Next:
 [Concrete integer types, part 2](integers-part-2.md)
 
 _27 February–5 March 2018_  
-_Updated 3 August 2018_
+_Updated 5 August 2018_
