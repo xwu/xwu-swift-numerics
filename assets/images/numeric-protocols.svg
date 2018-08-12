@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="767pt" height="332pt" viewBox="0.00 0.00 767.00 332.00">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 328)">
+<title>NumericProtocols</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-328 763,-328 763,4 -4,4"/>
+
+<g id="node1" class="node"><title>Numeric</title>
+<polygon fill="none" stroke="black" points="502.5,-324 433.5,-324 433.5,-288 502.5,-288 502.5,-324"/>
+<text text-anchor="middle" x="468" y="-302.3" font-family="sans-serif" font-size="14.00">Numeric</text>
+</g>
+
+<g id="node2" class="node"><title>SignedNumeric</title>
+<polygon fill="none" stroke="black" points="461.5,-252 348.5,-252 348.5,-216 461.5,-216 461.5,-252"/>
+<text text-anchor="middle" x="405" y="-230.3" font-family="sans-serif" font-size="14.00">SignedNumeric</text>
+</g>
+
+<g id="edge1" class="edge"><title>Numeric-&gt;SignedNumeric</title>
+<path fill="none" stroke="black" d="M452.427,-287.697C444.798,-279.22 435.477,-268.864 427.124,-259.583"/>
+<polygon fill="black" stroke="black" points="429.685,-257.196 420.394,-252.104 424.482,-261.879 429.685,-257.196"/>
+</g>
+
+<g id="node3" class="node"><title>BinaryInteger</title>
+<polygon fill="none" stroke="black" points="603,-180 501,-180 501,-144 603,-144 603,-180"/>
+<text text-anchor="middle" x="552" y="-158.3" font-family="sans-serif" font-size="14.00">BinaryInteger</text>
+</g>
+
+<g id="edge2" class="edge"><title>Numeric-&gt;BinaryInteger</title>
+<path fill="none" stroke="black" d="M478.132,-287.871C492.701,-263.244 519.679,-217.638 536.688,-188.885"/>
+<polygon fill="black" stroke="black" points="539.753,-190.578 541.832,-180.189 533.728,-187.014 539.753,-190.578"/>
+</g>
+
+<g id="node4" class="node"><title>FloatingPoint</title>
+<polygon fill="none" stroke="black" points="317.5,-180 220.5,-180 220.5,-144 317.5,-144 317.5,-180"/>
+<text text-anchor="middle" x="269" y="-158.3" font-family="sans-serif" font-size="14.00">FloatingPoint</text>
+</g>
+
+<g id="edge3" class="edge"><title>SignedNumeric-&gt;FloatingPoint</title>
+<path fill="none" stroke="black" d="M371.731,-215.876C353.537,-206.512 330.809,-194.814 311.36,-184.803"/>
+<polygon fill="black" stroke="black" points="312.89,-181.654 302.397,-180.19 309.687,-187.878 312.89,-181.654"/>
+</g>
+
+<g id="node5" class="node"><title>SignedInteger</title>
+<polygon fill="none" stroke="black" points="467.5,-108 360.5,-108 360.5,-72 467.5,-72 467.5,-108"/>
+<text text-anchor="middle" x="414" y="-86.3" font-family="sans-serif" font-size="14.00">SignedInteger</text>
+</g>
+
+<g id="edge4" class="edge"><title>SignedNumeric-&gt;SignedInteger</title>
+<path fill="none" stroke="black" d="M403.752,-215.895C402.689,-197.944 401.669,-168.924 404,-144 404.797,-135.478 406.3,-126.285 407.903,-117.986"/>
+<polygon fill="black" stroke="black" points="411.355,-118.571 409.941,-108.071 404.499,-117.161 411.355,-118.571"/>
+</g>
+
+<g id="node16" class="node"><title>Complex</title>
+<polygon fill="whitesmoke" stroke="grey" stroke-dasharray="5,2" points="483,-180 413,-180 413,-144 483,-144 483,-180"/>
+<text text-anchor="middle" x="448" y="-158.3" font-family="sans-serif" font-size="14.00" fill="grey">Complex</text>
+</g>
+
+<g id="edge5" class="edge"><title>SignedNumeric-&gt;Complex</title>
+<path fill="none" stroke="grey" stroke-dasharray="5,2" d="M415.629,-215.697C420.628,-207.559 426.691,-197.689 432.212,-188.701"/>
+<polygon fill="grey" stroke="grey" points="435.241,-190.457 437.493,-180.104 429.277,-186.793 435.241,-190.457"/>
+</g>
+
+<g id="edge8" class="edge"><title>BinaryInteger-&gt;SignedInteger</title>
+<path fill="none" stroke="black" d="M518.241,-143.876C499.78,-134.512 476.718,-122.814 456.983,-112.803"/>
+<polygon fill="black" stroke="black" points="458.39,-109.592 447.888,-108.19 455.223,-115.835 458.39,-109.592"/>
+</g>
+
+<g id="node6" class="node"><title>FixedWidthInteger</title>
+<polygon fill="none" stroke="black" points="618.5,-108 485.5,-108 485.5,-72 618.5,-72 618.5,-108"/>
+<text text-anchor="middle" x="552" y="-86.3" font-family="sans-serif" font-size="14.00">FixedWidthInteger</text>
+</g>
+
+<g id="edge9" class="edge"><title>BinaryInteger-&gt;FixedWidthInteger</title>
+<path fill="none" stroke="black" d="M552,-143.697C552,-135.983 552,-126.712 552,-118.112"/>
+<polygon fill="black" stroke="black" points="555.5,-118.104 552,-108.104 548.5,-118.104 555.5,-118.104"/>
+</g>
+
+<g id="node7" class="node"><title>UnsignedInteger</title>
+<polygon fill="none" stroke="black" points="759,-108 637,-108 637,-72 759,-72 759,-108"/>
+<text text-anchor="middle" x="698" y="-86.3" font-family="sans-serif" font-size="14.00">UnsignedInteger</text>
+</g>
+
+<g id="edge10" class="edge"><title>BinaryInteger-&gt;UnsignedInteger</title>
+<path fill="none" stroke="black" d="M587.716,-143.876C607.497,-134.392 632.272,-122.513 653.326,-112.419"/>
+<polygon fill="black" stroke="black" points="654.896,-115.548 662.4,-108.068 651.87,-109.236 654.896,-115.548"/>
+</g>
+
+<g id="node8" class="node"><title>BinaryFloatingPoint</title>
+<polygon fill="none" stroke="black" points="173,-108 37,-108 37,-72 173,-72 173,-108"/>
+<text text-anchor="middle" x="105" y="-86.3" font-family="sans-serif" font-size="14.00">BinaryFloatingPoint</text>
+</g>
+
+<g id="edge6" class="edge"><title>FloatingPoint-&gt;BinaryFloatingPoint</title>
+<path fill="none" stroke="black" d="M228.881,-143.876C206.362,-134.264 178.082,-122.193 154.229,-112.013"/>
+<polygon fill="black" stroke="black" points="155.56,-108.775 144.989,-108.068 152.812,-115.213 155.56,-108.775"/>
+</g>
+
+<g id="node14" class="node"><title>DecimalFloatingPoint</title>
+<polygon fill="none" stroke="grey" stroke-dasharray="5,2" points="342,-108 196,-108 196,-72 342,-72 342,-108"/>
+<text text-anchor="middle" x="269" y="-86.3" font-family="sans-serif" font-size="14.00" fill="grey">DecimalFloatingPoint</text>
+</g>
+
+<g id="edge7" class="edge"><title>FloatingPoint-&gt;DecimalFloatingPoint</title>
+<path fill="none" stroke="grey" stroke-dasharray="5,2" d="M269,-143.697C269,-135.983 269,-126.712 269,-118.112"/>
+<polygon fill="grey" stroke="grey" points="272.5,-118.104 269,-108.104 265.5,-118.104 272.5,-118.104"/>
+</g>
+
+<g id="node9" class="node"><title>Int...</title>
+<polygon fill="lightgrey" stroke="black" points="546,-36 492,-36 492,-0 546,-0 546,-36"/>
+<text text-anchor="middle" x="519" y="-14.3" font-family="sans-serif" font-size="14.00">Int...</text>
+</g>
+
+<g id="edge11" class="edge"><title>SignedInteger-&gt;Int...</title>
+<path fill="none" stroke="black" d="M439.686,-71.8761C453.288,-62.8083 470.172,-51.5523 484.861,-41.7592"/>
+<polygon fill="black" stroke="black" points="486.836,-44.649 493.215,-36.1898 482.953,-38.8246 486.836,-44.649"/>
+</g>
+
+<g id="node17" class="node"><title>BigInt</title>
+<polygon fill="whitesmoke" stroke="grey" stroke-dasharray="5,2" points="441,-36 387,-36 387,-0 441,-0 441,-36"/>
+<text text-anchor="middle" x="414" y="-14.3" font-family="sans-serif" font-size="14.00" fill="grey">BigInt</text>
+</g>
+
+<g id="edge12" class="edge"><title>SignedInteger-&gt;BigInt</title>
+<path fill="none" stroke="grey" stroke-dasharray="5,2" d="M414,-71.6966C414,-63.9827 414,-54.7125 414,-46.1124"/>
+<polygon fill="grey" stroke="grey" points="417.5,-46.1043 414,-36.1043 410.5,-46.1044 417.5,-46.1043"/>
+</g>
+
+<g id="edge13" class="edge"><title>FixedWidthInteger-&gt;Int...</title>
+<path fill="none" stroke="black" d="M543.843,-71.6966C540.086,-63.7284 535.547,-54.0995 531.382,-45.2641"/>
+<polygon fill="black" stroke="black" points="534.494,-43.6571 527.063,-36.1043 528.162,-46.6421 534.494,-43.6571"/>
+</g>
+
+<g id="node10" class="node"><title>UInt...</title>
+<polygon fill="lightgrey" stroke="black" points="673.5,-36 616.5,-36 616.5,-0 673.5,-0 673.5,-36"/>
+<text text-anchor="middle" x="645" y="-14.3" font-family="sans-serif" font-size="14.00">UInt...</text>
+</g>
+
+<g id="edge14" class="edge"><title>FixedWidthInteger-&gt;UInt...</title>
+<path fill="none" stroke="black" d="M574.989,-71.6966C586.814,-62.796 601.392,-51.8232 614.179,-42.1989"/>
+<polygon fill="black" stroke="black" points="616.391,-44.9145 622.276,-36.1043 612.181,-39.3217 616.391,-44.9145"/>
+</g>
+
+<g id="edge15" class="edge"><title>UnsignedInteger-&gt;UInt...</title>
+<path fill="none" stroke="black" d="M684.899,-71.6966C678.609,-63.3893 670.953,-53.2771 664.035,-44.1407"/>
+<polygon fill="black" stroke="black" points="666.777,-41.9642 657.95,-36.1043 661.196,-46.1897 666.777,-41.9642"/>
+</g>
+
+<g id="node11" class="node"><title>Float</title>
+<polygon fill="lightgrey" stroke="black" points="54,-36 0,-36 0,-0 54,-0 54,-36"/>
+<text text-anchor="middle" x="27" y="-14.3" font-family="sans-serif" font-size="14.00">Float</text>
+</g>
+
+<g id="edge16" class="edge"><title>BinaryFloatingPoint-&gt;Float</title>
+<path fill="none" stroke="black" d="M85.7191,-71.6966C76.0846,-63.0503 64.2712,-52.4486 53.773,-43.027"/>
+<polygon fill="black" stroke="black" points="55.8393,-40.1786 46.0591,-36.1043 51.1639,-45.3883 55.8393,-40.1786"/>
+</g>
+
+<g id="node12" class="node"><title>Double</title>
+<polygon fill="lightgrey" stroke="black" points="133.5,-36 72.5,-36 72.5,-0 133.5,-0 133.5,-36"/>
+<text text-anchor="middle" x="103" y="-14.3" font-family="sans-serif" font-size="14.00">Double</text>
+</g>
+
+<g id="edge17" class="edge"><title>BinaryFloatingPoint-&gt;Double</title>
+<path fill="none" stroke="black" d="M104.506,-71.6966C104.285,-63.9827 104.02,-54.7125 103.775,-46.1124"/>
+<polygon fill="black" stroke="black" points="107.273,-46.0003 103.489,-36.1043 100.276,-46.2002 107.273,-46.0003"/>
+</g>
+
+<g id="node13" class="node"><title>Float80</title>
+<polygon fill="lightgrey" stroke="black" points="214,-36 152,-36 152,-0 214,-0 214,-36"/>
+<text text-anchor="middle" x="183" y="-14.3" font-family="sans-serif" font-size="14.00">Float80</text>
+</g>
+
+<g id="edge18" class="edge"><title>BinaryFloatingPoint-&gt;Float80</title>
+<path fill="none" stroke="black" d="M124.281,-71.6966C133.915,-63.0503 145.729,-52.4486 156.227,-43.027"/>
+<polygon fill="black" stroke="black" points="158.836,-45.3883 163.941,-36.1043 154.161,-40.1786 158.836,-45.3883"/>
+</g>
+
+<g id="node15" class="node"><title>Decimal...</title>
+<polygon fill="whitesmoke" stroke="grey" stroke-dasharray="5,2" points="312,-36 232,-36 232,-0 312,-0 312,-36"/>
+<text text-anchor="middle" x="272" y="-14.3" font-family="sans-serif" font-size="14.00" fill="grey">Decimal...</text>
+</g>
+
+<g id="edge19" class="edge"><title>DecimalFloatingPoint-&gt;Decimal...</title>
+<path fill="none" stroke="grey" stroke-dasharray="5,2" d="M269.742,-71.6966C270.072,-63.9827 270.469,-54.7125 270.838,-46.1124"/>
+<polygon fill="grey" stroke="grey" points="274.335,-46.2451 271.267,-36.1043 267.342,-45.9453 274.335,-46.2451"/>
+</g>
+</g>
+</svg>

@@ -27,7 +27,7 @@ the use of numbers in programming is assumed.
 * __[Numeric types in Foundation](numeric-types-in-foundation.md)__  
   Foundation.Decimal, Foundation.NSNumber
 
-* __Numeric protocols__  
+* __[Numeric protocols](numeric-protocols.md)__  
   Introduction, design rationale, generic algorithms, conformance
 
-_27 February–5 August 2018_
+_27 February–11 August 2018_

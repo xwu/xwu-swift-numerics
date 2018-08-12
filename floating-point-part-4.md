@@ -271,7 +271,7 @@ floating-point types:
 > In early versions of Swift, the truncating remainder operation was spelled
 > `%`. However, it was thought that users often used the operator incorrectly,
 > so it was removed from floating-point types in the Swift Evolution proposal
-> [SE-0067: Enhanced floating-point protocols][ref 17-1].
+> [SE-0067: Enhanced floating-point protocols][ref 11-10].
 
 A simple example is sufficient to illustrate the difference between the two
 operations:
@@ -300,7 +300,7 @@ __less than__ the magnitude of the divisor (_y_).
 For both operations, the remainder of dividing an infinite value by any value,
 or of dividing any value by zero, is NaN.
 
-[ref 17-1]: https://github.com/apple/swift-evolution/blob/master/proposals/0067-floating-point-protocols.md
+[ref 11-10]: https://github.com/apple/swift-evolution/blob/master/proposals/0067-floating-point-protocols.md
 
 ## Significand representation
 

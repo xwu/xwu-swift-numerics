@@ -13,15 +13,17 @@ properties of `Decimal` are defined in swift-corelibs-foundation as follows:
 
 ```swift
 public struct Decimal {
-  fileprivate var __exponent: Int8
-  fileprivate var __lengthAndFlags: UInt8
-  fileprivate var __reserved: UInt16
-  public var _mantissa:
-    (UInt16, UInt16, UInt16, UInt16, UInt16, UInt16, UInt16, UInt16)
+    /* ... */
+    fileprivate var __exponent: Int8
+    fileprivate var __lengthAndFlags: UInt8
+    fileprivate var __reserved: UInt16
+    /* ... */
+    public var _mantissa: (UInt16, UInt16, UInt16, UInt16, UInt16, UInt16, UInt16, UInt16)
+    /* ... */
 }
 ```
 
-The purpose of this discussion is not to rehash the existing documentation, but
+The purpose of this discussion is not to rehash the existing documentation but
 to place this type in the context of Swift's other numeric types and protocols.
 
 Many methods available on `Float` and `Double` are also available on `Decimal`.
@@ -285,6 +287,6 @@ Previous:
 [Concrete binary floating-point types, part 4](floating-point-part-4.md)
 
 Next:  
-Numeric protocols
+[Numeric protocols](numeric-protocols.md)
 
 _Draft: 3–5 August 2018_

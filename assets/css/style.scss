@@ -28,11 +28,13 @@ header a {
 	text-decoration: inherit;
 }
 
+/*
 #wrapper {
 }
 
 nav {
 }
+*/
 
 article, footer {
 	width: 600px;
@@ -44,6 +46,11 @@ article {
 	border-top: 1px solid rgba(55, 78, 90, 0.5);
 	border-bottom: 1px solid rgba(55, 78, 90, 0.5);
 	margin: 23px auto;
+}
+
+article img {
+	max-width: 100%;
+	margin: 0 auto;
 }
 
 footer {
