@@ -139,13 +139,19 @@ _Incomplete_
 
 ## Conformance
 
+<!--
+Discuss methods guaranteed at each level of the hierarchy, what must be
+implemented, and what cannot be overridden because they are exclusively protocol
+extension methods.
+-->
+
 ### Unintentional recursive implementations
 
 _Incomplete_
 
 <!--
 ### Floating-point semantics
-Reiterate why `Foundation.Decimal` can't conform to `FloatingPoint`
+Reiterate why `Foundation.Decimal` can't conform to `FloatingPoint`.
 -->
 
 ---
