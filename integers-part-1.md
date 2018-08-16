@@ -109,8 +109,8 @@ operator `-` with `42` as its operand.
 > change the sign.
 
 Note that the Swift standard library defines the prefix operator `+` for
-symmetry but does __not__ consider a prepended `+` to be part of an integer
-literal. Therefore, `+42` __is__ lexed as a call to the prefix operator `+` with
+symmetry but does _not_ consider a prepended `+` to be part of an integer
+literal. Therefore, `+42` _is_ lexed as a call to the prefix operator `+` with
 `42` as its operand.
 
 In spite of these considerations, the member expression dot operator (`.`) binds
@@ -153,13 +153,13 @@ let x = 42
 type(of: x) // Int32
 ```
 
-> The following caveat applies to current versions of Swift. It __will not__
+> __The following caveat applies to current versions of Swift. It will _not_
 > be applicable after changes described in [SE-0213: Integer initialization via
 > coercion][ref 3-2], which was [implemented in July 2018][ref 3-3], are
-> included in a future Swift release.
+> included in a future Swift release.__
 
-__A frequent misunderstanding__ found even in the Swift project itself concerns
-the use of a __type conversion__ initializer to indicate the desired type of a
+A frequent misunderstanding found even in the Swift project itself concerns the
+use of a __type conversion__ initializer to indicate the desired type of a
 literal expression. For example:
 
 ```swift
@@ -168,9 +168,9 @@ let x = Int8(42)
 ```
 
 This usage frequently gives the intended result, but the function call does
-__not__ provide information for type inference. Instead, this statement creates
-an instance of type `IntegerLiteralType` (which again, by default, is a type
-alias for `Int`) with the value `42`, then __converts__ this value to `Int8`.
+_not_ provide information for type inference. Instead, this statement creates an
+instance of type `IntegerLiteralType` (which again, by default, is a type alias
+for `Int`) with the value `42`, then _converts_ this value to `Int8`.
 
 The distinction can be demonstrated as follows:
 
@@ -248,11 +248,10 @@ In previous versions of Swift, the same initializer was named
 lossy semantics of truncation over the lossless semantics of sign-extension.
 
 Indeed, if `T.bitWidth < U.bitWidth`, then
-`U(truncatingIfNeeded: source) == source` __except in one scenario__:
-
-If `source < 0` and `U` is an __unsigned__ type, the binary representation of
-`source` is padded with leading one bits and the result of
-`U(truncatingIfNeeded: source)` is equivalent to
+`U(truncatingIfNeeded: source) == source` except in one scenario: __If
+`source < 0` and `U` is an _unsigned_ type, the binary representation of
+`source` is padded with leading one bits (i.e., sign-extended).__ In that
+scenario, the result of `U(truncatingIfNeeded: source)` is equivalent to
 `0 &- U(truncatingIfNeeded: -source)`.
 
 ---

@@ -7,7 +7,7 @@ In C, operators evolved over time, and [their precedence is a product of that
 historical legacy][ref 5-1]. C++, Java, and other "C family" languages have
 generally preserved the relative precedence of operators found in C.
 
-In Swift, however, operator precedence has been rationalized. The resulting
+__In Swift, operator precedence has been rationalized.__ The resulting
 [precedence table][ref 5-2] is similar to [that of Go][ref 5-3]. Consequently,
 an integer expression in Swift can appear to be similar to an expression in
 another language but evaluate quite differently:
@@ -24,23 +24,23 @@ v = v + (v >> 4) & 0x0F0F0F0F
 // In JavaScript, `v` is equal to 12.
 ```
 
-The relative precedence of infix operators __common to both C and Swift__ can be
+The relative precedence of _infix operators common to both C and Swift_ can be
 compared as follows:
 
-| C                                                     | Swift                                                 |
-|:-----------------------------------------------------:|:-----------------------------------------------------:|
-|                                                       | `<<` `>>`                                             |
-| `*` `/` `%`                                           | `*` `/` `%` `&`                                       |
-| `+` `-`                                               | `+` `-` `^` <code class="manual-escape">&#124;</code> |
-| `<<` `>>`                                             |                                                       |
-| `<` `<=` `>` `>=`                                     | `<` `<=` `>` `>=` `==` `!=`                           |
-| `==` `!=`                                             |                                                       |
-| `&`                                                   |                                                       |
-| `^`                                                   |                                                       |
-| <code class="manual-escape">&#124;</code>             |                                                       |
-| `&&`                                                  | `&&` <code class="manual-escape">&#124;&#124;</code>  |
-| <code class="manual-escape">&#124;&#124;</code>       |                                                       |
-| `=` `*=` `/=` `%=` `+=` `-=` `<<=` `>>=` `&=` `^=` <code class="manual-escape">&#124;=</code> | `=` `*=` `/=` `%=` `+=` `-=` `<<=` `>>=` `&=` `^=` <code class="manual-escape">&#124;=</code> |
+| C                                               | Swift                                                        |
+|:-----------------------------------------------:|:------------------------------------------------------------:|
+|                                                 | `<<   >>`                                                    |
+| `*   /   %`                                     | `*   /   %   &`                                              |
+| `+   -`                                         | <code class="manual-escape">+   -   ^   &#124;</code>        |
+| `<<   >>`                                       |                                                              |
+| `<   <=   >   >=`                               | `<   <=   >   >=   ==   !=`                                  |
+| `==   !=`                                       |                                                              |
+| `&`                                             |                                                              |
+| `^`                                             |                                                              |
+| <code class="manual-escape">&#124;</code>       |                                                              |
+| `&&`                                            | <code class="manual-escape">&amp;&amp;   &#124;&#124;</code> |
+| <code class="manual-escape">&#124;&#124;</code> |                                                              |
+| `=` _and other assignment operators_            | `=` _and other assignment operators_                         |
 
 [ref 5-1]: https://www.lysator.liu.se/c/dmr-on-or.html
 [ref 5-2]: https://developer.apple.com/documentation/swift/operator_declarations
@@ -72,16 +72,16 @@ A runtime error also occurs in case of overflow in methods such as:
 
 ### Absolute value and magnitude
 
-In Swift, `abs(_:)` returns a value of the __same type__ as the argument.
+In Swift, `abs(_:)` returns a value of the _same type_ as the argument.
 Specifically, the function returns the absolute value of the argument.
 Therefore, for a signed (and fixed-width) integer type `T`, a runtime error
 occurs when evaluating `abs(T.min)` because the result cannot be represented in
 `T`.
 
 By contrast, evaluating `T.min.magnitude` does not cause a runtime error.
-However, the value is not always of type `T` but rather of the __associated
-type__ `T.Magnitude`. For a signed type, `T.Magnitude` is the unsigned type of
-the same bit width; for an unsigned type, `T.Magnitude == T`.
+However, the value is not always of type `T` but rather of the _associated type_
+`T.Magnitude`. For a signed type, `T.Magnitude` is the unsigned type of the same
+bit width; for an unsigned type, `T.Magnitude == T`.
 
 ### Overflow operators
 
@@ -103,7 +103,7 @@ these operations is fully defined for both unsigned and signed integer types.
 > `&-=`, and `&*=`) were [added to Swift][ref 6-5]. They are, of course,
 > "wrapping" counterparts to assignment operators spelled without a leading `&`.
 
-> The overflow operators `&/` and `&%` were [removed in Swift 1.2][ref 6-6]
+> The "overflow" operators `&/` and `&%` were [removed in Swift 1.2][ref 6-6]
 > because they did not provide two's-complement behavior like other overflow
 > operators.
 
@@ -216,9 +216,9 @@ Evaluating `x % 0` results in a division-by-zero error.
 
 Every integer value has the instance property `bitWidth`, which is the number of
 bits in the binary representation of the value. All standard library integer
-types have a fixed bit width; fixed-width integer types have a __static__
-property `bitWidth` which, unsurprisingly, is equal to the instance property
-`bitWidth` for any value of that type.
+types have a fixed bit width; fixed-width integer types have a _static_ property
+`bitWidth` which, unsurprisingly, is equal to the _instance_ property `bitWidth`
+for any value of that type.
 
 > In generic code, it can be useful to work with the bit width of a fixed-width
 > integer type without having to instantiate an instance of that type. A key
@@ -334,4 +334,4 @@ Next:
 [Concrete binary floating-point types, part 1](floating-point-part-1-rev-1.md)
 
 _27 February–10 March 2018_  
-_Updated 3 August 2018_
+_Updated 15 August 2018_
