@@ -15,35 +15,37 @@ public struct UInt8 /* ... */ {
 }
 ```
 
+Four signed types are of explicit bit width (`Int8`, `Int16`, `Int32`, `Int64`),
+as are four unsigned types (`UInt8`, `UInt16`, `UInt32`, `UInt64`). [LLVM does
+support 128-bit integer types on all platforms][ref 1-2], but this support is
+not surfaced by the Swift standard library.
+
 One signed type, `Int`, and one unsigned type, `UInt`, each has bit width equal
-to the platform's native word size. It is possible to determine the bit width of
-`Int` or `UInt` via the static or instance property named `bitWidth`, but there
-is no platform condition available in Swift to evaluate pointer bit width at
-compile time.
+to the platform's native word size.
 
-The four remaining signed types are of explicit bit width (`Int8`, `Int16`,
-`Int32`, `Int64`), as are the four remaining unsigned types (`UInt8`, `UInt16`,
-`UInt32`, `UInt64`). [LLVM does support 128-bit integer types on all
-platforms][ref 1-2], but this support is not surfaced by the Swift standard
-library.
+> It is possible to determine the bit width of `Int` or `UInt` via the static or
+> instance property named `bitWidth`, but there is no platform condition
+> available in Swift to evaluate pointer bit width at compile time.
 
-The built-in standard library integer types simultaneously model integers and
-the sequences of bits that are used to represent them. In other words, some
-functions (such as those that perform basic arithmetic) operate on the integer
-value that is represented, while other functions operate on the binary
-representation of those values.
+__Standard library integer types simultaneously model integers and the sequences
+of bits that are used to represent them.__ In other words, some functions (such
+as those that perform basic arithmetic) operate on the integer value that is
+represented, while other functions operate on the [two's complement][ref 1-3]
+binary representation of those values.
 
-All built-in standard library integer types use [two's complement][ref 1-3]
-representation for signed values, although standard library protocols don't
-preclude a hypothetical arbitrary-width integer type ("BigInt") from using
-[sign-and-magnitude][ref 1-4] or another representation internally.
+All built-in standard library integer types use two's complement representation
+internally for signed values. However, standard library protocols don't preclude
+a hypothetical arbitrary-width integer type ("BigInt") from using
+[sign-and-magnitude][ref 1-4] or another representation _internally_, as long as
+bit shifting and bitwise operations notionally manipulate the two's complement
+representation of any values.
 
 The basic arithmetic infix operators `+`, `-`, `*`, `/`, `%`, and the prefix
 operator `-`, have behavior that will be largely familiar to users of other "C
 family" languages. __In Swift, however, these operators trap on integer
 overflow.__ It can sometimes be overlooked that `-T.min` overflows if `T` is a
-signed (and fixed-width) integer type. As will be discussed below, other
-functions are available that provide alternative overflow behavior.
+signed (and fixed-width) integer type. As we will discuss, other functions are
+available that provide alternative overflow behavior.
 
 Each of the basic arithmetic operators have a corresponding mutating (in-place)
 counterpart. For the infix operators, those are the assignment operators `+=`,
@@ -69,7 +71,7 @@ let z = 0o52      // Octal (base 8).
 let a = 0x2a      // Hexadecimal (base 16).
 ```
 
-In Swift, leading zeros do not affect the base of an integer literal or its
+In Swift, leading zeros don't affect the base of an integer literal or its
 represented value. Underscores (`_`) can be used to group digits in numeric
 literals (e.g., `100_000_000`); they too have no effect on the value that is
 represented. 
@@ -84,10 +86,9 @@ Negative values can be represented by prepending the hyphen-minus character
 expression `-42` is lexed as a single value, not as a call to the prefix
 operator `-` with `42` as its operand.
 
-> Should a distinction become necessary, the expression `-(42)` is lexed as a
-> call to the prefix operator `-`. The distinction can be observed when negating
-> a literal `0` while working with floating-point types that support distinct
-> representations for `+0.0` and `-0.0`:
+> By contrast, the expression `-(42)` is lexed as a call to the prefix operator
+> `-`. The distinction can be observed when working with floating-point types
+> that support distinct representations for `+0.0` and `-0.0`:
 >
 > ```swift
 > let x: Double = -0
@@ -97,12 +98,12 @@ operator `-` with `42` as its operand.
 > y.sign // .minus
 > ```
 >
-> In the top example, a built-in 2048-bit integer is initialized to the value
+> In the first example, a built-in 2048-bit integer is initialized to the value
 > `-0`, but integer types do not support signed zero and the sign is ignored.
 > Then, based on the type annotation, the integer value is converted to a
 > positive floating-point value.
 >
-> In the bottom example, a built-in 2048-bit integer is initialized to the value
+> In the second example, a built-in 2048-bit integer is initialized to the value
 > `0`. Based on the type annotation, the value is converted to a positive
 > floating-point value, then the floating-point prefix operator `-` is called to
 > change the sign.
@@ -202,8 +203,7 @@ let b = Float80(3.14159265358979323846)
 
 [ref 3-1]: https://github.com/apple/swift-evolution/blob/master/proposals/0083-remove-bridging-from-dynamic-casts.md
 [ref 3-2]: https://github.com/apple/swift-evolution/blob/master/proposals/0213-literal-init-via-coercion.md
-[ref 3-3]:
-https://github.com/apple/swift/pull/17860
+[ref 3-3]: https://github.com/apple/swift/pull/17860
 
 ## Conversions among integer types
 
@@ -212,14 +212,14 @@ integer types. A value `source` of type `T` can be converted to a value of type
 `U` as follows:
 
 1. __`U(source)`__  
-   Converts the given value if the result can be represented exactly as a value
-   of type `U`.  
+   Converts the given value if it can be represented exactly as a value of type
+   `U`.  
    Otherwise, a runtime error occurs.
 
 1. __`U(exactly: source)`__  
    _Failable initializer._  
-   Converts the given value if the result can be represented exactly as a value
-   of type `U`.  
+   Converts the given value if it can be represented exactly as a value of type
+   `U`.  
    Otherwise, returns `nil`.
 
 1. __`U(clamping: source)`__  
@@ -248,9 +248,11 @@ In previous versions of Swift, the same initializer was named
 lossy semantics of truncation over the lossless semantics of sign-extension.
 
 Indeed, if `T.bitWidth < U.bitWidth`, then
-`U(truncatingIfNeeded: source) == source` __except in one scenario__: If
-`source < 0` and `U` is an __unsigned__ type, the binary representation of
-`source` is padded with leading one bits and the result is equivalent to
+`U(truncatingIfNeeded: source) == source` __except in one scenario__:
+
+If `source < 0` and `U` is an __unsigned__ type, the binary representation of
+`source` is padded with leading one bits and the result of
+`U(truncatingIfNeeded: source)` is equivalent to
 `0 &- U(truncatingIfNeeded: -source)`.
 
 ---
@@ -259,4 +261,4 @@ Next:
 [Concrete integer types, part 2](integers-part-2.md)
 
 _27 February–5 March 2018_  
-_Updated 5 August 2018_
+_Updated 15 August 2018_
