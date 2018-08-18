@@ -27,7 +27,7 @@ The purpose of this discussion is not to rehash the existing documentation but
 to place this type in the context of Swift's other numeric types and protocols.
 
 Many methods available on `Float` and `Double` are also available on `Decimal`.
-However, `Decimal` does not __and cannot__ conform to `FloatingPoint` because it
+However, `Decimal` does not _and cannot_ conform to `FloatingPoint` because it
 does not adhere to all of the requirements of that protocol (which align with
 IEEE 754 requirements). For example, __`Decimal` has no representation for
 negative zero or infinity__.
@@ -37,11 +37,11 @@ arithmetic operations using a specified rounding mode (`Decimal.RoundingMode`)
 and return a result signaling loss of precision, overflow, underflow, or other
 errors (`Decimal.CalculationError`).
 
-(A rounding __mode__ to fit a result to a given precision is not necessarily the
+(A __rounding mode__ to fit a result to a given precision is not necessarily the
 same as a rounding rule for rounding a value to the nearest integer. Recall that
-Swift provides no way to use a dynamic rounding __mode__ for calculations
-involving binary floating-point types, and that Swift provides no way to
-interrogate the global flags that signal binary floating-point exceptions.)
+Swift provides no way to use a dynamic rounding mode for calculations involving
+binary floating-point types, and that Swift provides no way to interrogate the
+global flags that signal binary floating-point exceptions.)
 
 Facilities not yet available on `Decimal` include instance methods such as
 `addingProduct(_:_:)`, `remainder(dividingBy:)`,
@@ -50,9 +50,9 @@ static methods such as `minimum(_:_:)` and `maximum(_:_:)`.
 
 Because the significand of a `Decimal` value is represented differently than
 that of a binary floating-point value, the unit in the last place (or __ulp__)
-of a `Decimal` value is __not__ equivalent to the distance between itself and
-the nearest representable value greater in magnitude, and the properties
-`nextUp` and `nextDown` consequently do not behave as documented at present:
+of a `Decimal` value is _not_ equivalent to the distance between itself and the
+nearest representable value greater in magnitude, and the properties `nextUp`
+and `nextDown` consequently do not behave as documented at present:
 
 ```swift
 import Foundation
@@ -60,6 +60,11 @@ import Foundation
 (10 as Decimal).ulp.description    // "10"
 (10 as Decimal).nextUp.description // "20"
 ```
+
+> Note that addition and subtraction of `Decimal` values produced erroneous
+> results on Linux prior to [Swift 4.1.3][ref 19-1].
+
+[ref 19-1]: https://bugs.swift.org/browse/SR-7650
 
 ### Float literals (redux)
 
@@ -69,7 +74,7 @@ value of type `_MaxBuiltinFloatType`, which is a type alias for `Float80` if
 supported and `Double` otherwise, and then converting that value to the desired
 type.
 
-Since `_MaxBuiltinFloatType` is a __binary__ floating-point type, a decimal
+Since `_MaxBuiltinFloatType` is a _binary_ floating-point type, a _decimal_
 floating-point type that conforms to the protocol `ExpressibleByFloatLiteral`
 cannot distinguish between two values that have the same binary floating-point
 representation when rounded to fit `_MaxBuiltinFloatType`:
@@ -87,11 +92,6 @@ Decimal(string: "0.1")!.description
 Decimal(string: "0.10000000000000001")!.description
 // "0.10000000000000001"
 ```
-
-> Note that addition and subtraction of `Decimal` values produced erroneous
-> results on Linux prior to [Swift 4.1.3][ref 19-1].
-
-[ref 19-1]: https://bugs.swift.org/browse/SR-7650
 
 ## Foundation.NSNumber
 
@@ -162,8 +162,8 @@ When a value `source` of integer type `T` is boxed into an `NSNumber` instance
 
 1. __`boxed as? U`__  
    _Failable._ Equivalent to `U(exactly: boxed)` and `U(exactly: source)`.  
-   Converts the given value if the result can be represented exactly as a value
-   of type `U`.  
+   Converts the given value if it can be represented exactly as a value of type
+   `U`.  
    Otherwise, returns `nil`.
 
 1. __`U(exactly: boxed)`__  
@@ -201,9 +201,9 @@ type `U`:
 
 1. __`U(exactly: boxed)`__  
    _Failable initializer._ Equivalent to `U(exactly: source)`.  
-   Converts the given value if the result can be represented "exactly" as a
-   value of type `U`; any result that is not `nil` can be converted back to a
-   value of type `T` that compares equal to `source`.  
+   Converts the given value if it can be represented exactly as a value of type
+   `U`; any result that is not `nil` can be converted back to a value of type
+   `T` that compares equal to `source`.  
    The result of an __inexact__ conversion is `nil`.  
    The result of an __overflowing__ conversion is `nil`.  
    The result of an __underflowing__ conversion is `nil`.  
@@ -240,9 +240,9 @@ following conversions are possible to `Bool`:
 
 1. __`Bool(truncating: boxed)`__  
    Equivalent to `boxed.boolValue`.  
-   Converts zero to `false` and almost any other value to `true`; the [__one
-   exception__][ref 20-7] is that `Int64.min` and any value `source` for which
-   `(source as! NSNumber).int64Value == Int64.min` is converted to `false`.
+   Converts zero to `false` and almost any other value to `true`; [_the one
+   exception_][ref 20-7] is that `Int64.min` and any value `source` for which
+   `(source as! NSNumber).int64Value == Int64.min` are converted to `false`.
 
 1. __`boxed.boolValue`__  
    Equivalent to `Bool(truncating: boxed)`.
@@ -289,4 +289,5 @@ Previous:
 Next:  
 [Numeric protocols](numeric-protocols.md)
 
-_Draft: 3–5 August 2018_
+_Draft: 3–5 August 2018_  
+_Updated 18 August 2018_

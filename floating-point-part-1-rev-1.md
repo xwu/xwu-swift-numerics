@@ -47,17 +47,18 @@ implementation faithful to the [IEEE 754][ref 11-5] technical standard.
 > A full overview of IEEE 754 is well beyond the scope of this article; some key
 > aspects of the standard are as follows:
 >
-> * Data types are able to represent NaN ("not a number"), positive and negative
->   infinity, and [subnormal numbers][ref 11-6] that are very close to zero. 
+> * Data types are able to represent __NaN__ ("not a number"), positive and
+>   negative infinity, and [__subnormal numbers__][ref 11-6] that are very close
+>   to zero. 
 >
 > * Addition, subtraction, multiplication, division, and square root are
->   required operations that must be _correctly rounded_; that is, the result
+>   required operations that must be __correctly rounded__; that is, the result
 >   must be the representable value closest to the exact mathematical answer,
->   rounded according to the chosen rounding mode.
+>   rounded according to the chosen __rounding mode__.
 >
-> * There are five types of exceptions—invalid, division by zero, overflow,
->   underflow, and inexact—which (controversially) are to be logged using global
->   flags.
+> * There are five types of __floating-point exceptions__--invalid, division by
+>   zero, overflow, underflow, and inexact--which (controversially) are to be
+>   logged using global flags.
 >
 > * A large set of functions (such as sine and cosine) are recommended but not
 >   required.
@@ -72,10 +73,10 @@ exception behavior, nor is it possible to interrogate floating-point status
 flags. (Such limitations are [also found in Rust][ref 11-8].)
 
 > Note that the __rounding mode__, or the rounding rule used to fit a result to
-> the precision of a given floating-point format (IEEE 754-2008 §4.3), is
-> __not__ necessarily the same as the rounding rule used to round a value to the
-> nearest integer (IEEE 754-2008 §5.9). In Swift, it is not possible to change
-> the former, but it is possible to choose any rule for the latter.
+> the precision of a given floating-point format (IEEE 754-2008 §4.3), is _not_
+> necessarily the same as the rounding rule used to round a value to the nearest
+> integer (IEEE 754-2008 §5.9). In Swift, it is not possible to change the
+> former, but it is possible to choose any rule for the latter.
 >
 > Note that __floating-point exceptions__ are to be distinguished from Swift
 > errors and from runtime traps.
@@ -406,4 +407,4 @@ Next:
 [Concrete binary floating-point types, part 2](floating-point-part-2.md)
 
 _27 February–3 March 2018_  
-_Updated 3 August 2018_
+_Updated 18 August 2018_

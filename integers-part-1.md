@@ -114,8 +114,7 @@ literal. Therefore, `+42` _is_ lexed as a call to the prefix operator `+` with
 `42` as its operand.
 
 In spite of these considerations, the member expression dot operator (`.`) binds
-more tightly than both the prefix operator `-` and the prepended literal `-`.
-For example:
+more tightly than both the prefix operator `-` and the prepended literal `-`:
 
 ```swift
 -(42.trailingZeroBitCount) // -1
@@ -137,7 +136,7 @@ let x: Int8 = 42
 
 Besides using an explicit type annotation, the __type coercion__ operator `as`
 [(which is to be distinguished from __dynamic cast__ operators `as?`, `as!`, and
-`is`)][ref 3-1] can be used to provide information for type inference.
+`is`)][ref 3-1] can be used to provide information for type inference:
 
 ```swift
 let x = 42 as Int8
@@ -189,9 +188,9 @@ let z = Int16(32768)
 // Not enough bits to represent a signed value
 ```
 
-Differences in diagnostics are unlikely to be of interest to most users.
-However, the same misunderstanding with floating-point types can produce
-different results due to unintended rounding error:
+Differences in diagnostics might be uninteresting to many users. However, the
+same misunderstanding with floating-point types can produce different results
+due to unintended rounding error:
 
 ```swift
 let a = 3.14159265358979323846 as Float80
@@ -245,13 +244,12 @@ integer types. A value `source` of type `T` can be converted to a value of type
 
 In previous versions of Swift, the same initializer was named
 `init(extendingOrTruncating:)`. It was renamed to emphasize the potentially
-lossy semantics of truncation over the lossless semantics of sign-extension.
+_lossy_ semantics of truncation over the _lossless_ semantics of sign-extension.
 
-Indeed, if `T.bitWidth < U.bitWidth`, then
-`U(truncatingIfNeeded: source) == source` except in one scenario: __If
-`source < 0` and `U` is an _unsigned_ type, the binary representation of
-`source` is padded with leading one bits (i.e., sign-extended).__ In that
-scenario, the result of `U(truncatingIfNeeded: source)` is equivalent to
+However, sign-extension produces what may be an unexpected result in one
+scenario: given a value `source` of type `T`, if `source < 0`,
+`T.bitWidth < U.bitWidth`, and `U` is an _unsigned_ type, the result of
+`U(truncatingIfNeeded: source)` is equivalent to
 `0 &- U(truncatingIfNeeded: -source)`.
 
 ---
@@ -260,4 +258,4 @@ Next:
 [Concrete integer types, part 2](integers-part-2.md)
 
 _27 February–5 March 2018_  
-_Updated 15 August 2018_
+_Updated 18 August 2018_

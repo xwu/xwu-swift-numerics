@@ -4,8 +4,8 @@ Concrete binary floating-point types, part 2
 ## Floating-point precision
 
 Swift's floating-point types are intended to model the real numbers, but (as
-with all such models) it is inexact; in fact, almost all real numbers cannot be
-represented exactly in binary floating-point format.
+with all such models) it is inexact. In fact, [almost all][ref 12-1] real
+numbers cannot be represented exactly in binary floating-point format.
 
 > _Background:_
 >
@@ -24,7 +24,7 @@ real numbers are as follows:
 > __Binary floating point__  
 > Pro: represents modest integers exactly, extremely fast hardware
 > implementations, fixed memory size, and rounding errors are extremely
-> uniform—they don't vary much with the number being represented.  
+> uniform--they don't vary much with the number being represented.  
 > Con: almost no decimal fractions have exact representations.
 >
 > __Decimal floating point__  
@@ -62,6 +62,7 @@ Third-party libraries can provide a [fixed-width rational type][ref 12-5], and
 existing libraries with C interfaces can be wrapped to provide an
 arbitrary-precision rational type (or one can be implemented natively in Swift).
 
+[ref 12-1]: https://en.wikipedia.org/wiki/Almost_all
 [ref 12-2]: https://forums.swift.org/t/provide-native-decimal-data-type/4003/4
 [ref 12-3]: http://speleotrove.com/decimal/decnumber.html
 [ref 12-4]: http://www.netlib.org/misc/intel/
@@ -72,8 +73,7 @@ arbitrary-precision rational type (or one can be implemented natively in Swift).
 > _Background:_
 >
 > As would occur in any other language, repeated addition of a `stride` amount
-> to a binary floating-point value can cause accumulation of rounding error. For
-> instance:
+> to a binary floating-point value can cause accumulation of rounding error:
 > 
 > ``` swift
 > let stride = 0.1
@@ -103,7 +103,7 @@ include the value `1.0`.
 
 Despite avoiding accumulated rounding error from repeated addition, the
 expression `-0.2 + 6.0 * 0.2` evaluates to `1.0000000000000002` due to
-intermediate rounding error.
+__intermediate rounding error__.
 
 The IEEE 754 operation __fusedMultiplyAdd__ allows the same computation to be
 performed in one step with a single rounding, improving the accuracy of the
@@ -127,10 +127,10 @@ use the fused multiply-add operation, the sequence
 > Swift standard library in [late 2017][ref 12-6].
 
 __A caveat about fused multiply-add operations:__ Although eliminating
-intermediate rounding can improve the accuracy of results, it is not always the
-case that an algorithm will benefit from its use. [William Kahan points
-out][ref 12-7] that, for a sufficiently large value `x`, we can observe a
-surprising result:
+intermediate rounding can improve the accuracy of results, it's not always the
+case that an algorithm will benefit from its use. [As William Kahan points
+out][ref 12-7], for a sufficiently large value `x`, we can see a surprising
+result:
 
 ```swift
 let x = 9007199254740991.0
@@ -138,7 +138,7 @@ let x = 9007199254740991.0
 (x * x).addingProduct(-x, x).squareRoot() // nan
 ```
 
-The second result is not zero because `x * x` cannot be represented exactly as a
+The second result isn't zero because `x * x` cannot be represented exactly as a
 value of type `Double`. In fact, `(x * x).addingProduct(-x, x)` actually
 computes the amount by which `x * x` is inexact. Since `x * x` is rounded down,
 the amount of inexactness is negative and its square root is not a number.
@@ -162,21 +162,21 @@ However, `greatestFiniteMagnitude.ulp` is finite even though the nearest
 representable value greater in magnitude than `greatestFiniteMagnitude` is
 `infinity`.
 
+In Swift, the `ulp` of a non-finite value (whether infinite or NaN) is NaN. In
+Java, by contrast, `Math.ulp(Double.POSITIVE_INFINITY)` evaluates to positive
+infinity, and the same result is obtained when using negative infinity as the
+argument.
+
 As previously mentioned, the Swift equivalent to the C constants known as
 `FLT_EPSILON` and `DBL_EPSILON` is a static property named `ulpOfOne`. That
 name was chosen in order to prevent confusion surrounding the definition and
 proper usage of the property. As the name suggests, `T.ulpOfOne` is equivalent
 to `(1 as T).ulp` for any floating-point type `T`.
 
-In Swift, the `ulp` of a non-finite value (whether infinite or NaN) is NaN. In
-Java, by contrast, `Math.ulp(Double.POSITIVE_INFINITY)` evaluates to positive
-infinity, and the same result is obtained when using negative infinity as the
-argument.
-
 ### Approximating π
 
 In Swift, each floating-point type has a static property `pi` that provides the
-value for π at its best possible precision, accurately __rounded toward zero__.
+value for π at its best possible precision, accurately _rounded toward zero_.
 
 The purpose of rounding toward zero is to avoid angles computed in radians
 from being rounded to a different quadrant. As a consequence,
@@ -184,7 +184,7 @@ from being rounded to a different quadrant. As a consequence,
 
 > It so happens that rounding π to the nearest representable value of type
 > `Double` is equivalent to rounding π toward zero. However, rounding π to the
-> nearest representable value of type `Float` is __not__ equivalent to rounding
+> nearest representable value of type `Float` is _not_ equivalent to rounding
 > π toward zero.
 
 ### Subnormal values on 32-bit ARM
@@ -193,8 +193,8 @@ from being rounded to a different quadrant. As a consequence,
 >
 > In the gap between zero and 2<sup><em>emin</em></sup>, where _emin_ is the
 > minimum supported exponent of a binary floating-point type, a set of linearly
-> spaced [__subnormal__ (or denormal) values][ref 12-8] can be represented,
-> using a different binary representation than that of __normal__ finite values.
+> spaced [__subnormal__ (or denormal) values][ref 12-8] are representable using
+> a different binary representation than that of __normal__ finite values.
 >
 > On 32-bit ARMv7, the vector floating-point (VFP) co-processor supports a
 > __flush-to-zero (FZ) mode__ for floating-point operations that is not
@@ -208,8 +208,8 @@ assembler; however, doing so has a negative effect on performance. As Swift does
 not support inline assembler, it is not possible to disable flush-to-zero mode
 from Swift.
 
-On 32-bit ARM, Swift floating-point types skip subnormal values. For example,
-`(0 as Double).nextUp` evaluates to the least normal magnitude and
+__On 32-bit ARM, Swift floating-point types skip subnormal values.__ For
+example, `(0 as Double).nextUp` evaluates to the least normal magnitude and
 `(0 as Double).ulp` evaluates to zero.
 
 [ref 12-8]: https://en.wikipedia.org/wiki/Denormal_number
@@ -221,12 +221,14 @@ algorithm implemented in C++ that was based on the C11 function
 [`vsnprintf`][ref 12-9].
 
 A finite value's `description` and `debugDescription` could be different from
-each other because the precision of `description`
-([`std::numeric_limits<T>::digits10`][ref 12-10])
-was less than that of `debugDescription`
-([`std::numeric_limits<T>::max_digits10`][ref 12-11]).
+each other because the precision of `description` was less than that of
+`debugDescription`.
 
-The previous algorithm did not guarantee __round-trip accuracy__ for
+> Specifically, the precision of `description` was
+> [`std::numeric_limits<T>::digits10`][ref 12-10] and the precision of
+> `debugDescription` was [`std::numeric_limits<T>::max_digits10`][ref 12-11].
+
+The previous algorithm didn't guarantee __round-trip accuracy__ for
 `description`, which is to say that `Double(x.description) == x` was not true
 for all values of `x`. In addition, the algorithm would routinely include
 extraneous digits in `debugDescription`:
@@ -236,18 +238,18 @@ extraneous digits in `debugDescription`:
 debugPrint(1.1) // 1.1000000000000001
 ```
 
-In the past decade, authors have described new algorithms that produce optimal
+In the past decade, new algorithms have been described that produce optimal
 string representations of floating-point values with good performance. In 2015,
 [Rust switched its implementation][ref 12-12] to a combination of the Grisu3 and
 Dragon4 algorithms.
 
-Beginning in Swift 4.2, floating-point values are converted to strings using [a
-variation of the Grisu2 algorithm][ref 12-13] that incorporates changes outlined
-in the [paper describing the Errol3 algorithm][ref 12-14]. Swift's new
+__Beginning in Swift 4.2, floating-point values are converted to strings using
+[a variation of the Grisu2 algorithm][ref 12-13]__ that incorporates changes
+outlined in the [paper describing the Errol3 algorithm][ref 12-14]. Swift's new
 algorithm, which is implemented in C, shows better performance in benchmarks
 than either Errol4 (the successor to Errol3) or Grisu3 with fallback to Dragon4.
-For values other than NaN ("not a number"), `description` and `debugDescription`
-now give the same result:
+For values other than NaN, `description` and `debugDescription` now give the
+same result:
 
 ```swift
 // Swift 4.2
@@ -272,4 +274,4 @@ Next:
 [Concrete binary floating-point types, part 3](floating-point-part-3.md)
 
 _27 February–8 March 2018_  
-_Updated 3 August 2018_
+_Updated 18 August 2018_

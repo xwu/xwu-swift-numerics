@@ -85,10 +85,10 @@ bit width; for an unsigned type, `T.Magnitude == T`.
 
 ### Overflow operators
 
-In C, the result of an __unsigned__ integer operation that is too large to be
+In C, the result of an unsigned integer operation that is too large to be
 represented __"wraps around"__ (that is, the return value consists of the least
-significant bits of the result), while __signed__ integer overflow is
-[__undefined behavior__][ref 6-4].
+significant bits of the result), while signed integer overflow is [__undefined
+behavior__][ref 6-4].
 
 Sometimes, "wrapping" behavior can be desired in Swift (for example, when
 performing bitwise manipulations). The Swift standard library offers alternative
@@ -131,7 +131,7 @@ Some caveats:
 
 In Swift, `x.dividedReportingOverflow(by: 0)` is documented to return
 `(x, true)`. Nonetheless, at time of writing, a division-by-zero error occurs if
-the right-hand side (RHS) is expressed as a literal `0`. For example:
+the right-hand side (RHS) is expressed as a literal `0`:
 
 ```swift
 let x = 42
@@ -334,4 +334,4 @@ Next:
 [Concrete binary floating-point types, part 1](floating-point-part-1-rev-1.md)
 
 _27 February–10 March 2018_  
-_Updated 15 August 2018_
+_Updated 18 August 2018_

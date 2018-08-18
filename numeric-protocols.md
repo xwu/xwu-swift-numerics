@@ -10,43 +10,45 @@ programming with numbers. Those documents remain valuable sources of information
 regarding the motivations and design considerations behind the existing
 protocols.
 
-The `Numeric` protocol is intended to provide a basis for performing generic
+The __`Numeric`__ protocol is intended to provide a basis for performing generic
 arithmetic on both integer and floating-point values. It refines `Equatable` and
 `ExpressibleByIntegerLiteral`; __it does _not_ refine `Comparable`__. The
-`SignedNumeric` protocol refines `Numeric` to add negation for those types that
-support negative values.
+__`SignedNumeric`__ protocol refines `Numeric` to add negation for those types
+that support negative values.
 
-The `FloatingPoint` protocol refines `SignedNumeric` and defines most IEEE 754
-operations required of floating-point types. It additionally refines `Hashable`
-and `Strideable` (which itself refines `Comparable`); __it does _not_ refine
-`ExpressibleByFloatLiteral`__ because float literals are currently designed in
-such a way that only _binary_ floating-point types can be accurately expressed.
+The __`FloatingPoint`__ protocol refines `SignedNumeric` and defines most IEEE
+754 operations required of floating-point types. It additionally refines
+`Hashable` and `Strideable` (which itself refines `Comparable`); __it does _not_
+refine `ExpressibleByFloatLiteral`__ because float literals are currently
+designed in such a way that only _binary_ floating-point types can be precisely
+expressed.
 
-The `BinaryFloatingPoint` protocol refines `FloatingPoint` and is intended to
-provide a basis for all IEEE 754 binary floating-point types; it adds interfaces
-specifically for floating-point types with a fixed binary radix. It additionally
-refines `ExpressibleByFloatLiteral`.
+The __`BinaryFloatingPoint`__ protocol refines `FloatingPoint` and is intended
+to provide a basis for all IEEE 754 binary floating-point types; it adds
+interfaces specifically for floating-point types with a fixed binary radix. It
+additionally refines `ExpressibleByFloatLiteral`.
 
-The `BinaryInteger` protocol refines `Numeric` and is intended to provide a
+The __`BinaryInteger`__ protocol refines `Numeric` and is intended to provide a
 basis for all integer types; it declares integer arithmetic as well as bitwise
 and bit shift operators. It additionally refines `CustomStringConvertible`,
-`Hashable`, and `Strideable` (which itself refines `Comparable`). The
-`SignedInteger` protocol refines `SignedNumeric` and `BinaryInteger`, while the
-`UnsignedInteger` protocol refines `BinaryInteger` only; both are "auxiliary"
-protocols that themselves add no additional interfaces.
+`Hashable`, and `Strideable` (which itself refines `Comparable`).
 
-The `FixedWidthInteger` protocol refines `BinaryInteger` to add overflowing
+The __`SignedInteger`__ protocol refines `SignedNumeric` and `BinaryInteger`,
+while the __`UnsignedInteger`__ protocol refines `BinaryInteger` only; both are
+"auxiliary" protocols that themselves add no additional requirements.
+
+The __`FixedWidthInteger`__ protocol refines `BinaryInteger` to add overflowing
 operations for those types that have a fixed bit width; it also adds notions of
 endianness, but those APIs for handling endianness [may yet undergo further
 revision][ref 21-1]. `FixedWidthInteger` additionally refines
 `LosslessStringConvertible`.
 
 As additional generics features have been added to the language, minor changes
-have been made to existing numeric protocols to take advantage of them where
-possible. For example, as of Swift 4.2, `FloatingPoint` [now has a
+have been made to existing numeric protocols to take advantage of those features
+where possible. For example, as of Swift 4.2, `FloatingPoint` [has a
 constraint][ref 21-2] that `Magnitude == Self`, which could not be expressed in
 Swift 3; similarly, `FixedWidthInteger` [now has constraints][ref 21-3] that
-`Magnitude : FixedWidthInteger & UnsignedInteger` and
+`Magnitude : FixedWidthInteger & UnsignedInteger` and that
 `Stride : FixedWidthInteger & SignedInteger`.
 
 [ref 11-10]: https://github.com/apple/swift-evolution/blob/master/proposals/0067-floating-point-protocols.md
@@ -81,14 +83,12 @@ protocols that precisely mirror mathematical definitions, such as `Field` or
 Since it's impossible for a standard library protocol to refine a third-party
 protocol, Swift offers a fairly rich hierarchy of standard library numeric
 protocols so that reasonably common third-party numeric types can make use of
-existing generic algorithms where they fulfill the required semantics. It's much
+existing generic algorithms where they fulfill the required semantics. It's
 easier to understand the division of labor among existing protocols in the
 context of the numeric types and protocols that could be added in a third-party
-library.
+library:
 
 ![Hierarchy of numeric protocols in Swift][ref 22-1]
-
-Immediately, several design choices make sense in this larger context:
 
 __Why does `Numeric` conform to `Equatable` but not `Comparable`?__  
 __Complex numbers__ have an equivalence relation, but they cannot be ordered and
@@ -159,4 +159,4 @@ Reiterate why `Foundation.Decimal` can't conform to `FloatingPoint`.
 Previous:  
 [Numeric types in Foundation](numeric-types-in-foundation.md)
 
-_Draft: 11 August 2018_
+_Draft: 11-18 August 2018_
