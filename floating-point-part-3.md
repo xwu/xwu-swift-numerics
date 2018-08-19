@@ -93,8 +93,8 @@ hyphen-minus character (`-`) to indicate a negative value.
 
 __In Swift, the portion of a hexadecimal float literal between the required base
 prefix and the required binary exponent cannot begin or end with the separator
-dot (`.`).__ As of the time of writing, error messages are not particularly
-helpful in diagnosing the issue:
+dot (`.`).__ At the time of writing, error messages are not particularly helpful
+in diagnosing the issue:
 
 ```swift
 let x = 0x1.p2
@@ -335,4 +335,4 @@ Next:
 [Concrete binary floating-point types, part 4](floating-point-part-4.md)
 
 _Draft: 27 February–14 March 2018_  
-_Updated 18 August 2018_
+_Updated 19 August 2018_

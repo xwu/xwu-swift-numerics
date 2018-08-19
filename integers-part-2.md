@@ -104,7 +104,7 @@ these operations is fully defined for both unsigned and signed integer types.
 > "wrapping" counterparts to assignment operators spelled without a leading `&`.
 
 > The "overflow" operators `&/` and `&%` were [removed in Swift 1.2][ref 6-6]
-> because they did not provide two's-complement behavior like other overflow
+> because they did not provide two's complement behavior like other overflow
 > operators.
 
 [ref 6-4]: https://en.wikipedia.org/wiki/Undefined_behavior
@@ -334,4 +334,4 @@ Next:
 [Concrete binary floating-point types, part 1](floating-point-part-1-rev-1.md)
 
 _27 February–10 March 2018_  
-_Updated 18 August 2018_
+_Updated 19 August 2018_
