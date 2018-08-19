@@ -162,7 +162,7 @@ today's version of `String.scanHex` is indeed [generic over
 However, there remain some caveats unique to generic programming with numbers.
 Without attention to these details, generic implementations can suffer
 significant performance penalties or even show unexpected behavior as compared
-to concrete implementations. Three particular caveats are detailed below. First,
+to concrete implementations. Two particular caveats are detailed below. First,
 however, we'll review some general advice:
 
 __Ask whether your algorithm should be generic at all.__  
@@ -333,15 +333,129 @@ h(UInt.self) // `true`
 
 ### Hashing
 
-_Incomplete_
+In Swift 4.2+, the standard library uses a randomly seeded universal hash
+function to compute `hashValue`.
 
-### Conversions
+> Changes to the implementation of `hashValue` were introduced as part of the
+> Swift Evolution proposal [SE-0206: Hashable enhancements][ref 23-6].
+>
+> At the time of writing, the implementation uses [SipHash-1-3][ref 23-7], which
+> is also used in [Rust][ref 23-8] and [Ruby][ref 23-9].
 
-_Incomplete_
+Prior to that change, not only were hash values equal across different
+executions of a program, but `Int8` and `UInt8` had the following
+implementations of `hashValue`:
+
+```swift
+// Swift 4.1:
+
+extension Int8 : Hashable {
+  public var hashValue: Int {
+    @inline(__always)
+    get {
+      return Int(self)
+    }
+  }
+}
+
+extension UInt8 : Hashable {
+  public var hashValue: Int {
+    @inline(__always)
+    get {
+      return Int(Int8(bitPattern: self))
+    }
+  }
+}
+```
+
+Other built-in types had similar implementations of `hashValue`, with the result
+(for example) that `(42 as Int16).hashValue == (42 as UInt32).hashValue`.
+
+Now, hash values are no longer equal across different executions of a program,
+and integer types no longer simply convert a value to type `Int` when computing
+the hash value. __Two values of different bit widths that compare equal using a
+heterogeneous comparison operator won't have the same `hashValue` property.__
+(To be clear, it was also the case previously that half of the representable
+values of a built-in unsigned integer type would have a different hash value if
+promoted to a wider type.) 
+
+Therefore, if you require integer values of different types that compare equal
+to be hashed in the same way, don't feed the values themselves into a hasher,
+but use their `words` property instead:
+
+```swift
+let x = 42 as UInt64
+let y = 42 as Int32
+
+var hasher = Hasher()
+hasher.combine(x)
+let a = hasher.finalize()
+hasher = Hasher()
+hasher.combine(y)
+let b = hasher.finalize()
+a == b
+// false
+
+hasher = Hasher()
+x.words.forEach { hasher.combine($0) }
+let c = hasher.finalize()
+hasher = Hasher()
+y.words.forEach { hasher.combine($0) }
+let d = hasher.finalize()
+c == d
+// true
+```
+
+[ref 23-6]: https://github.com/apple/swift-evolution/blob/master/proposals/0206-hashable-enhancements.md
+[ref 23-7]: https://131002.net/siphash/
+[ref 23-8]: https://github.com/rust-lang/rust/pull/33940
+[ref 23-9]: https://github.com/ruby/ruby/pull/1501
 
 ## Conformance
 
-_Incomplete_
+As diagnostics have improved in each subsequent release of Swift, it has become
+possible to use the "fix-it" feature to identify missing requirements that
+prevent a type from conforming to a protocol. __However, relying solely on the
+"fix-it" feature to conform a type to Swift's numeric protocols will produce
+undesired results.__
+
+It's highly recommended that you conform your type to Swift's numeric protocols
+one at a time, beginning with `Equatable`, `ExpressibleByIntegerLiteral`, and
+`Numeric`. Only when you have successfully conformed to these protocols should
+you proceed with conformance to `BinaryInteger` or `FloatingPoint`, and so on.
+
+It's true that a more refined protocol may provide a default implementation for
+some requirements of less refined protocols. Therefore, conforming to protocols
+in a stepwise manner will result in some duplicated effort (in that you will
+write implementations subsequently made extraneous by default implementations).
+However, the advantages of this approach outweigh the disadvantages. First, it
+provides a logical sequence by which more advanced functionality is implemented
+using less advanced building blocks. Second, it helps to avoid creating
+unintentional infinite recursion either among your own concrete implementations
+or as a result of relying on the standard library's default implementations (see
+below).
+
+Sometimes, a protocol has a nongeneric requirement such as `init(_: Int)` and a
+generic requirement such as `init<T: Numeric>(_: T)`, and a default
+implementation of the generic initializer calls the nongeneric initializer.
+However, to the compiler, that default implementation satisfies _both_ the
+nongeneric and the generic requirements because `Int` conforms to `Numeric`.
+Therefore, no "fix-it" will be shown to alert you that there is a missing
+implementation of the nongeneric requirement, and the default implementation of
+the generic requirement becomes an infinitely recursive one. You will only know
+about such requirements by reading the documentation for each protocol.
+
+Many APIs guaranteed by Swift's numeric protocols have particular semantic
+requirements described in detail in the accompanying documentation; they may
+not be captured entirely by the spelling of those APIs and cannot be enforced by
+the compiler. However, generic algorithms will require conforming types to
+adhere to the documented semantics for their own correctness. Again, you will
+only know about such requirements by reading the documentation for each
+protocol.
+
+The [`DoubleWidth` prototype][ref 24-1] found in the Swift code repository
+demonstrates how a type can be conformed to numeric protocols according to
+contemporary recommended practices.
 
 <!--
 Discuss methods guaranteed at each level of the hierarchy, what must be
@@ -349,7 +463,9 @@ implemented, and what cannot be overridden because they are exclusively protocol
 extension methods.
 -->
 
-### Unintentional infinite recursion
+[ref 24-1]: https://github.com/apple/swift/blob/bd310140f3a5184d98e78abc9a95d179ef75b901/test/Prototypes/DoubleWidth.swift.gyb
+
+### Default implementations and unintentional infinite recursion
 
 Some requirements of numeric protocols come with a default implementation. These
 implementations are possible because they build on other protocol requirements
@@ -391,4 +507,4 @@ implementation changes.
 Previous:  
 [Numeric types in Foundation](numeric-types-in-foundation.md)
 
-_Draft: 11–19 August 2018_
+_11–19 August 2018_
