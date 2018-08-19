@@ -231,8 +231,8 @@ comparison with `IntegerLiteralType` over homogeneous comparison.__
 > to improve type-checking performance, the compiler won't traverse the protocol
 > hierarchy to rank all overloads of an operator function if it finds a matching
 > overload defined in the concrete type; (2) to favor homogeneous comparison
-> over heterogeneous comparison, [otherwise redundant implementations have been
-> added to concrete built-in numeric types][ref 23-4].
+> over heterogeneous comparison, [otherwise redundant concrete implementations
+> have been added to built-in numeric types][ref 23-4].
 
 This issue was encountered during review of the standard library's
 implementation of `DoubleWidth`, which in fact [had a bug][ref 23-5] as a
@@ -296,15 +296,50 @@ _Incomplete_
 
 ## Conformance
 
+_Incomplete_
+
 <!--
 Discuss methods guaranteed at each level of the hierarchy, what must be
 implemented, and what cannot be overridden because they are exclusively protocol
 extension methods.
 -->
 
-### Unintentional recursive implementations
+### Unintentional infinite recursion
 
-_Incomplete_
+Various requirements of numeric protocols come with a default implementation.
+These are only possible because they build on other protocol requirements that
+_don't_ have a default implementation. __As a general rule, never attempt to
+implement a protocol requirement by calling the default implementation of
+another requirement of the same or a more refined protocol.__ For example:
+
+```swift
+struct CustomInteger {
+  // ...
+}
+
+extension CustomInteger: FixedWidthInteger {
+  init(integerLiteral value: Int) {
+    self.init(value)
+  }
+  // No concrete implementation of `init(_:)`.
+  // ...
+}
+
+42 as CustomInteger
+// Infinite recursion!
+```
+
+Why does infinite recursion occur in this example? `CustomInteger` implements
+the initializer that creates a value from an integer literal by calling a
+generic conversion initializer. However, `FixedWidthInteger` offers a default
+implementation of that generic conversion initializer that uses integer
+literals, which is possible because `FixedWidthInteger` ultimately refines
+`ExpressibleByIntegerLiteral`.
+
+You have no control over the standard library's default implementations. Even if
+your method works today despite calling a default implementation you don't
+control, you could end up with infinite recursion tomorrow if that default
+implementation changes.
 
 ---
 
