@@ -125,15 +125,100 @@ whether fixed-width or not, share certain common semantics captured by
 
 ## Generic algorithms
 
-### Conversions
+Before the implementation of Swift's current numeric protocols, users who wanted
+to perform generic mathematical operations would often have to create their own
+workarounds:
 
-_Incomplete_
+```swift
+// Excerpt from `Foundation.NSScanner` (now `Foundation.Scanner`), 2016.
+
+internal protocol _BitShiftable {
+    static func >>(lhs: Self, rhs: Self) -> Self
+    static func <<(lhs: Self, rhs: Self) -> Self
+}
+ 
+internal protocol _IntegerLike : Integer, _BitShiftable {
+    init(_ value: Int)
+    static var max: Self { get }
+    static var min: Self { get }
+}
+
+extension Int : _IntegerLike { }
+extension Int32 : _IntegerLike { }
+extension Int64 : _IntegerLike { }
+extension UInt32 : _IntegerLike { }
+extension UInt64 : _IntegerLike { }
+
+extension String {
+    internal func scanHex<T: _IntegerLike>(_ skipSet: CharacterSet?, locationToScanFrom: inout Int, to: (T) -> Void) -> Bool {
+        // ...
+    }
+}
+```
+
+These workarounds are no longer necessary. For instance, in the example above,
+`Foundation._IntegerLike` actually requires _fixed-width_ integer semantics
+because we need `max` and `min`, and today's version of `String.scanHex` is
+indeed [generic over `FixedWidthInteger`][ref 23-1].
+
+However, there remain some caveats that are unique to generic programming with
+numbers. Without attention to these details, generic implementations can suffer
+significant performance penalties or even show unexpected behavior as compared
+to concrete implementations. Three particular caveats are detailed below. First,
+however, we'll review some general advice:
+
+__Ask whether your algorithm should be generic at all.__  
+[Reducing code duplication][ref 23-2] is one motivation that drives users to
+explore generic solutions. However, not all instances of code duplication are
+best eliminated by the use of generics. Consider an algorithm that can operate
+on values of type `UInt` or `Double`. It may be possible to write a single
+implementation generic over `Numeric` that is indistinguishable from concrete
+implementations for any input of type `UInt` or `Double`. However, if the
+algorithm relies on semantics common to `UInt` and `Double` but not guaranteed
+by `Numeric`, inputs of type `Int8` or `Float` (or of some third-party type
+correctly conforming to `Numeric`) might produce completely unexpected results.
+In other words, such a generic implementation of the algorithm can be
+_syntactically_ valid Swift without truly being generic over `Numeric`; the
+compiler can't detect invalid _semantic_ assumptions, and testing with a limited
+subset of conforming types can achieve 100% test coverage without revealing the
+problem. Therefore, consider if a code generation tool such as
+[Sourcery][ref 23-3] might be the most appropriate solution instead.
+
+__Make your generic constraints as specific as possible.__  
+For example, there are no built-in types that conform to `FloatingPoint` but not
+`BinaryFloatingPoint`. (And `Foundation.Decimal`, for reasons previously
+detailed, conforms to neither.) Meanwhile, `FloatingPoint` promises
+significantly more restricted semantics and APIs for reasons we've discussed
+above; the protocol doesn't even conform to `ExpressibleByFloatLiteral`. With no
+straightforward way to test that a generic algorithm relies only on the more
+limited semantics of `FloatingPoint`, and no way even to profit from that
+limitation, there's no reason to declare `func f<T: FloatingPoint>(_: T)`.
+
+__Consider refining standard library protocols with custom protocols that add
+new requirements in order to benefit from dynamic dispatch.__  
+Suppose you extend an existing protocol such as `Numeric` with a method `f()`,
+then write a faster specialized concrete implementation of `f()` on `Int`.
+`42.f()` is a call to the faster concrete implementation, as expected, but
+`func f<T: Numeric>(_ t: T) { t.f() }; f(42)` is a call to the slower generic
+implementation because protocol extension methods are __statically dispatched__.
+However, if you create a protocol `CustomNumeric` that _refines_ `Numeric`
+and adds `f()` as a requirement, then calls to `f()` will be __dynamically
+dispatched__ to the concrete implementation on a conforming type (if one
+exists), even if the call is from a generic context.
+
+[ref 23-1]: https://github.com/apple/swift-corelibs-foundation/blob/50b26ff4d77cee066361182c5eb50d20f3fe0012/Foundation/Scanner.swift#L285
+[ref 23-2]: https://en.wikipedia.org/wiki/Don%27t_repeat_yourself
+[ref 23-3]: https://github.com/krzysztofzablocki/Sourcery
 
 ### Heterogeneous comparison
 
 _Incomplete_
 
 ### Hashing
+
+_Incomplete_
+
+### Conversions
 
 _Incomplete_
 
@@ -148,11 +233,6 @@ extension methods.
 ### Unintentional recursive implementations
 
 _Incomplete_
-
-<!--
-### Floating-point semantics
-Reiterate why `Foundation.Decimal` can't conform to `FloatingPoint`.
--->
 
 ---
 
