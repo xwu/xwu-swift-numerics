@@ -212,7 +212,79 @@ exists), even if the call is from a generic context.
 
 ### Heterogeneous comparison
 
-_Incomplete_
+[SE-0104: Protocol-oriented integers][ref 9-4] added heterogeneous comparison
+and bit shift operators to the language to improve the user experience. For
+example, you can now check if an `Int` value is equal to a `UInt` value.
+
+> Similar enhancements for operations such as addition are not yet possible
+> because a design is lacking for how to express __promotion__. When (if) Swift
+> allows integer constants in generic constraints, this may become a more
+> realistic prospect, as promotion would then be expressible using generic
+> constraints (e.g., `func + <T, U>(lhs: T, rhs: U) -> U where T: FixedWidthInteger, U: FixedWidthInteger, T.bitWidth < U.bitWidth`).
+
+These operators behave as intended with concrete types. __However, integer
+comparisons in generic algorithms behave differently. If one operand in a
+generic context is a literal, overload resolution will favor heterogeneous
+comparison with `IntegerLiteralType` over homogeneous comparison.__
+
+> The same problem would occur in a nongeneric context but for _two_ hacks: (1)
+> to improve type-checking performance, the compiler won't traverse the protocol
+> hierarchy to rank all overloads of an operator function if it finds a matching
+> overload defined in the concrete type; (2) to favor homogeneous comparison
+> over heterogeneous comparison, [otherwise redundant implementations have been
+> added to concrete built-in numeric types][ref 23-4].
+
+This issue was encountered during review of the standard library's
+implementation of `DoubleWidth`, which in fact [had a bug][ref 23-5] as a
+consequence of the following behavior:
+
+```swift
+func f() -> Bool {
+  return UInt.max == ~0
+}
+func g<T : FixedWidthInteger>(_: T.Type) -> Bool {
+  return T.max == ~0
+}
+
+f()          // `true`
+g(UInt.self) // `false`
+```
+
+In generic code, _even if_ the most refined protocol implements its own overload
+of the homogeneous comparison operator, the compiler will look for all overloads
+of the operator by traversing the entire protocol hierarchy. Since heterogeneous
+comparison operators are defined somewhere along the hierarchy, the compiler
+will _always_ find an overload that takes the "preferred" integer literal type
+(`IntegerLiteralType`, which is a type alias for `Int`) and therefore infers the
+literal to be of type `Int`. Therefore, in the expression `g(UInt.self)`, we are
+actually comparing `UInt.max` to `~(0 as Int)`.
+
+__To work around this issue, always explicitly specify the type of a numeric
+literal in a generic context.__ For example:
+
+```swift
+func h<T : FixedWidthInteger>(_: T.Type) -> Bool {
+  return T.max == ~(0 as T)
+}
+h(UInt.self) // `true`
+```
+
+> Heterogeneous comparison is also planned for floating-point types. However,
+> until the issue described above is resolved, adding heterogeneous comparison
+> would cause new unexpected results:
+>
+> ```swift
+> func isOnePointTwo<T: BinaryFloatingPoint>(_ value: T) -> Bool {
+>   return value == 1.2
+> }
+>
+> isOnePointTwo(1.2 as Float80)
+> // Currently `true`.
+> // Would be `false` when heterogeneous comparison is implemented.
+> ```
+
+[ref 23-4]: https://github.com/apple/swift/pull/9909
+[ref 23-5]: https://github.com/apple/swift/pull/9367#discussion_r118612475
 
 ### Hashing
 
@@ -239,4 +311,4 @@ _Incomplete_
 Previous:  
 [Numeric types in Foundation](numeric-types-in-foundation.md)
 
-_Draft: 11-18 August 2018_
+_Draft: 11-19 August 2018_
