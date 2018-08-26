@@ -28,10 +28,16 @@ makes it possible to use the full set of math functions for `Float80` that are
 available on the platform. (In C/C++ programming with the Win32 API, the
 `long double` data type [maps to `double`][ref 11-4].)
 
+LLVM [does support half-precision (16-bit) and quadruple-precision (128-bit)
+binary floating-point types][ref 11-4.1], but this support is not surfaced by
+the Swift standard library. Most platforms offer limited native support for
+arithmetic using these formats.
+
 [ref 11-1]: https://swift.org/compiler-stdlib/#standard-library-design
 [ref 11-2]: https://github.com/apple/swift/blob/bfddc4a763d1ae2f53a8c3281d2d6f08cd1211a0/stdlib/public/core/Policy.swift#L56
 [ref 11-3]: https://github.com/apple/swift/pull/14971/
 [ref 11-4]: https://msdn.microsoft.com/en-us/library/9cx8xs15.aspx
+[ref 11-4.1]: https://internals.rust-lang.org/t/pre-rfc-introduction-of-half-and-quadruple-precision-floats-f16-and-f128/7521
 
 ### IEEE 754
 
@@ -407,4 +413,4 @@ Next:
 [Concrete binary floating-point types, part 2](floating-point-part-2.md)
 
 _27 February–3 March 2018_  
-_Updated 18 August 2018_
+_Updated 26 August 2018_
