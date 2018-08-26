@@ -12,9 +12,10 @@ protocols.
 
 The __`Numeric`__ protocol is intended to provide a basis for performing generic
 arithmetic on both integer and floating-point values. It refines `Equatable` and
-`ExpressibleByIntegerLiteral`; __it does _not_ refine `Comparable`__. The
-__`SignedNumeric`__ protocol refines `Numeric` to add negation for those types
-that support negative values.
+`ExpressibleByIntegerLiteral`; __it does _not_ refine `Comparable`__.
+
+The __`SignedNumeric`__ protocol refines `Numeric` to add negation for those
+types that support negative values.
 
 The __`FloatingPoint`__ protocol refines `SignedNumeric` and defines most IEEE
 754 operations required of floating-point types. It additionally refines
@@ -75,11 +76,10 @@ protocols that precisely mirror mathematical definitions, such as `Field` or
 > that make assumptions about semantics not actually guaranteed.
 >
 > A protocol such as `Field` or `Ring` would be less accessible for many users
-> who would have no trouble writing a useful algorithm generic
-> over `Numeric`. Moreover, it suggests that any such protocols are _the_ way to
-> model a broad mathematical concept when in fact those protocols would be
-> designed more narrowly to facilitate writing algorithms generic over basic
-> numeric types.
+> who'd have no trouble writing a useful algorithm generic over `Numeric`.
+> Moreover, it suggests that any such protocols are _the_ way to model a broad
+> mathematical concept when in fact those protocols would be designed more
+> narrowly to facilitate writing algorithms generic over basic numeric types.
 
 Since it's impossible for a standard library protocol to refine a third-party
 protocol, Swift offers a fairly rich hierarchy of standard library numeric
@@ -99,9 +99,8 @@ __Why are there distinct protocols named `FloatingPoint` and
 `BinaryFloatingPoint`?__  
 Certain requirements are shared among all IEEE 754 floating-point types. For
 example, they all support representations of infinity and NaN ("not a number").
-However, some requirements (such as `binade`)
-are common to all binary floating-point types but wouldn't
-make sense for decimal floating-point types.
+However, some requirements such as `binade` are common to all binary
+floating-point types but wouldn't make sense for decimal floating-point types.
 
 __Why are there _not_ distinct protocols named `Integer` and  `BinaryInteger`?__  
 The original name proposed for `BinaryInteger` was `Integer`; it was renamed to
@@ -115,8 +114,7 @@ __Why is the integer protocol hierarchy bifurcated below `BinaryInteger`?__
 It wouldn't make sense for an arbitrary-width type (`BigInt`) to support
 overflow operators such as `&+` since overflow isn't possible, so those don't
 belong as requirements on `BinaryInteger`. At the same time, signed integers,
-whether fixed-width or not, share common semantics captured by
-`SignedInteger`.
+whether fixed-width or not, share common semantics captured by `SignedInteger`.
 
 [ref 22-1]: /assets/images/numeric-protocols.svg
 
@@ -160,41 +158,41 @@ today's version of `String.scanHex` is indeed [generic over
 `FixedWidthInteger`][ref 23-1].
 
 However, there remain some caveats unique to generic programming with numbers.
-Two particular caveats are detailed below, but first
-we'll review some general advice:
+Two particular caveats are detailed below, but first we'll discuss some general
+advice:
 
 __Ask whether your algorithm should be generic at all.__  
-[Reducing code duplication][ref 23-2] is one motivation that drives users to
-explore generic solutions. However, not all instances of code duplication are
-best eliminated by the use of generics.
+Code duplication can drive users to explore generic solutions. However, not all
+instances of code duplication are best [eliminated][ref 23-2] by the use of
+generics.
 
 Consider an algorithm that can operate on values of type `UInt` or `Double`. It
 may be possible to write a single implementation generic over `Numeric` that is
 indistinguishable from concrete implementations for any input of type `UInt` or
 `Double`. However, if the algorithm relies on semantics common to `UInt` and
 `Double` but not guaranteed by `Numeric`, inputs of type `Int8` or `Float` (or
-of some third-party type) might produce unexpected results. In other
-words, such an implementation can be _syntactically_ valid Swift without truly
-being generic over `Numeric`. The compiler can't detect all invalid _semantic_
-assumptions, and testing with a limited subset of conforming types can achieve
-100% coverage without revealing the problem.
+of some third-party type) might produce unexpected results. In other words, such
+an implementation can be _syntactically_ valid Swift without truly being generic
+over `Numeric`. The compiler can't diagnose all invalid _semantic_ assumptions,
+and testing with a limited subset of conforming types can achieve 100% coverage
+without revealing the problem.
 
 Therefore, consider if a code generation tool such as [Sourcery][ref 23-3] might
 be the most appropriate solution instead.
 
 __Make your generic constraints as specific as possible.__  
 For example, there are no built-in types that conform to `FloatingPoint` but not
-`BinaryFloatingPoint`. Meanwhile, `FloatingPoint` promises
-significantly more restricted interfaces for reasons we've discussed
-above; the protocol doesn't even conform to `ExpressibleByFloatLiteral`. With no
-straightforward way to test that a generic algorithm relies only on the
-limited semantics of `FloatingPoint`, and no way to profit from that limitation,
-there's no reason to declare `func f<T: FloatingPoint>(_: T)`.
+`BinaryFloatingPoint`. Meanwhile, `FloatingPoint` promises significantly more
+restricted interfaces for reasons we've discussed above; the protocol doesn't
+even conform to `ExpressibleByFloatLiteral`. With no straightforward way to test
+that a generic algorithm relies only on the limited semantics of
+`FloatingPoint`, and no way to profit from that limitation, there's no reason to
+declare `func f<T: FloatingPoint>(_: T)`.
 
 __Consider refining standard library protocols with custom protocols in order to
 benefit from dynamic dispatch.__  
 Suppose you extend an existing protocol such as `Numeric` with a method `f()`,
-then write a faster specialized concrete implementation of `f()` on `Int`:
+then write a faster concrete implementation of `f()` on `Int`:
 
 ```swift
 extension Numeric {
@@ -221,7 +219,7 @@ f(42)  // "Numeric"
 slower generic implementation because protocol extension methods are
 __statically dispatched__. However, if you create a protocol `CustomNumeric`
 that _refines_ `Numeric` and adds `f()` as a requirement, then calls to `f()`
-will be __dynamically dispatched__ to any concrete implementation that exists:
+will be __dynamically dispatched__ to any concrete implementations:
 
 ```swift
 protocol CustomNumeric: Numeric {
@@ -344,7 +342,7 @@ executions of a program, but `Int8` and `UInt8` had the following
 implementations of `hashValue`:
 
 ```swift
-// Swift 4.1:
+// Swift 4.1
 
 extension Int8 : Hashable {
   public var hashValue: Int {
@@ -372,8 +370,8 @@ Now, hash values are no longer equal across different executions of a program,
 and integer types no longer simply convert a value to type `Int` when computing
 the hash value. __Two values of different bit widths that compare equal using a
 heterogeneous comparison operator won't have the same `hashValue` property.__
-(To be clear, it was also true previously that half of the representable
-values of a built-in unsigned integer type would have a different hash value if
+(To be clear, it was also true previously that half of the representable values
+of a built-in unsigned integer type would have a different hash value if
 promoted to a wider type.) 
 
 Therefore, if you require integer values of different types that compare equal
@@ -416,8 +414,8 @@ prevent a type from conforming to a protocol. __However, relying solely on the
 "fix-it" feature to conform a type to Swift's numeric protocols will produce
 undesired results.__
 
-It's recommended that you conform your type to Swift's numeric protocols
-one at a time, beginning with `Equatable`, `ExpressibleByIntegerLiteral`, and
+It's recommended that you conform your type to Swift's numeric protocols one at
+a time, beginning with `Equatable`, `ExpressibleByIntegerLiteral`, and
 `Numeric`. Only when you have successfully conformed to those protocols should
 you proceed with conformance to `BinaryInteger` or `FloatingPoint`, and so on.
 
@@ -427,28 +425,26 @@ in a stepwise manner will result in some duplicated effort (in that you will
 write implementations subsequently made extraneous by default implementations).
 However, the advantages of this approach outweigh the disadvantages. First, it
 provides a logical sequence by which more advanced functionality is implemented
-using less advanced building blocks. Second, it helps to avoid creating
-unintentional infinite recursion either among your own concrete implementations
-or as a result of relying on the standard library's default implementations (see
-below).
+using less advanced building blocks. Second, it helps to avoid unintentional
+infinite recursion either among your own concrete implementations or as a result
+of relying on the standard library's default implementations (see below).
 
-Sometimes, a protocol has a nongeneric requirement such as `init(_: Int)` and a
-generic requirement such as `init<T: Numeric>(_: T)`, and a default
-implementation of the generic initializer calls the nongeneric initializer.
-To the compiler, that default implementation satisfies _both_ the
-nongeneric and the generic requirements because `Int` conforms to `Numeric`.
-Therefore, no "fix-it" will be shown to alert you that there is a missing
-implementation of the nongeneric requirement, and the default implementation of
-the generic requirement becomes an infinitely recursive one. You will only know
-about such requirements by reading the documentation for each protocol.
+Sometimes, the standard library will provide a default implementation for a
+generic requirement such as `f<T: Numeric>(_: T)` by making use of a
+corresponding nongeneric requirement such as `f(_: Int)`. To the compiler, that
+default implementation satisfies _both_ the generic requirement _and_ the
+nongeneric requirement because `Int` conforms to `Numeric`. Therefore, no
+"fix-it" will be shown to alert the user that there is a missing implementation
+for the nongeneric requirement. Instead, the default implementation for the
+generic requirement becomes an infinitely recursive one. You will need to
+consult the documentation to find out about such requirements.
 
 Many APIs guaranteed by Swift's numeric protocols have particular semantic
-requirements described in detail in the accompanying documentation; they may
-not be captured entirely by the spelling of those APIs and cannot be enforced by
-the compiler. However, generic algorithms will require conforming types to
-adhere to the documented semantics for their own correctness. Again, you will
-only know about such requirements by reading the documentation for each
-protocol.
+requirements described in detail in the accompanying documentation; they may not
+be captured entirely by the spelling of those APIs and cannot be enforced by the
+compiler. However, generic algorithms will require conforming types to adhere to
+the required semantics for their own correctness. Again, you will only know
+about such requirements by reading the documentation.
 
 The [`DoubleWidth` prototype][ref 24-1] found in the Swift code repository
 demonstrates how a type can be conformed to numeric protocols according to
@@ -467,7 +463,7 @@ extension methods.
 Some requirements of numeric protocols come with a default implementation. These
 implementations are possible because they build on other protocol requirements
 that _don't_ have a default implementation. __As a general rule, never attempt
-to implement a protocol requirement by relying on the default implementation of
+to implement a protocol requirement by relying on the default implementation for
 another requirement of the same or a more refined protocol.__ For example:
 
 ```swift
@@ -491,8 +487,8 @@ Why does infinite recursion occur in the example above? `CustomInteger`
 implements `init(integerLiteral:)`, a requirement of the protocol
 `ExpressibleByIntegerLiteral`, by calling a generic conversion initializer that
 it doesn't implement. Meanwhile, `FixedWidthInteger`, which transitively refines
-`ExpressibleByIntegerLiteral`, provides the default implementation of that
-generic conversion initializer and uses integer literals in that implementation.
+`ExpressibleByIntegerLiteral`, provides a default implementation for that
+generic conversion initializer that makes use of integer literals.
 
 You have no control over the standard library's default implementations. Even if
 your method works today despite calling a default implementation you don't
@@ -504,4 +500,5 @@ implementation changes.
 Previous:  
 [Numeric types in Foundation](numeric-types-in-foundation.md)
 
-_11–19 August 2018_
+_11–19 August 2018_  
+_Updated 25 August 2018_
