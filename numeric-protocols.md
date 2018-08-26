@@ -75,7 +75,7 @@ protocols that precisely mirror mathematical definitions, such as `Field` or
 > that make assumptions about semantics not actually guaranteed.
 >
 > A protocol such as `Field` or `Ring` would be less accessible for many users
-> of the language who would have no trouble writing a useful algorithm generic
+> who would have no trouble writing a useful algorithm generic
 > over `Numeric`. Moreover, it suggests that any such protocols are _the_ way to
 > model a broad mathematical concept when in fact those protocols would be
 > designed more narrowly to facilitate writing algorithms generic over basic
@@ -99,8 +99,8 @@ __Why are there distinct protocols named `FloatingPoint` and
 `BinaryFloatingPoint`?__  
 Certain requirements are shared among all IEEE 754 floating-point types. For
 example, they all support representations of infinity and NaN ("not a number").
-However, some APIs (many to do with the raw representation in memory of values)
-are common to all built-in floating-point types (which are binary) but would not
+However, some requirements (such as `binade`)
+are common to all binary floating-point types but wouldn't
 make sense for decimal floating-point types.
 
 __Why are there _not_ distinct protocols named `Integer` and  `BinaryInteger`?__  
@@ -115,7 +115,7 @@ __Why is the integer protocol hierarchy bifurcated below `BinaryInteger`?__
 It wouldn't make sense for an arbitrary-width type (`BigInt`) to support
 overflow operators such as `&+` since overflow isn't possible, so those don't
 belong as requirements on `BinaryInteger`. At the same time, signed integers,
-whether fixed-width or not, share certain common semantics captured by
+whether fixed-width or not, share common semantics captured by
 `SignedInteger`.
 
 [ref 22-1]: /assets/images/numeric-protocols.svg
@@ -160,10 +160,8 @@ today's version of `String.scanHex` is indeed [generic over
 `FixedWidthInteger`][ref 23-1].
 
 However, there remain some caveats unique to generic programming with numbers.
-Without attention to these details, generic implementations can suffer
-significant performance penalties or even show unexpected behavior as compared
-to concrete implementations. Two particular caveats are detailed below. First,
-however, we'll review some general advice:
+Two particular caveats are detailed below, but first
+we'll review some general advice:
 
 __Ask whether your algorithm should be generic at all.__  
 [Reducing code duplication][ref 23-2] is one motivation that drives users to
@@ -175,22 +173,21 @@ may be possible to write a single implementation generic over `Numeric` that is
 indistinguishable from concrete implementations for any input of type `UInt` or
 `Double`. However, if the algorithm relies on semantics common to `UInt` and
 `Double` but not guaranteed by `Numeric`, inputs of type `Int8` or `Float` (or
-of some third-party type) might produce completely unexpected results. In other
+of some third-party type) might produce unexpected results. In other
 words, such an implementation can be _syntactically_ valid Swift without truly
 being generic over `Numeric`. The compiler can't detect all invalid _semantic_
 assumptions, and testing with a limited subset of conforming types can achieve
-100% test coverage without revealing the problem.
+100% coverage without revealing the problem.
 
 Therefore, consider if a code generation tool such as [Sourcery][ref 23-3] might
 be the most appropriate solution instead.
 
 __Make your generic constraints as specific as possible.__  
 For example, there are no built-in types that conform to `FloatingPoint` but not
-`BinaryFloatingPoint`. (And `Foundation.Decimal`, for reasons previously
-detailed, conforms to neither.) Meanwhile, `FloatingPoint` promises
-significantly more restricted semantics and APIs for reasons we've discussed
+`BinaryFloatingPoint`. Meanwhile, `FloatingPoint` promises
+significantly more restricted interfaces for reasons we've discussed
 above; the protocol doesn't even conform to `ExpressibleByFloatLiteral`. With no
-straightforward way to test that a generic algorithm relies only on the more
+straightforward way to test that a generic algorithm relies only on the
 limited semantics of `FloatingPoint`, and no way to profit from that limitation,
 there's no reason to declare `func f<T: FloatingPoint>(_: T)`.
 
@@ -375,12 +372,12 @@ Now, hash values are no longer equal across different executions of a program,
 and integer types no longer simply convert a value to type `Int` when computing
 the hash value. __Two values of different bit widths that compare equal using a
 heterogeneous comparison operator won't have the same `hashValue` property.__
-(To be clear, it was also the case previously that half of the representable
+(To be clear, it was also true previously that half of the representable
 values of a built-in unsigned integer type would have a different hash value if
 promoted to a wider type.) 
 
 Therefore, if you require integer values of different types that compare equal
-to be hashed in the same way, don't feed the values themselves into a hasher,
+to be hashed in the same way, don't feed the values themselves into a hasher
 but use their `words` property instead:
 
 ```swift
@@ -419,9 +416,9 @@ prevent a type from conforming to a protocol. __However, relying solely on the
 "fix-it" feature to conform a type to Swift's numeric protocols will produce
 undesired results.__
 
-It's highly recommended that you conform your type to Swift's numeric protocols
+It's recommended that you conform your type to Swift's numeric protocols
 one at a time, beginning with `Equatable`, `ExpressibleByIntegerLiteral`, and
-`Numeric`. Only when you have successfully conformed to these protocols should
+`Numeric`. Only when you have successfully conformed to those protocols should
 you proceed with conformance to `BinaryInteger` or `FloatingPoint`, and so on.
 
 It's true that a more refined protocol may provide a default implementation for
@@ -438,7 +435,7 @@ below).
 Sometimes, a protocol has a nongeneric requirement such as `init(_: Int)` and a
 generic requirement such as `init<T: Numeric>(_: T)`, and a default
 implementation of the generic initializer calls the nongeneric initializer.
-However, to the compiler, that default implementation satisfies _both_ the
+To the compiler, that default implementation satisfies _both_ the
 nongeneric and the generic requirements because `Int` conforms to `Numeric`.
 Therefore, no "fix-it" will be shown to alert you that there is a missing
 implementation of the nongeneric requirement, and the default implementation of
