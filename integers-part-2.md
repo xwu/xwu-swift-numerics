@@ -27,20 +27,20 @@ v = v + (v >> 4) & 0x0F0F0F0F
 The relative precedence of _infix operators common to both C and Swift_ can be
 compared as follows:
 
-| C                                               | Swift                                                        |
-|:-----------------------------------------------:|:------------------------------------------------------------:|
-|                                                 | `<<   >>`                                                    |
-| `*   /   %`                                     | `*   /   %   &`                                              |
-| `+   -`                                         | <code class="manual-escape">+   -   ^   &#124;</code>        |
-| `<<   >>`                                       |                                                              |
-| `<   <=   >   >=`                               | `<   <=   >   >=   ==   !=`                                  |
-| `==   !=`                                       |                                                              |
-| `&`                                             |                                                              |
-| `^`                                             |                                                              |
-| <code class="manual-escape">&#124;</code>       |                                                              |
-| `&&`                                            | <code class="manual-escape">&amp;&amp;   &#124;&#124;</code> |
-| <code class="manual-escape">&#124;&#124;</code> |                                                              |
-| `=` _and other assignment operators_            | `=` _and other assignment operators_                         |
+| C                                               | Swift                                                 |
+|:-----------------------------------------------:|:-----------------------------------------------------:|
+|                                                 | `<<   >>`                                             |
+| `*   /   %`                                     | `*   /   %   &`                                       |
+| `+   -`                                         | <code class="manual-escape">+   -   ^   &#124;</code> |
+| `<<   >>`                                       |                                                       |
+| `<   <=   >   >=`                               | `<   <=   >   >=   ==   !=`                           |
+| `==   !=`                                       |                                                       |
+| `&`                                             |                                                       |
+| `^`                                             |                                                       |
+| <code class="manual-escape">&#124;</code>       |                                                       |
+| `&&`                                            | `&&`                                                  |
+| <code class="manual-escape">&#124;&#124;</code> | <code class="manual-escape">&#124;&#124;</code>       |
+| `=` _and other assignment operators_            | `=` _and other assignment operators_                  |
 
 [ref 5-1]: https://www.lysator.liu.se/c/dmr-on-or.html
 [ref 5-2]: https://developer.apple.com/documentation/swift/operator_declarations
@@ -334,4 +334,4 @@ Next:
 [Concrete binary floating-point types, part 1](floating-point-part-1-rev-1.md)
 
 _27 February–10 March 2018_  
-_Updated 19 August 2018_
+_Updated 2 September 2018_
