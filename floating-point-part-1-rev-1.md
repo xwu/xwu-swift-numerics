@@ -136,7 +136,7 @@ names, and their C standard library overlay names is presented below.
 	</thead>
 	<tfoot>
 		<tr>
-			<td colspan="3"><em>Not shown: conversion and comparison operations<br>
+			<td colspan="3"><em>Not shown: conversion and comparison operations<br />
 			Not available in Swift: conformance predicates and operations on subsets of flags</em></td>
 		</tr>
 	</tfoot>
@@ -151,8 +151,8 @@ names, and their C standard library overlay names is presented below.
 		</tr>
 		<tr>
 			<td>roundToIntegral&#8203;TiesToAway(<em>x</em>)</td>
-			<td><code>x.rounded()</code><br>
-				&nbsp;&nbsp;<em>or</em><br>
+			<td><code>x.rounded()</code><br />
+				&nbsp;&nbsp;<em>or</em><br />
 				<code>x.rounded(&#8203;.toNearestOrAwayFromZero)</code></td>
 			<td><code>round(x)</code></td>
 		</tr>
@@ -283,10 +283,10 @@ names, and their C standard library overlay names is presented below.
 		</tr>
 		<tr>
 			<td>abs(<em>x</em>)</td>
-			<td><code>abs(x)</code><br>
-				&nbsp;&nbsp;<em>or</em><br>
+			<td><code>abs(x)</code><br />
+				&nbsp;&nbsp;<em>or</em><br />
 				<code>x.magnitude</code></td>
-			<td><em>Unavailable (Swift 4.2):</em><br><code>fabs(x)</code></td>
+			<td><em>Unavailable (Swift 4.2):</em><br /><code>fabs(x)</code></td>
 		</tr>
 		<tr>
 			<td>copySign(<em>x</em>, <em>y</em>)</td>
@@ -301,22 +301,22 @@ names, and their C standard library overlay names is presented below.
 		<tr>
 			<td>class(<em>x</em>)</td>
 			<td><code>x.floatingPointClass</code></td>
-			<td><em>Unavailable:</em><br><code>fpclassify(x)</code></td>
+			<td><em>Unavailable:</em><br /><code>fpclassify(x)</code></td>
 		</tr>
 		<tr>
 			<td>isSignMinus(<em>x</em>)</td>
 			<td><code>x.sign == .minus</code></td>
-			<td><em>Unavailable:</em><br><code>signbit(x)</code></td>
+			<td><em>Unavailable:</em><br /><code>signbit(x)</code></td>
 		</tr>
 		<tr>
 			<td>isNormal(<em>x</em>)</td>
 			<td><code>x.isNormal</code></td>
-			<td><em>Unavailable:</em><br><code>isnormal(x)</code></td>
+			<td><em>Unavailable:</em><br /><code>isnormal(x)</code></td>
 		</tr>
 		<tr>
 			<td>isFinite(<em>x</em>)</td>
 			<td><code>x.isFinite</code></td>
-			<td><em>Unavailable:</em><br><code>isfinite(x)</code></td>
+			<td><em>Unavailable:</em><br /><code>isfinite(x)</code></td>
 		</tr>
 		<tr>
 			<td>isZero(<em>x</em>)</td>
@@ -331,12 +331,12 @@ names, and their C standard library overlay names is presented below.
 		<tr>
 			<td>isInfinite(<em>x</em>)</td>
 			<td><code>x.isInfinite</code></td>
-			<td><em>Unavailable:</em><br><code>isinf(x)</code></td>
+			<td><em>Unavailable:</em><br /><code>isinf(x)</code></td>
 		</tr>
 		<tr>
 			<td>isNaN(<em>x</em>)</td>
 			<td><code>x.isNaN</code></td>
-			<td><em>Unavailable:</em><br><code>isnan(x)</code></td>
+			<td><em>Unavailable:</em><br /><code>isnan(x)</code></td>
 		</tr>
 		<tr>
 			<td>isSignaling(<em>x</em>)</td>

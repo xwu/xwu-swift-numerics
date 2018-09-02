@@ -89,7 +89,7 @@ easier to understand the division of labor among existing protocols in the
 context of the numeric types and protocols that could be added in a third-party
 library:
 
-![Hierarchy of numeric protocols in Swift][ref 22-1]
+![Hierarchy of numeric protocols in Swift](assets/images/numeric-protocols.svg)
 
 __Why does `Numeric` conform to `Equatable` but not `Comparable`?__  
 Complex numbers have an equivalence relation, but they cannot be ordered and
@@ -115,8 +115,6 @@ It wouldn't make sense for an arbitrary-width type (`BigInt`) to support
 overflow operators such as `&+` since overflow isn't possible, so those don't
 belong as requirements on `BinaryInteger`. At the same time, signed integers,
 whether fixed-width or not, share common semantics captured by `SignedInteger`.
-
-[ref 22-1]: /assets/images/numeric-protocols.svg
 
 ## Generic algorithms
 

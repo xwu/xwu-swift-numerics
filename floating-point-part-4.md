@@ -260,7 +260,7 @@ floating-point types:
 
 |          | Nearest-to-zero remainder  | Truncating remainder |
 |----------|----------------------------|----------------------|
-| Swift    | <code class="manual-escape">x.remainder(<br>dividingBy: y)</code> | <code class="manual-escape">x.truncatingRemainder(<br>dividingBy: y)</code> |
+| Swift    | <code class="manual-escape">x.remainder(<br />dividingBy: y)</code> | <code class="manual-escape">x.truncatingRemainder(<br />dividingBy: y)</code> |
 | C        | `remainder(x, y)`          | `fmod(x, y)`         |
 | C#       | `Math.IEEERemainder(x, y)` | `x % y`              |
 | Java     | `Math.IEEEremainder(x, y)` | `x % y`              |
