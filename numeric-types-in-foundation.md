@@ -171,14 +171,15 @@ When a value `source` of integer type `T` is boxed into an `NSNumber` instance
 
 1. __`U(truncating: boxed)`__  
    Equivalent to `boxed.{int|uint|int8...}Value` and
-   `U(truncatingIfNeeded: source)`.  
+   `U(truncatingIfNeeded: {Int64|UInt64}(source))`.  
    Creates a new value of type `U` from the binary representation in memory of
    `source` (notionally).  
    When `T` and `U` are not of the same bit width, the binary representation of
    `source` is [truncated or sign-extended][ref 4-1] as necessary.  
 
 1. __`boxed.{int|uint|int8...}Value`__  
-   Equivalent to `U(truncating: boxed)` and `U(truncatingIfNeeded: source)`.
+   Equivalent to `U(truncating: boxed)` and
+   `U(truncatingIfNeeded: {Int64|UInt64}(source))`.
 
 [ref 4-1]: https://developer.apple.com/documentation/swift/int/2926530-init
 
@@ -290,4 +291,4 @@ Next:
 [Numeric protocols](numeric-protocols.md)
 
 _Draft: 3–5 August 2018_  
-_Updated 18 August 2018_
+_Updated 1 September 2018_
