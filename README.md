@@ -19,7 +19,7 @@ the use of numbers in programming is assumed.
   place, approximating π, subnormal values on 32-bit ARM, string representation)
 
 * __[Concrete binary floating-point types, part 3](floating-point-part-3.md)__  
-  Float literals, conversions between floating-point types, other initializers
+  Float literals, conversions among floating-point types, other initializers
 
 * __[Concrete binary floating-point types, part 4](floating-point-part-4.md)__  
   Signed zero, infinity, and NaN; floating-point remainder; significand
@@ -31,4 +31,4 @@ the use of numbers in programming is assumed.
 * __[Numeric protocols](numeric-protocols.md)__  
   Introduction, design rationale, generic algorithms, conformance
 
-_27 February–2 September 2018_
+_27 February–9 November 2018_

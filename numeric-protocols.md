@@ -3,15 +3,22 @@ Numeric protocols
 
 ## Introduction
 
-Two proposals, [SE-0067: Enhanced floating-point protocols][ref 11-10] and
-[SE-0104: Protocol-oriented integers][ref 9-4], were implemented in Swift 3 and
-4 (respectively) and together account for the basic design enabling generic
-programming with numbers. Those documents remain valuable sources of information
-regarding the motivations and design considerations behind the existing
-protocols.
+Three proposals, [SE-0067: Enhanced floating-point protocols][ref 11-10],
+[SE-0104: Protocol-oriented integers][ref 9-4], and [SE-0233: Make `Numeric`
+refine a new `AdditiveArithmetic` protocol][ref 21-0], are implemented in Swift
+3, 4, and 5 (respectively) and together account for the basic design enabling
+generic programming with numbers. Those documents remain valuable sources of
+information regarding the motivations and design considerations behind the
+existing protocols.
+
+The __`AdditiveArithmetic`__ protocol, new for Swift 5, defines the additive
+arithmetic operators and `zero` to enable algorithms generic over scalars and
+vectors. It refines `Equatable`; __it does _not_ refine
+`ExpressibleByIntegerLiteral`__.
 
 The __`Numeric`__ protocol is intended to provide a basis for performing generic
-arithmetic on both integer and floating-point values. It refines `Equatable` and
+arithmetic on both integer and floating-point values. It refines
+`AdditiveArithmetic` (or, in Swift 4.2 and earlier, `Equatable`) and
 `ExpressibleByIntegerLiteral`; __it does _not_ refine `Comparable`__.
 
 The __`SignedNumeric`__ protocol refines `Numeric` to add negation for those
@@ -56,6 +63,7 @@ Swift 3.
 
 [ref 11-10]: https://github.com/apple/swift-evolution/blob/master/proposals/0067-floating-point-protocols.md
 [ref 9-4]: https://github.com/apple/swift-evolution/blob/master/proposals/0104-improved-integers.md
+[ref 21-0]: https://github.com/apple/swift-evolution/blob/master/proposals/0233-additive-arithmetic-protocol.md
 [ref 21-1]: https://lists.swift.org/pipermail/swift-evolution/Week-of-Mon-20170227/033372.html
 [ref 21-2]: https://github.com/apple/swift/pull/17323
 
@@ -499,4 +507,4 @@ Previous:
 [Numeric types in Foundation](numeric-types-in-foundation.md)
 
 _11–19 August 2018_  
-_Updated 25 August 2018_
+_Updated 9 November 2018_
