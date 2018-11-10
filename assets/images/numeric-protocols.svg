@@ -1,5 +1,47 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!--
+digraph NumericProtocols {
+    /* graph [splines=ortho]; */
+    node [shape=box, fontname="sans-serif"];
+    /* Equatable; */
+    /* Comparable; */ AdditiveArithmetic;
+    Numeric;
+    SignedNumeric;
+    BinaryInteger; FloatingPoint;
+    SignedInteger; FixedWidthInteger; UnsignedInteger;
+    BinaryFloatingPoint;
+    node [style=filled];
+    "Int..."; "UInt...";
+    Float; Double; Float80;
+    
+    node [style=dashed, color=grey, fontcolor=grey];
+    DecimalFloatingPoint;
+    
+    node [style="dashed, filled", fillcolor=whitesmoke, fontcolor=grey];
+    Vector; "Decimal..."; Complex; BigInt;
+    
+    /*
+    Equatable -> { Comparable; AdditiveArithmetic; }
+    Comparable -> { FloatingPoint; BinaryInteger; }
+    */
+    AdditiveArithmetic -> { Numeric; Vector; }
+    Numeric -> { BinaryInteger; SignedNumeric; }
+    SignedNumeric -> { FloatingPoint; SignedInteger; }
+    SignedNumeric -> Complex [style=dashed, color=grey];
+    FloatingPoint -> BinaryFloatingPoint;
+    FloatingPoint -> DecimalFloatingPoint [style=dashed, color=grey];
+    BinaryInteger -> { SignedInteger; FixedWidthInteger; UnsignedInteger; }
+    SignedInteger -> "Int...";
+    SignedInteger -> BigInt [style=dashed, color=grey];
+    FixedWidthInteger -> { "Int..."; "UInt..."; }
+    UnsignedInteger -> "UInt...";
+    BinaryFloatingPoint -> { Float; Double; Float80; }
+    DecimalFloatingPoint -> "Decimal..." [style=dashed, color=grey];
+    
+    { rank=same; "Int..."; "UInt..."; Float; Double; Float80; "Decimal..."; BigInt; }
+}
+-->
 <svg width="755pt" height="404pt" viewBox="0.00 0.00 755.37 404.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 400)">
 <title>NumericProtocols</title>

@@ -180,6 +180,11 @@ It is unclear as to the rationale behind omission of
 `unsafeRemainder(dividingBy:)`, although that method is unlikely to be of much
 use.
 
+> The core team [intends to remove][ref 6-9] all four unsafe methods for Swift
+> 5, as they were never approved as part of a proposal.
+
+[ref 6-9]: https://forums.swift.org/t/removing-unsafe-arithmetic-methods/16169
+
 ### Full-width methods
 
 Two primitive operations are exposed by the Swift standard library that can be
@@ -334,4 +339,4 @@ Next:
 [Concrete binary floating-point types, part 1](floating-point-part-1-rev-1.md)
 
 _27 February–10 March 2018_  
-_Updated 2 September 2018_
+_Updated 10 November 2018_
