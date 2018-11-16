@@ -164,24 +164,23 @@ RHS is expressed as a literal `0`.
 
 ### Unsafe methods
 
-__Four unsafe methods__ are provided:
+__Four unsafe methods__ were once provided:
 
 `unsafeAdding(_:)`  
 `unsafeSubtracting(_:)`  
 `unsafeMultiplied(by:)`  
 `unsafeDivided(by:)`
 
-The behavior of these methods is __undefined__ in case of overflow. Therefore,
-they are useful only for avoiding the performance cost of overflow checking, and
-they should only be used if it is certain that the result will not overflow. In
-debug mode, however, overflow does cause a precondition failure.
+> All four unsafe methods [have been removed][ref 6-9] for Swift 5, as they were
+> never approved as part of a proposal.
+
+The behavior of those methods was __undefined__ in case of overflow. Therefore,
+they were useful only for avoiding the performance cost of overflow checking,
+and they were meant to be used only if it was certain that the result would not
+overflow. (In debug mode, however, overflow did cause a precondition failure.)
 
 It is unclear as to the rationale behind omission of
-`unsafeRemainder(dividingBy:)`, although that method is unlikely to be of much
-use.
-
-> The core team [intends to remove][ref 6-9] all four unsafe methods for Swift
-> 5, as they were never approved as part of a proposal.
+`unsafeRemainder(dividingBy:)`.
 
 [ref 6-9]: https://forums.swift.org/t/removing-unsafe-arithmetic-methods/16169
 
@@ -339,4 +338,4 @@ Next:
 [Concrete binary floating-point types, part 1](floating-point-part-1-rev-1.md)
 
 _27 February–10 March 2018_  
-_Updated 10 November 2018_
+_Updated 15 November 2018_
