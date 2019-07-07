@@ -9,19 +9,12 @@ floating-point value using an __integer literal__.
 
 Earlier, [nuances about the use of integer literals](integers-part-1.md#integer-literals)
 were discussed that apply equally when they are used to express floating-point
-values. Two issues are salient for our purposes here:
+values. One issue is especially salient for our purposes here:
 
-1. Recall that integer literals do not support signed zero (in other words,
-   `-0 as Float` evaluates to positive zero). Either use parentheses, as in
-   `-(0 as Float)`, or use a __float literal__ as discussed below, to obtain the
-   desired value.
-
-1. Recall that using a converting initializer with an integer literal argument,
-   such as `Double(42)`, is not recommended until implementation of
-   [SE-0213][ref 3-2] because it first coerces the literal value to type
-   `IntegerLiteralType` and then converts that value to type `Double`. This is
-   to be contrasted with using a __type coercion__ operator, such as
-   `42 as Double`, where the literal value is directly coerced to type `Double`.
+Recall that integer literals do not support signed zero (in other words,
+`-0 as Float` evaluates to positive zero). Either use parentheses, as in
+`-(0 as Float)`, or use a __float literal__ as discussed below, to obtain the
+desired value.
 
 ## Float literals
 
@@ -126,46 +119,47 @@ In the absence of other available information, the inferred type of a float
 literal expression defaults to `FloatLiteralType`, which is a type alias for
 `Double` unless it is shadowed by the user.
 
-> __The following caveat applies to current versions of Swift. It will _not_
-> be applicable after changes described in [SE-0213: Integer initialization via
-> coercion][ref 3-2], which was [implemented in July 2018][ref 3-3], are
-> included in a future Swift release.__
-
-A frequent misunderstanding found even in the Swift project itself concerns the
-use of a __type conversion__ initializer to indicate the desired type of a
-literal expression. For example:
-
-```swift
-// Avoid writing such code.
-let x = Float(42.0)
-```
-
-This usage frequently gives the intended result, but the function call does
-_not_ provide information for type inference. Instead, this statement creates an
-instance of type `FloatLiteralType` (which again, by default, is a type alias
-for `Double`) with the value `42.0`, then _converts_ that value to `Float`.
-
-Since `Float` has less precision than `Double`, a literal value is rounded twice
-when that statement is evaluated, which can lead to __double-rounding error__:
-
-```swift
-let correct = 8388608.5000000001 as Float
-// 8388609
-let incorrect = Float(8388608.5000000001)
-// 8388608
-```
-
-Since `Float80` has more precision than `Double`, the same misunderstanding
-causes loss of precision in floating-point values analogous to omission of the
-suffix `l` in C/C++ (which must be used to indicate that a constant should have
-`long double` type):
-
-```swift
-let precise = 3.14159265358979323846 as Float80
-// 3.14159265358979323851
-let imprecise = Float80(3.14159265358979323846)
-// 3.141592653589793116
-```
+> __The following caveat is no longer applicable since changes described in
+> [SE-0213: Integer initialization via coercion][ref 3-2] were [implemented in
+> July 2018][ref 3-3] and shipped:__
+>
+> A frequent misunderstanding found even in the Swift project itself concerns
+> the use of a __type conversion__ initializer to indicate the desired type of a
+> literal expression. For example:
+>
+> ```swift
+> // Avoid writing such code.
+> let x = Float(42.0)
+> ```
+>
+> This usage frequently gives the intended result, but the function call does
+> _not_ provide information for type inference. Instead, this statement creates
+> an instance of type `FloatLiteralType` (which again, by default, is a type
+> alias for `Double`) with the value `42.0`, then _converts_ that value to
+> `Float`.
+>
+> Since `Float` has less precision than `Double`, a literal value is rounded
+> twice when that statement is evaluated, which can lead to __double-rounding
+> error__:
+>
+> ```swift
+> let correct = 8388608.5000000001 as Float
+> // 8388609
+> let incorrect = Float(8388608.5000000001)
+> // 8388608
+> ```
+>
+> Since `Float80` has more precision than `Double`, the same misunderstanding
+> causes loss of precision in floating-point values analogous to omission of the
+> suffix `l` in C/C++ (which must be used to indicate that a constant should
+> have `long double` type):
+>
+> ```swift
+> let precise = 3.14159265358979323846 as Float80
+> // 3.14159265358979323851
+> let imprecise = Float80(3.14159265358979323846)
+> // 3.141592653589793116
+> ```
 
 [ref 3-1]: https://github.com/apple/swift-evolution/blob/master/proposals/0083-remove-bridging-from-dynamic-casts.md
 [ref 3-2]: https://github.com/apple/swift-evolution/blob/master/proposals/0213-literal-init-via-coercion.md
@@ -176,24 +170,22 @@ let imprecise = Float80(3.14159265358979323846)
 Notionally, a numeric literal isn't limited by the precision of any type because
 it has no type.
 
-Under the hood, however, an integer literal is first used to create an internal
-2048-bit value (of type `_MaxBuiltinIntegerType`) that is then converted to the
-intended type. Likewise, a float literal is first used to create an internal
-value of type `_MaxBuiltinFloatType` that is then converted to the intended
-type.
-
-This design is more or less sufficient for integer literals (except that signed
-zero cannot be supported) because integers with more than 600 decimal digits can
-be represented in 2048 bits.
-
-As of the time of writing, __float literals may be incorrectly rounded__ because
-`_MaxBuiltinFloatType` is a type alias for `Float80` if supported and `Double`
-otherwise. Consequently, float literals that cannot be represented exactly as a
-value of type `_MaxBuiltinFloatType` are subject to __double-rounding error__
-just as though the value were created using a converting initializer.
+Under the hood, however, a float literal is first used to create an internal
+value of type `_MaxBuiltinFloatType`, which is then converted to the intended
+type. As of the time of writing, __float literals may be incorrectly rounded__
+because `_MaxBuiltinFloatType` is a type alias for `Float80` if supported and
+`Double` otherwise. Consequently, float literals that cannot be represented
+exactly as a value of type `_MaxBuiltinFloatType` are subject to
+__double-rounding error__ just as though the value were created using a
+converting initializer.
 
 Hexadecimal float literals of no more than the maximum supported precision can
 be used to avoid this double-rounding error for binary floating-point types.
+
+> Previously, an integer literal was likewise first used to create an internal
+> 2048-bit value (of type `_MaxBuiltinIntegerType`), which was then converted to
+> the intended type. In November 2018, the integer literal type was changed from
+> a fixed 2048-bit type to [an arbitrary width type][ref 13-0].
 
 > Double rounding of float literals is tracked by Swift bug [SR-7124:
 > Double rounding in floating-point literal conversion][ref 13-1].
@@ -217,6 +209,7 @@ Decimal(string: "0.10000000000000001")!.description
 // "0.10000000000000001"
 ```
 
+[ref 13-0]: https://github.com/apple/swift/pull/20208
 [ref 13-1]: https://bugs.swift.org/browse/SR-7124
 
 ## Conversions among floating-point types
@@ -273,16 +266,19 @@ value is valid for conversion. Specifically:
   represents signaling NaN, and either may be followed by a parenthesized
   decimal or hexadecimal number that represents the NaN payload.
 
-Any string that would cause a range error when it is used as the argument of the
-C function `strtof` or `strtod` causes `Float.init?(_: String)` or
+[Until the behavior is changed][ref 15-1] in a future version of Swift, any
+string that would cause a range error when it is used as the argument of the C
+function `strtof` or `strtod` causes `Float.init?(_: String)` or
 `Double.init?(_: String)` (respectively) to return `nil`. Therefore:
 
 __Any invalid character, even if whitespace, causes the entire string to be
 invalid for conversion.__  
 The result of an __inexact__ conversion is rounded to the nearest representable
 value.  
-The result of an __overflowing__ conversion is `nil`.  
-The result of an __underflowing__ conversion is `nil`.  
+The result of an __overflowing__ conversion is `nil` (in the future, it will be
+infinite).  
+The result of an __underflowing__ conversion is `nil` (in the future, it will be
+zero).  
 The result of converting __NaN__ is encoded with the NaN payload (truncated if
 needed) if such a payload is specified.
 
@@ -318,6 +314,8 @@ let b = Double("0x1.")!
 // 1
 ```
 
+[ref 15-1]: https://github.com/apple/swift/pull/25313
+
 ### Creating from a sign, exponent, and significand
 
 _Incomplete_
@@ -335,4 +333,4 @@ Next:
 [Concrete binary floating-point types, part 4](floating-point-part-4.md)
 
 _Draft: 27 February–14 March 2018_  
-_Updated 19 August 2018_
+_Updated 7 July 2019_
