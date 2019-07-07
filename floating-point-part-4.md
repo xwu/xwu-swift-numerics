@@ -205,9 +205,10 @@ Swift.min(0, Double.nan) // 0
 
 The operations __minNum__ and __maxNum__ are defined in the IEEE 754-2008
 standard and __favor numbers over quiet NaN__. (If any argument is a
-_signaling_ NaN, however, the result is NaN.) They are available in Swift as
-the static methods `T.minimum(_:_:)` and `T.maximum(_:_:)`, where `T` is a
-floating-point type:
+_signaling_ NaN, however, the result is NaN; [in a future version of
+Swift][ref 16-2], the standard library will also favor numbers over signaling
+NaN.) These operations are available in Swift as the static methods
+`T.minimum(_:_:)` and `T.maximum(_:_:)`, where `T` is a floating-point type:
 
 ```swift
 Double.minimum(.nan, 0) // 0
@@ -245,6 +246,8 @@ This total order is available in Swift as the method
 `isTotallyOrdered(belowOrEqualTo:)`. As clarified in the name,
 `x.isTotallyOrdered(belowOrEqualTo: y)` returns `true` if `x` orders below
 or equal to `y` in the total order prescribed in the IEEE 754-2008 standard.
+
+[ref 16-2]: https://github.com/apple/swift/pull/23824/files#diff-7f717cf2f9c6e538e3ef563625ea6dc4L1901
 
 ## Floating-point remainder
 
@@ -315,4 +318,4 @@ Next:
 [Numeric types in Foundation](numeric-types-in-foundation.md)
 
 _Draft: 9 March–8 June 2018_  
-_Updated 18 August 2018_
+_Updated 7 July 2019_
