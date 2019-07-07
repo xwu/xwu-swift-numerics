@@ -7,7 +7,7 @@ The Swift standard library provides ten concrete integer types, all defined as
 value types wrapping [LLVM primitive types from the `Builtin` module][ref 1-1]:
 
 ```swift
-@_fixed_layout
+@frozen
 public struct UInt8 /* ... */ {
   /* ... */
   public var _value: Builtin.Int8
@@ -47,7 +47,7 @@ overflow.__ It can sometimes be overlooked that `-T.min` overflows if `T` is a
 signed (and fixed-width) integer type. As we will discuss, other functions are
 available that provide alternative overflow behavior.
 
-Each of the basic arithmetic operators have a corresponding mutating (in-place)
+Each of the basic arithmetic operators has a corresponding mutating (in-place)
 counterpart. For the infix operators, those are the assignment operators `+=`,
 `-=`, `*=`, `/=`, and `%=`. For prefix operator `-`, the mutating counterpart is
 spelled as the instance method `negate()`. These functions also trap on integer
@@ -98,12 +98,12 @@ operator `-` with `42` as its operand.
 > y.sign // .minus
 > ```
 >
-> In the first example, a built-in 2048-bit integer is initialized to the value
+> In the first example, a built-in integer literal is initialized to the value
 > `-0`, but integer types do not support signed zero and the sign is ignored.
 > Then, based on the type annotation, the integer value is converted to a
 > positive floating-point value.
 >
-> In the second example, a built-in 2048-bit integer is initialized to the value
+> In the second example, a built-in integer literal is initialized to the value
 > `0`. Based on the type annotation, the value is converted to a positive
 > floating-point value, then the floating-point prefix operator `-` is called to
 > change the sign.
@@ -152,53 +152,52 @@ let x = 42
 type(of: x) // Int32
 ```
 
-> __The following caveat applies to current versions of Swift. It will _not_
-> be applicable after changes described in [SE-0213: Integer initialization via
-> coercion][ref 3-2], which was [implemented in July 2018][ref 3-3], are
-> included in a future Swift release.__
-
-A frequent misunderstanding found even in the Swift project itself concerns the
-use of a __type conversion__ initializer to indicate the desired type of a
-literal expression. For example:
-
-```swift
-// Avoid writing such code.
-let x = Int8(42)
-```
-
-This usage frequently gives the intended result, but the function call does
-_not_ provide information for type inference. Instead, this statement creates an
-instance of type `IntegerLiteralType` (which again, by default, is a type alias
-for `Int`) with the value `42`, then _converts_ this value to `Int8`.
-
-The distinction can be demonstrated as follows:
-
-```swift
-let x = 32768 as Int16
-// Causes a compile time error:
-// integer literal '32768' overflows when stored into 'Int16'
-
-let i = 32768 as Int
-let y = Int16(i)
-// Causes a **runtime** error:
-// Not enough bits to represent a signed value
-
-let z = Int16(32768)
-// Causes a **runtime** error:
-// Not enough bits to represent a signed value
-```
-
-Differences in diagnostics might be uninteresting to many users. However, the
-same misunderstanding with floating-point types can produce different results
-due to unintended rounding error:
-
-```swift
-let a = 3.14159265358979323846 as Float80
-// 3.14159265358979323851
-
-let b = Float80(3.14159265358979323846)
-// 3.141592653589793116
-```
+> __The following caveat is no longer applicable since changes described in
+> [SE-0213: Integer initialization via coercion][ref 3-2] were [implemented in
+> July 2018][ref 3-3] and shipped:__
+>
+> A frequent misunderstanding found even in the Swift project itself concerns
+> the use of a __type conversion__ initializer to indicate the desired type of a
+> literal expression. For example:
+>
+> ```swift
+> // Avoid writing such code.
+> let x = Int8(42)
+> ```
+>
+> This usage frequently gives the intended result, but the function call does
+> _not_ provide information for type inference. Instead, this statement creates
+> an instance of type `IntegerLiteralType` (which again, by default, is a type
+> alias for `Int`) with the value `42`, then _converts_ this value to `Int8`.
+>
+> The distinction can be demonstrated as follows:
+>
+> ```swift
+> let x = 32768 as Int16
+> // Causes a compile time error:
+> // integer literal '32768' overflows when stored into 'Int16'
+>
+> let i = 32768 as Int
+> let y = Int16(i)
+> // Causes a **runtime** error:
+> // Not enough bits to represent a signed value
+>
+> let z = Int16(32768)
+> // Causes a **runtime** error:
+> // Not enough bits to represent a signed value
+> ```
+>
+> Differences in diagnostics might be uninteresting to many users. However, the
+> same misunderstanding with floating-point types can produce different results
+> due to unintended rounding error:
+>
+> ```swift
+> let a = 3.14159265358979323846 as Float80
+> // 3.14159265358979323851
+>
+> let b = Float80(3.14159265358979323846)
+> // 3.141592653589793116
+> ```
 
 [ref 3-1]: https://github.com/apple/swift-evolution/blob/master/proposals/0083-remove-bridging-from-dynamic-casts.md
 [ref 3-2]: https://github.com/apple/swift-evolution/blob/master/proposals/0213-literal-init-via-coercion.md
@@ -258,4 +257,4 @@ Next:
 [Concrete integer types, part 2](integers-part-2.md)
 
 _27 February–5 March 2018_  
-_Updated 18 August 2018_
+_Updated 6 July 2019_
