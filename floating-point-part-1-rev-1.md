@@ -8,7 +8,7 @@ three concrete floating-point types. Again, these are all defined as value types
 wrapping [LLVM primitive types from the `Builtin` module][ref 11-1]:
 
 ```swift
-@_fixed_layout
+@frozen
 public struct Float {
   public // @testable
   var _value: Builtin.FPIEEE32
@@ -94,36 +94,31 @@ flags. (Such limitations are [also found in Rust][ref 11-8].)
 
 ### C mathematical functions
 
+The Swift standard library provides an "overlay" that makes some changes to
+improve the user experience of working with C mathematical functions and
+disables certain incompatible functions.
+
 IEEE 754 recommends, but does not require, implementations to provide elementary
 functions such as sine, arctangent, and binary logarithm. The Swift standard
-library does not provide native implementations of such functions.
+library will offer APIs for such operations [in a future version of
+Swift][ref 11-8a]. For now, the Swift standard library provides only IEEE 754
+required operations such as square root; for other functions, users need to use
+the C standard library, which can be imported on macOS as part of the `Darwin`
+module and on Linux as part of the `Glibc` module (alternatively, users can
+import the `Foundation` module instead).
 
-Nonetheless, users have access to these operations through the C standard
-library, which can be imported on macOS as part of the `Darwin` module and on
-Linux as part of the `Glibc` module; alternatively, users can choose to import
-the `Foundation` module instead. Swift provides an "overlay" that makes some
-changes to improve the user experience of working with C mathematical functions
-and disables certain incompatible functions.
-
-> Note that not all functions are implemented with identical precision in
-> `Darwin` and `Glibc`.
-
-When imported, the C standard library provides implementations for required
-operations in IEEE 754 that are duplicative of those provided by the Swift
-standard library, often with distinct names--for example, `round(x)` and
-`x.rounded()`. Since C library functions may be more familiar to many users,
-the Swift overlay allows those who import the C standard library to call such
-functions using their C names.
+Note that not all functions are implemented with identical precision in `Darwin`
+and `Glibc`, and the same discrepancies among platforms are applicable to
+functions provided by the Swift standard library.
 
 > LLVM provides intrinsics that are equivalent to some C mathematical functions,
-> including sine and cosine (but not tangent). The Swift standard library does
-> expose those functions, but using names prefixed with an underscore to
-> indicate that they are not intended for public use. The Swift overlay for C
-> mathematical functions actually substitutes the LLVM intrinsic for the
-> corresponding C library function where possible.
+> including sine and cosine. The Swift overlay substitutes the LLVM intrinsic
+> for the corresponding C library function where possible.
 
-A comparison of IEEE 754 required operations, their Swift standard library
-names, and their C standard library overlay names is presented below.
+A comparison of IEEE 754 required and recommended operations, their Swift
+standard library names, and their C standard library overlay names is presented
+below (where `x`, `y`, `z` are values of floating-point type `T` and `n` is a
+value of type `Int`).
 
 <div class="table-wrapper">
 <table>
@@ -179,32 +174,37 @@ names, and their C standard library overlay names is presented below.
 		<tr>
 			<td>nextUp(<em>x</em>)</td>
 			<td><code>x.nextUp</code></td>
-			<td><code>nextafter(x, .infinity)</code></td>
+			<td><em>Unavailable (Swift 5.x):</em><br /><code>nextafter(x, .infinity)</code></td>
 		</tr>
 		<tr>
 			<td>nextDown(<em>x</em>)</td>
 			<td><code>x.nextDown</code></td>
-			<td><code>nextafter(x, -.infinity)</code></td>
+			<td><em>Unavailable (Swift 5.x):</em><br /><code>nextafter(x, -.infinity)</code></td>
 		</tr>
 		<tr>
 			<td>remainder(<em>x</em>, <em>y</em>)</td>
 			<td><code>x.remainder(&#8203;dividingBy: y)</code></td>
 			<td><code>remainder(x, y)</code></td>
 		</tr>
-		<!-- tr>
+		<tr>
 			<td></td>
 			<td><code>x.truncatingRemainder(&#8203;dividingBy: y)</code></td>
 			<td><code>fmod(x, y)</code></td>
-		</tr -->
+		</tr>
 		<tr>
 			<td>minNum(<em>x</em>, <em>y</em>)</td>
 			<td><code>T.minimum(x, y)</code></td>
-			<td><code>fmin(x, y)</code></td>
+			<td><em>Unavailable (Swift 5.x):</em><br /><code>fmin(x, y)</code></td>
 		</tr>
 		<tr>
 			<td>maxNum(<em>x</em>, <em>y</em>)</td>
 			<td><code>T.maximum(x, y)</code></td>
-			<td><code>fmax(x, y)</code></td>
+			<td><em>Unavailable (Swift 5.x):</em><br /><code>fmax(x, y)</code></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><code>Swift.max(x - y, 0)</code></td>
+			<td><code>fdim(x, y)</code></td>
 		</tr>
 		<tr>
 			<td>minNumMag(<em>x</em>, <em>y</em>)</td>
@@ -229,7 +229,7 @@ names, and their C standard library overlay names is presented below.
 		<tr>
 			<td>logB(<em>x</em>)</td>
 			<td><code>x.exponent</code></td>
-			<td><code>ilogb(x)</code></td>
+			<td><em>Unavailable (Swift 4.2):</em><br /><code>ilogb(x)</code></td>
 		</tr>
 	</tbody>
 	<tbody>
@@ -258,7 +258,9 @@ names, and their C standard library overlay names is presented below.
 		</tr>
 		<tr>
 			<td>squareRoot(<em>x</em>)</td>
-			<td><code>x.squareRoot()</code></td>
+			<td><code>x.squareRoot()</code><br />
+				&nbsp;&nbsp;<em>or</em><br />
+				<code>T.sqrt(x)</code> <em>(Swift 5.x)</em></td>
 			<td><code>sqrt(x)</code></td>
 		</tr>
 		<tr>
@@ -364,8 +366,238 @@ names, and their C standard library overlay names is presented below.
 			<td></td>
 		</tr>
 	</tbody>
+	<tbody>
+		<tr>
+			<th scope="rowgroup" colspan="3">Additional elementary functions (Swift 5.x)</th>
+		</tr>
+		<tr>
+			<td>sin</td>
+			<td><code>T.sin(x)</code></td>
+			<td><code>sin(x)</code></td>
+		</tr>
+		<tr>
+			<td>cos</td>
+			<td><code>T.cos(x)</code></td>
+			<td><code>cos(x)</code></td>
+		</tr>
+		<tr>
+			<td>tan</td>
+			<td><code>T.tan(x)</code></td>
+			<td><code>tan(x)</code></td>
+		</tr>
+		<tr>
+			<td>sinPi</td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>cosPi</td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>asin</td>
+			<td><code>T.asin(x)</code></td>
+			<td><code>asin(x)</code></td>
+		</tr>
+		<tr>
+			<td>acos</td>
+			<td><code>T.acos(x)</code></td>
+			<td><code>acos(x)</code></td>
+		</tr>
+		<tr>
+			<td>atan</td>
+			<td><code>T.atan(x)</code></td>
+			<td><code>atan(x)</code></td>
+		</tr>
+		<tr>
+			<td>atanPi</td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>sinh</td>
+			<td><code>T.sinh(x)</code></td>
+			<td><code>sinh(x)</code></td>
+		</tr>
+		<tr>
+			<td>cosh</td>
+			<td><code>T.cosh(x)</code></td>
+			<td><code>cosh(x)</code></td>
+		</tr>
+		<tr>
+			<td>tanh</td>
+			<td><code>T.tanh(x)</code></td>
+			<td><code>tanh(x)</code></td>
+		</tr>
+		<tr>
+			<td>asinh</td>
+			<td><code>T.asinh(x)</code></td>
+			<td><code>asinh(x)</code></td>
+		</tr>
+		<tr>
+			<td>acosh</td>
+			<td><code>T.acosh(x)</code></td>
+			<td><code>acosh(x)</code></td>
+		</tr>
+		<tr>
+			<td>atanh</td>
+			<td><code>T.atanh(x)</code></td>
+			<td><code>atanh(x)</code></td>
+		</tr>
+		<tr>
+			<td>exp</td>
+			<td><code>T.exp(x)</code></td>
+			<td><code>exp(x)</code></td>
+		</tr>
+		<tr>
+			<td>exp2</td>
+			<td><code>T.exp2(x)</code></td>
+			<td><code>exp2(x)</code></td>
+		</tr>
+		<tr>
+			<td>exp10</td>
+			<td><code>T.exp10(x)</code></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>expm1</td>
+			<td><code>T.expm1(x)</code></td>
+			<td><code>expm1(x)</code></td>
+		</tr>
+		<tr>
+			<td>exp2m1</td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>exp10m1</td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>log</td>
+			<td><code>T.log(x)</code></td>
+			<td><code>log(x)</code></td>
+		</tr>
+		<tr>
+			<td>log2</td>
+			<td><code>T.log2(x)</code></td>
+			<td><code>log2(x)</code></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><code>T.log2(x)&#8203;.rounded(.down)</code></td>
+			<td><em>Unavailable (Swift 5.x):</em><br /><code>logb(x)</code></td>
+		</tr>
+		<tr>
+			<td>log10</td>
+			<td><code>T.log10(x)</code></td>
+			<td><code>log10(x)</code></td>
+		</tr>
+		<tr>
+			<td>logp1</td>
+			<td><code>T.log1p(x)</code></td>
+			<td><code>log1p(x)</code></td>
+		</tr>
+		<tr>
+			<td>log2p1</td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>log10p1</td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>compound(<em>x</em>, <em>n</em>)</td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>pow(<em>x</em>, <em>y</em>)</td>
+			<td><code>T.pow(x, y)</code></td>
+			<td><code>pow(x, y)</code></td>
+		</tr>
+		<tr>
+			<td>powr(<em>x</em>, <em>y</em>)</td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>pown(<em>x</em>, <em>n</em>)</td>
+			<td><code>T.pow(x, n)</code></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>rootn(<em>x</em>, <em>n</em>)</td>
+			<td><code>T.root(x, n)</code></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><code>T.root(x, 3)</code></td>
+			<td><code>cbrt(x)</code></td>
+		</tr>
+		<tr>
+			<td>rSqrt</td>
+			<td></td>
+			<td></td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<th scope="rowgroup" colspan="3">Additional real operations (Swift 5.x)</th>
+		</tr>
+		<tr>
+			<td>atan2(<em>y</em>, <em>x</em>)</td>
+			<td><code>T.atan2(y: y, x: x)</code></td>
+			<td><code>atan2(y, x)</code></td>
+		</tr>
+		<tr>
+			<td>atan2Pi(<em>y</em>, <em>x</em>)</td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>hypot(<em>x</em>, <em>y</em>)</td>
+			<td><code>T.hypot(x, y)</code></td>
+			<td><code>hypot(x, y)</code></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><code>T.erf(x)</code></td>
+			<td><code>erf(x)</code></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><code>T.erfc(x)</code></td>
+			<td><code>erfc(x)</code></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><code>T.gamma(x)</code></td>
+			<td><code>tgamma(x)</code></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><code>(T.logGamma(x), T.signGamma(x) == .plus ? 1 : -1)</code></td>
+			<td><code>lgamma(x)</code></td>
+		</tr>
+	</tbody>
 </table>
 </div>
+
+> Current implementations of `T.pow(x, n)` and `T.root(x, n)` give inaccurate
+> results if `n` is so large that conversion to `T` would round.
+
+> For more information on the additional elementary functions and real
+> operations added in Swift 5.x, see the Swift Evolution proposal [SE-0246:
+> Generic math(s) functions][ref 11-8b].
+
+[ref 11-8a]: https://github.com/apple/swift/pull/25302
+[ref 11-8b]: https://github.com/apple/swift-evolution/blob/master/proposals/0246-mathable.md
 
 ### Finite constants
 
@@ -413,4 +645,4 @@ Next:
 [Concrete binary floating-point types, part 2](floating-point-part-2.md)
 
 _27 February–3 March 2018_  
-_Updated 26 August 2018_
+_Updated 7 July 2019_
