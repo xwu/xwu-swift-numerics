@@ -63,12 +63,12 @@ A runtime error also occurs in case of overflow in methods such as:
 `dividingFullWidth(_:)`  
 `quotientAndRemainder(dividingBy:)`
 
-> At the time of writing, `dividingFullWidth(_:)` [does not behave as
-> documented][ref 6-3] in case of overflow.
+At the time of writing, `dividingFullWidth(_:)` [does not behave as
+documented][ref 6-3] in case of overflow.
 
 [ref 6-1]: https://huonw.github.io/blog/2016/04/myths-and-legends-about-integer-overflow-in-rust/
 [ref 6-2]: https://github.com/apple/swift/blob/master/docs/OptimizationTips.rst#enabling-optimizations
-[ref 6-3]: https://github.com/apple/swift/blob/642cbbad7cefd08efa9242fd2d75cee356285727/stdlib/public/core/Integers.swift.gyb#L3514
+[ref 6-3]: https://github.com/apple/swift/blob/08af3bc4f9f17d0096a68423a343176349cd290f/stdlib/public/core/IntegerTypes.swift.gyb#L1557
 
 ### Absolute value and magnitude
 
@@ -164,23 +164,21 @@ RHS is expressed as a literal `0`.
 
 ### Unsafe methods
 
-__Four unsafe methods__ were once provided:
-
-`unsafeAdding(_:)`  
-`unsafeSubtracting(_:)`  
-`unsafeMultiplied(by:)`  
-`unsafeDivided(by:)`
-
+> __Four unsafe methods__ were once provided:
+>
+> `unsafeAdding(_:)`  
+> `unsafeSubtracting(_:)`  
+> `unsafeMultiplied(by:)`  
+> `unsafeDivided(by:)`
+>
+> The behavior of those methods was __undefined__ in case of overflow.
+> Therefore, they were useful only for avoiding the performance cost of overflow
+> checking, and they were meant to be used only if it was certain that the
+> result would not overflow. (In debug mode, however, overflow did cause a
+> precondition failure.)
+>
 > All four unsafe methods [have been removed][ref 6-9] for Swift 5, as they were
 > never approved as part of a proposal.
-
-The behavior of those methods was __undefined__ in case of overflow. Therefore,
-they were useful only for avoiding the performance cost of overflow checking,
-and they were meant to be used only if it was certain that the result would not
-overflow. (In debug mode, however, overflow did cause a precondition failure.)
-
-It is unclear as to the rationale behind omission of
-`unsafeRemainder(dividingBy:)`.
 
 [ref 6-9]: https://forums.swift.org/t/removing-unsafe-arithmetic-methods/16169
 
@@ -338,4 +336,4 @@ Next:
 [Concrete binary floating-point types, part 1](floating-point-part-1-rev-1.md)
 
 _27 February–10 March 2018_  
-_Updated 15 November 2018_
+_Updated 6 July 2019_
