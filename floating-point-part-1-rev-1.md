@@ -30,14 +30,18 @@ available on the platform. (In C/C++ programming with the Win32 API, the
 
 LLVM [does support half-precision (16-bit) and quadruple-precision (128-bit)
 binary floating-point types][ref 11-4.1], but this support is not surfaced by
-the Swift standard library. Most platforms offer limited native support for
+the Swift standard library. Some platforms offer limited native support for
 arithmetic using these formats.
+
+> A future version of Swift [may include][ref 11-4.2] support for a 16-bit IEEE
+> 754 binary floating-point type, which would likely be named `Float16`.
 
 [ref 11-1]: https://swift.org/compiler-stdlib/#standard-library-design
 [ref 11-2]: https://github.com/apple/swift/blob/bfddc4a763d1ae2f53a8c3281d2d6f08cd1211a0/stdlib/public/core/Policy.swift#L56
 [ref 11-3]: https://github.com/apple/swift/pull/14971/
 [ref 11-4]: https://msdn.microsoft.com/en-us/library/9cx8xs15.aspx
 [ref 11-4.1]: https://internals.rust-lang.org/t/pre-rfc-introduction-of-half-and-quadruple-precision-floats-f16-and-f128/7521
+[ref 11-4.2]: https://forums.swift.org/t/add-float16/19370
 
 ### IEEE 754
 
@@ -101,24 +105,24 @@ disables certain incompatible functions.
 IEEE 754 recommends, but does not require, implementations to provide elementary
 functions such as sine, arctangent, and binary logarithm. The Swift standard
 library will offer APIs for such operations [in a future version of
-Swift][ref 11-8a]. For now, the Swift standard library provides only IEEE 754
+Swift][ref 11-8.1]. For now, the Swift standard library provides only IEEE 754
 required operations such as square root; for other functions, users need to use
 the C standard library, which can be imported on macOS as part of the `Darwin`
 module and on Linux as part of the `Glibc` module (alternatively, users can
 import the `Foundation` module instead).
 
-Note that not all functions are implemented with identical precision in `Darwin`
-and `Glibc`, and the same discrepancies among platforms are applicable to
-functions provided by the Swift standard library.
-
 > LLVM provides intrinsics that are equivalent to some C mathematical functions,
 > including sine and cosine. The Swift overlay substitutes the LLVM intrinsic
 > for the corresponding C library function where possible.
 
+Note that not all functions are implemented with identical precision in `Darwin`
+and `Glibc`, and the same discrepancies among platforms are applicable to
+functions provided by the Swift standard library.
+
 A comparison of IEEE 754 required and recommended operations, their Swift
 standard library names, and their C standard library overlay names is presented
-below (where `x`, `y`, `z` are values of floating-point type `T` and `n` is a
-value of type `Int`).
+below (where `x`, `y`, `z` are values of floating-point type `T`, `n` is a value
+of type `Int`, and "Swift x" is a future version of Swift).
 
 <div class="table-wrapper">
 <table>
@@ -174,12 +178,12 @@ value of type `Int`).
 		<tr>
 			<td>nextUp(<em>x</em>)</td>
 			<td><code>x.nextUp</code></td>
-			<td><em>Unavailable (Swift 5.x):</em><br /><code>nextafter(x, .infinity)</code></td>
+			<td><em>Unavailable (Swift x):</em><br /><code>nextafter(x, .infinity)</code></td>
 		</tr>
 		<tr>
 			<td>nextDown(<em>x</em>)</td>
 			<td><code>x.nextDown</code></td>
-			<td><em>Unavailable (Swift 5.x):</em><br /><code>nextafter(x, -.infinity)</code></td>
+			<td><em>Unavailable (Swift x):</em><br /><code>nextafter(x, -.infinity)</code></td>
 		</tr>
 		<tr>
 			<td>remainder(<em>x</em>, <em>y</em>)</td>
@@ -194,12 +198,12 @@ value of type `Int`).
 		<tr>
 			<td>minNum(<em>x</em>, <em>y</em>)</td>
 			<td><code>T.minimum(x, y)</code></td>
-			<td><em>Unavailable (Swift 5.x):</em><br /><code>fmin(x, y)</code></td>
+			<td><em>Unavailable (Swift x):</em><br /><code>fmin(x, y)</code></td>
 		</tr>
 		<tr>
 			<td>maxNum(<em>x</em>, <em>y</em>)</td>
 			<td><code>T.maximum(x, y)</code></td>
-			<td><em>Unavailable (Swift 5.x):</em><br /><code>fmax(x, y)</code></td>
+			<td><em>Unavailable (Swift x):</em><br /><code>fmax(x, y)</code></td>
 		</tr>
 		<tr>
 			<td></td>
@@ -259,8 +263,8 @@ value of type `Int`).
 		<tr>
 			<td>squareRoot(<em>x</em>)</td>
 			<td><code>x.squareRoot()</code><br />
-				&nbsp;&nbsp;<em>or</em><br />
-				<code>T.sqrt(x)</code> <em>(Swift 5.x)</em></td>
+				&nbsp;&nbsp;<em>or (Swift x)</em><br />
+				<code>T.sqrt(x)</code></td>
 			<td><code>sqrt(x)</code></td>
 		</tr>
 		<tr>
@@ -368,7 +372,7 @@ value of type `Int`).
 	</tbody>
 	<tbody>
 		<tr>
-			<th scope="rowgroup" colspan="3">Additional elementary functions (Swift 5.x)</th>
+			<th scope="rowgroup" colspan="3">Additional elementary functions (Swift x)</th>
 		</tr>
 		<tr>
 			<td>sin</td>
@@ -457,7 +461,9 @@ value of type `Int`).
 		</tr>
 		<tr>
 			<td>exp10</td>
-			<td><code>T.exp10(x)</code></td>
+			<td><code>T.exp10(x)</code><br />
+				&nbsp;&nbsp;<em>or</em><br />
+				<code>exp10(x)</code></td>
 			<td></td>
 		</tr>
 		<tr>
@@ -488,7 +494,7 @@ value of type `Int`).
 		<tr>
 			<td></td>
 			<td><code>T.log2(x)&#8203;.rounded(.down)</code></td>
-			<td><em>Unavailable (Swift 5.x):</em><br /><code>logb(x)</code></td>
+			<td><em>Unavailable (Swift x):</em><br /><code>logb(x)</code></td>
 		</tr>
 		<tr>
 			<td>log10</td>
@@ -527,17 +533,23 @@ value of type `Int`).
 		</tr>
 		<tr>
 			<td>pown(<em>x</em>, <em>n</em>)</td>
-			<td><code>T.pow(x, n)</code></td>
+			<td><code>T.pow(x, n)</code><br />
+				&nbsp;&nbsp;<em>or</em><br />
+				<code>pow(x, n)</code></td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>rootn(<em>x</em>, <em>n</em>)</td>
-			<td><code>T.root(x, n)</code></td>
+			<td><code>T.root(x, n)</code><br />
+				&nbsp;&nbsp;<em>or</em><br />
+				<code>root(x, n)</code></td>
 			<td></td>
 		</tr>
 		<tr>
 			<td></td>
-			<td><code>T.root(x, 3)</code></td>
+			<td><code>T.root(x, 3)</code><br />
+				&nbsp;&nbsp;<em>or</em><br />
+				<code>root(x, 3)</code></td>
 			<td><code>cbrt(x)</code></td>
 		</tr>
 		<tr>
@@ -548,11 +560,13 @@ value of type `Int`).
 	</tbody>
 	<tbody>
 		<tr>
-			<th scope="rowgroup" colspan="3">Additional real operations (Swift 5.x)</th>
+			<th scope="rowgroup" colspan="3">Additional real operations (Swift x)</th>
 		</tr>
 		<tr>
 			<td>atan2(<em>y</em>, <em>x</em>)</td>
-			<td><code>T.atan2(y: y, x: x)</code></td>
+			<td><code>T.atan2(y: y, x: x)</code><br />
+				&nbsp;&nbsp;<em>or</em><br />
+				<code>atan2(y: y, x: x)</code></td>
 			<td><code>atan2(y, x)</code></td>
 		</tr>
 		<tr>
@@ -577,12 +591,16 @@ value of type `Int`).
 		</tr>
 		<tr>
 			<td></td>
-			<td><code>T.gamma(x)</code></td>
+			<td><code>T.gamma(x)</code><br />
+				&nbsp;&nbsp;<em>or</em><br />
+				<code>gamma(x)</code></td>
 			<td><code>tgamma(x)</code></td>
 		</tr>
 		<tr>
 			<td></td>
-			<td><code>(T.logGamma(x), T.signGamma(x) == .plus ? 1 : -1)</code></td>
+			<td><code>(T.logGamma(x), T.signGamma(x) == .plus ? 1 : -1)</code><br />
+				&nbsp;&nbsp;<em>or</em><br />
+				<code>(logGamma(x), signGamma(x) == .plus ? 1 : -1)</code></td>
 			<td><code>lgamma(x)</code></td>
 		</tr>
 	</tbody>
@@ -593,11 +611,11 @@ value of type `Int`).
 > results if `n` is so large that conversion to `T` would round.
 
 > For more information on the additional elementary functions and real
-> operations added in Swift 5.x, see the Swift Evolution proposal [SE-0246:
-> Generic math(s) functions][ref 11-8b].
+> operations to be added in a future version of Swift, see the Swift Evolution
+> proposal [SE-0246: Generic math(s) functions][ref 11-8.2].
 
-[ref 11-8a]: https://github.com/apple/swift/pull/25302
-[ref 11-8b]: https://github.com/apple/swift-evolution/blob/master/proposals/0246-mathable.md
+[ref 11-8.1]: https://github.com/apple/swift/pull/25302
+[ref 11-8.2]: https://github.com/apple/swift-evolution/blob/master/proposals/0246-mathable.md
 
 ### Finite constants
 
@@ -645,4 +663,4 @@ Next:
 [Concrete binary floating-point types, part 2](floating-point-part-2.md)
 
 _27 February–3 March 2018_  
-_Updated 7 July 2019_
+_Updated 28 July 2019_

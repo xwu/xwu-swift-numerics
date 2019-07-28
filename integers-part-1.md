@@ -20,8 +20,8 @@ as are four unsigned types (`UInt8`, `UInt16`, `UInt32`, `UInt64`). [LLVM does
 support 128-bit integer types on all platforms][ref 1-2], but this support is
 not surfaced by the Swift standard library.
 
-One signed type, `Int`, and one unsigned type, `UInt`, each has bit width equal
-to the platform's native word size.
+One signed type, `Int`, and one unsigned type, `UInt`, each has bit width [equal
+to the platform's pointer bit width][ref 1-2.1].
 
 > It is possible to determine the bit width of `Int` or `UInt` via the static or
 > instance property named `bitWidth`, but there is no platform condition
@@ -38,7 +38,7 @@ internally for signed values. However, standard library protocols don't preclude
 a hypothetical arbitrary-width integer type ("BigInt") from using
 [sign-and-magnitude][ref 1-4] or another representation _internally_, as long as
 bit shifting and bitwise operations notionally manipulate the two's complement
-representation of any values.
+representation.
 
 The basic arithmetic infix operators `+`, `-`, `*`, `/`, `%`, and the prefix
 operator `-`, have behavior that will be largely familiar to users of other "C
@@ -55,6 +55,7 @@ overflow.
 
 [ref 1-1]: https://swift.org/compiler-stdlib/#standard-library-design
 [ref 1-2]: https://github.com/rust-lang/rfcs/blob/master/text/1504-int128.md
+[ref 1-2.1]: https://forums.swift.org/t/compilation-conditions-for-word-size/26995/29
 [ref 1-3]: https://en.wikipedia.org/wiki/Two%27s_complement
 [ref 1-4]: https://en.wikipedia.org/wiki/Signed_number_representations#Signed_magnitude_representation
 
@@ -78,8 +79,8 @@ represented.
 
 > In many other "C family" languages, leading `0` is used as an octal prefix.
 > That is, numeric constants written with a leading `0` are [interpreted in base
-> 8][ref 2-1]. This has been a source of unintended error and confusion, and
-> Swift does not perpetuate the convention.
+> 8][ref 2-1]. This has been a source of error and confusion, and Swift does not
+> perpetuate the convention.
 
 Negative values can be represented by prepending the hyphen-minus character
 (`-`). This is considered to be part of the integer literal. In other words, the
@@ -257,4 +258,4 @@ Next:
 [Concrete integer types, part 2](integers-part-2.md)
 
 _27 February–5 March 2018_  
-_Updated 6 July 2019_
+_Updated 28 July 2019_

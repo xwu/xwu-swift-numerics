@@ -36,6 +36,13 @@ to provide a basis for all IEEE 754 binary floating-point types; it adds
 interfaces specifically for floating-point types with a fixed binary radix. It
 additionally refines `ExpressibleByFloatLiteral`.
 
+> In a future version of Swift, the __`ElementaryFunctions`__ protocol [will
+> be added][ref 11-8.2]; conforming types make elementary functions available as
+> static members. The __`Real`__ protocol will refine `FloatingPoint` and
+> `ElementaryFunctions`; it will provide users a simple, single constraint to
+> use in generic code that works with floating-point types supporting elementary
+> functions. 
+
 The __`BinaryInteger`__ protocol refines `Numeric` and is intended to provide a
 basis for all integer types; it declares integer arithmetic as well as bitwise
 and bit shift operators. It additionally refines `CustomStringConvertible`,
@@ -46,8 +53,8 @@ while the __`UnsignedInteger`__ protocol refines `BinaryInteger` only; both are
 "auxiliary" protocols that themselves add no additional requirements.
 
 > For source code compatibility with Swift 3, `SignedInteger` actually does
-> require two static methods with underscored names (at the time of writing).
-> These have default implementations and are irrelevant to users of Swift 4+.
+> require two static methods with underscored names. These have default
+> implementations and are irrelevant to users of Swift 4+.
 
 The __`FixedWidthInteger`__ protocol refines `BinaryInteger` to add overflowing
 operations for those types that have a fixed bit width; it also adds notions of
@@ -64,6 +71,7 @@ Swift 3.
 [ref 11-10]: https://github.com/apple/swift-evolution/blob/master/proposals/0067-floating-point-protocols.md
 [ref 9-4]: https://github.com/apple/swift-evolution/blob/master/proposals/0104-improved-integers.md
 [ref 21-0]: https://github.com/apple/swift-evolution/blob/master/proposals/0233-additive-arithmetic-protocol.md
+[ref 11-8.2]: https://github.com/apple/swift-evolution/blob/master/proposals/0246-mathable.md
 [ref 21-1]: https://lists.swift.org/pipermail/swift-evolution/Week-of-Mon-20170227/033372.html
 [ref 21-2]: https://github.com/apple/swift/pull/17323
 
@@ -329,8 +337,15 @@ h(UInt.self) // `true`
 > // Would be `false` when heterogeneous comparison is implemented.
 > ```
 
+> One possible change for a future version of Swift is the [designation of
+> specific types or protocols][ref 23-5.1] to be preferred when looking up
+> implementations for a given operator. Such a change would allow designated
+> homogeneous comparisons to be preferred over heterogeneous comparisons in all
+> contexts.
+
 [ref 23-4]: https://github.com/apple/swift/pull/9909
 [ref 23-5]: https://github.com/apple/swift/pull/9367#discussion_r118612475
+[ref 23-5.1]: https://forums.swift.org/t/pitch-making-expression-type-checking-of-operator-expressions-fast/18037
 
 ### Hashing
 
@@ -507,4 +522,4 @@ Previous:
 [Numeric types in Foundation](numeric-types-in-foundation.md)
 
 _11–19 August 2018_  
-_Updated 9 November 2018_
+_Updated 28 July 2019_
