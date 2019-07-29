@@ -318,7 +318,41 @@ let b = Double("0x1.")!
 
 ### Creating from a sign, exponent, and significand
 
-_Incomplete_
+As the name suggests, the initializer `init(sign:exponent:significand:)` creates
+a new floating-point value from the given sign, exponent, and significand.
+Therefore, you can use this initializer to recover a floating-point value
+that's been decomposed into its sign, exponent, and significand:
+
+```swift
+let x = 42.0
+Double(sign: x.sign, exponent: x.exponent, significand: x.significand)
+// 42.0
+```
+
+However, `significand` doesn't have to be limited to the subset of
+floating-point values that have positive sign and zero exponent; consequently,
+_this initializer doesn't always create values that have the same sign as `sign`
+or the same exponent as `exponent`_. Rather, the result is notionally equivalent
+to multiplying three terms derived from the given arguments in a single
+operation without intermediate rounding:
+
+```swift
+let sign = FloatingPointSign.minus
+let exponent = 2
+let significand = -42.0
+
+Double(sign: sign, exponent: exponent, significand: significand)
+// 168.0
+
+(sign == .minus ? -1 : 1) * exp2(Double(exponent)) * significand
+// 168.0
+```
+
+As shown above, the sign of the result depends on both `sign` and
+`significand.sign`, and the exponent of the result depends on both `exponent`
+and `significand.exponent`. In other words, the initializer _scales_ the value
+given as `significand`; indeed, this initializer is Swift's implementation of
+the IEEE 754 required operation scaleB, known in C/C++ as `scalbn`.
 
 <!-- ### Creating from a bit pattern -->
 
@@ -333,4 +367,4 @@ Next:
 [Concrete binary floating-point types, part 4](floating-point-part-4.md)
 
 _Draft: 27 February–14 March 2018_  
-_Updated 7 July 2019_
+_Updated 28 July 2019_
