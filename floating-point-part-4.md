@@ -307,7 +307,78 @@ or of dividing any value by zero, is NaN.
 
 ## Significand representation
 
-_Incomplete_
+> _Background:_
+>
+> Recall that the binary floating-point representation of a real number takes
+> the form _significand_&nbsp;×&nbsp;2<sup>_exponent_</sup>. In the gap between
+> zero and 2<sup><em>emin</em></sup>, where _emin_ is the minimum supported
+> exponent of a binary floating-point type, a set of linearly spaced
+> [__subnormal__ (or denormal) values][ref 12-8] are representable using a
+> different binary representation than that of __normal__ finite values.
+>
+> The most significant place of the significand (representing its integral part)
+> is always nonzero for normal values, and it is always zero for subnormal
+> values (and for zero). In the IEEE 754 32-bit and 64-bit binary floating-point
+> formats, this most significant place is __implicit__; for example, the
+> significand of a 32-bit value is 24 bits, but only 23 bits are explicitly
+> stored in memory. By contrast, in the extended-precision `Float80` format, all
+> 64 significand bits are explicitly stored in memory.
+
+Any Swift binary floating-point type `T` has several members related to the
+significand of a value `x`:
+
+* __`T.significandBitCount`__  
+  The number of available __fractional__ significand bits, or `Int.max` if there
+  is no limit (i.e., if `T` is an arbitrary precision type).  
+  Whether implicit or explicit, the most significant place of the significand
+  represents its integral part and is excluded from this reckoning. Therefore,
+  `Float.significandBitCount` is `23` and `Float80.significandBitCount` is `63`.
+
+* __`x.significand`__  
+  A value that can be used to compute the magnitude of `x` by multiplication
+  with `exp2(T(x.exponent))`.  
+  Note that the sign of `significand` is always positive for this purpose;
+  therefore, you will need `sign`, `exponent`, and `significand` to recreate a
+  decomposed floating-point value.  
+  If `x` is finite and nonzero, the result is always in the range `1..<2`. (If
+  `x` is subnormal, its significand bit pattern is shifted so that the leading
+  nonzero bit is in the most significant place of the significand in order to
+  produce the result.)  
+  If `x` is zero, infinite, or NaN, then the result is positive zero, positive
+  infinity, or NaN, respectively.
+
+* __`x.significandWidth`__  
+  The number of __fractional__ significand bits required to represent the
+  significand of `x`; `x.significandWidth` never exceeds
+  `T.significandBitCount`.  
+  Whether implicit or explicit, the leading nonzero bit is excluded from this
+  reckoning; this applies even when `x` is subnormal (when the leading nonzero
+  bit is always explicitly stored in memory), since `x.significand` would be in
+  the range `1..<2` and therefore a normal value. For example,
+  `T.leastNonzeroMagnitude` has _one_ nonzero significand bit, and
+  `T.leastNonzeroMagnitude.significandWidth` is `0`.  
+  Meanwhile, `(0 as T)` has _zero_ nonzero significand bits, and
+  `(0 as T).significandWidth` is `-1`. If `x` is infinite or NaN,
+  `x.significandWidth` is also `-1`.
+
+* __`x.significandBitPattern`__  
+  The __fractional__ significand bits of `x`; you can recreate a floating-point
+  value from its `sign`, `exponentBitPattern`, and `significandBitPattern` using
+  the initializer `init(sign:exponentBitPattern:significandBitPattern:)`.  
+  The significand bit pattern is obtained by bit masking the raw encoding of
+  `x`; if the most significant place of the significand (representing the
+  integral part) is explicitly stored (as it is in values of type `Float80`),
+  that is excluded by the bit masking operation. However, if `x` is subnormal,
+  the explicitly stored leading nonzero bit is not in the most significant place
+  of the significand and is therefore __not excluded__; for example,
+  `T.leastNonzeroMagnitude.significandBitPattern` is `1`.
+
+> It has been [erroneously documented][ref 18-1] that `T.infinity.significand`
+> is `1`. Although that may have been the originally intended behavior, Swift's
+> implementations for concrete types have never behaved in that way.
+
+[ref 12-8]: https://en.wikipedia.org/wiki/Denormal_number
+[ref 18-1]: https://github.com/apple/swift/pull/26390
 
 ---
 
@@ -317,5 +388,4 @@ Previous:
 Next:  
 [Numeric types in Foundation](numeric-types-in-foundation.md)
 
-_Draft: 9 March–8 June 2018_  
-_Updated 7 July 2019_
+_9 March 2018–29 July 2019_

@@ -325,7 +325,10 @@ that's been decomposed into its sign, exponent, and significand:
 
 ```swift
 let x = 42.0
-Double(sign: x.sign, exponent: x.exponent, significand: x.significand)
+Double(
+  sign: x.sign,
+  exponent: x.exponent,
+  significand: x.significand)
 // 42.0
 ```
 
@@ -341,10 +344,15 @@ let sign = FloatingPointSign.minus
 let exponent = 2
 let significand = -42.0
 
-Double(sign: sign, exponent: exponent, significand: significand)
+Double(
+  sign: sign,
+  exponent: exponent,
+  significand: significand)
 // 168.0
 
-(sign == .minus ? -1 : 1) * exp2(Double(exponent)) * significand
+(sign == .minus ? -1 : 1)
+  * exp2(Double(exponent))
+  * significand
 // 168.0
 ```
 
@@ -367,4 +375,4 @@ Next:
 [Concrete binary floating-point types, part 4](floating-point-part-4.md)
 
 _Draft: 27 February–14 March 2018_  
-_Updated 28 July 2019_
+_Updated 29 July 2019_
